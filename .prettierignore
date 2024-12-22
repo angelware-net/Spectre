@@ -6,3 +6,4 @@ src-tauri
 static
 .svelte-kit
 node_modules
+assets

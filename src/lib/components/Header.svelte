@@ -34,7 +34,7 @@
 	async function logout() {
 		try {
 			const result = await invoke('get_logout');
-			console.log(result);
+			// console.log(result);
 			await goto('/login');
 		} catch (error) {
 			console.error(error);

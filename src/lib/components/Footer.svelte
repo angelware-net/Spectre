@@ -1,15 +1,4 @@
 <script lang="ts">
-	// import { user } from '$lib/stores/user';
-	// import type { UserData } from '$lib/types/user';
-	// import { goto } from '$app/navigation';
-	// import { getUsersOnline } from '$lib/utils/getUsersOnline';
-	// import { getApiTime } from '$lib/utils/getApiTime';
-	// import { getOnlineUsers } from '$lib/utils/getOnlineUsers';
-	// import { open } from '@tauri-apps/api/shell';
-	// import { reloadData } from '$lib/functions/loadData';
-	// import { get } from 'svelte/store';
-	// import { checkUserStatus } from '$lib/functions/checkUserStatus';
-
 	import { onMount } from 'svelte';
 
 	import { onlineUsersStore } from '$lib/svelte-stores';
@@ -25,7 +14,6 @@
 	let currentlyOnline: boolean = false;
 
 	function cleanDateTimeString(dateTime: string): string {
-		// Remove any extraneous quotes and trim the string
 		return dateTime.replace(/(^")|("$)/g, '').trim();
 	}
 

@@ -4,12 +4,14 @@
 	import { invoke } from '@tauri-apps/api/core';
 	import WebSocket from '@tauri-apps/plugin-websocket';
 	import type { WebsocketMessage } from '$lib/types/websocket-msg';
+	import { type InviteNotification, type Notification } from '$lib/types/notification';
 
 	import {
 		isPermissionGranted,
 		requestPermission,
 		sendNotification,
 	} from '@tauri-apps/plugin-notification';
+	import type { ExternalUserData } from '$lib/types/external-user';
 
 	let ws: WebSocket | null = null;
 	let permissionGranted: boolean = false;
@@ -25,7 +27,6 @@
 		}
 	});
 
-
 	loginStatusStore.subscribe(async (isLoggedIn) => {
 		if (isLoggedIn && !ws) {
 			try {
@@ -38,25 +39,7 @@
 							['User-Agent', 'Spectre/2.0']
 						]
 					});
-					// ws.addListener((webmsg) => {
-					// 	let msgString = JSON.stringify(webmsg.data);
-					// 	let msgObject: WebsocketMessage = JSON.parse(webmsg.data);
-					//
-					// 	if (msgObject.type == 'notification'){
-					// 		console.log('Websocket received a notification!');
-					//
-					// 		if (permissionGranted){
-					// 			sendNotification("Received Notification via Websocket")
-					// 		}
-					// 	} else {
-					// 		if (msgObject.type !== undefined) {
-					// 			console.log(`Websocket message type is ${msgObject.type}`);
-					// 		} else {
-					// 			console.log("Websocket ping received! Connection is alive!")
-					// 		}
-					// 	}
-					// 	console.log('Websocket received message: ' + JSON.stringify(webmsg.data));
-					// });
+
 					ws.addListener((webmsg) => {
 						// Check if the data is an object or string
 						if (typeof webmsg.data === 'string') {
@@ -86,16 +69,91 @@
 		}
 	});
 
-	function handleWebSocketMessage(msgObject: WebsocketMessage) {
+	// handles a web socket message by pushing a notification based on the notification type
+	async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 		if (msgObject.type === 'notification') {
 			console.log('WebSocket received a notification!');
-			if (permissionGranted) {
-				sendNotification("Received Notification via WebSocket");
+
+			let msg: Notification = JSON.parse(msgObject.content);
+
+			switch (msg.type) {
+				case 'invite': {
+					if (msg.details !== null && msg.senderUserId !== null) {
+						let detailsString = JSON.stringify(msg.details);
+						let detailsObject: InviteNotification = JSON.parse(detailsString);
+						let username = await getUsernameById(msg.senderUserId);
+
+						let title = `${username} sent you an invite to ${detailsObject.worldName}`
+
+						await sendNotif(title, msg.message);
+					}
+					break;
+				}
+				case 'requestInvite': {
+					if (msg.senderUserId !== null) {
+						let username = await getUsernameById(msg.senderUserId);
+
+						let title = `${username} is requesting an invite!`
+
+						await sendNotif(title, msg.message);
+					}
+					break;
+				}
+				case 'friendRequest': {
+					if (msg.senderUserId !== null) {
+						let username = await getUsernameById(msg.senderUserId);
+
+						let title = `${username} sent you a friend request!`
+
+						await sendNotif(title, msg.message);
+					}
+					break;
+				}
+				case 'message': {
+					if (msg.senderUserId !== null) {
+						let username = await getUsernameById(msg.senderUserId);
+
+						let title = `${username} sent you a message!`
+
+						await sendNotif(title, msg.message);
+					}
+					break;
+				}
+				case 'requestInviteResponse': {
+					if (msg.senderUserId !== null) {
+						let username = await getUsernameById(msg.senderUserId);
+
+						let title = `${username} responded to your invite request!`
+
+						await sendNotif(title, msg.message);
+					}
+					break;
+				}
+				default: {
+					// if the notification type is not know, we should just ignore it
+					break;
+				}
 			}
+
+			console.log(msg);
+
+
 		} else if (msgObject.type !== undefined) {
 			console.log(`WebSocket message type is ${msgObject.type}`);
 		} else {
 			console.log("WebSocket ping received! Connection is alive!");
+		}
+	}
+
+	async function getUsernameById(id: string) {
+		let userString = await invoke<string>('get_vrc_user', {userId: id});
+		let userObject: ExternalUserData = JSON.parse(userString);
+		return userObject.displayName;
+	}
+
+	async function sendNotif(title: string, msg: string) {
+		if (permissionGranted) {
+			sendNotification({ title: title, body: msg });
 		}
 	}
 

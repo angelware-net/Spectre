@@ -20,7 +20,7 @@ pub async fn get_login(
     let cookie_store = Arc::new(Jar::default());
 
     if let Ok(Some(cookies)) = cookies::load_login_cookies(app.clone()) {
-        println!("Loading Cookies"); // Log the raw cookies
+        println!("Loading Cookies");
         cookie_store.add_cookie_str(cookies.trim(), &url.parse().unwrap());
     }
 
@@ -66,9 +66,9 @@ pub async fn get_login(
                         if !auth_cookie.is_empty() {
                             // Save the auth cookie if it exists
                             println!("Saved cookie");
-                            println!("{}", text);
+                            // println!("{}", text);
                             cookies::save_login_cookies(app.clone(), auth_cookie.clone()).unwrap();
-                            println!("{}", auth_cookie);
+                            // println!("{}", auth_cookie);
                         }
 
                         Ok(text) // Return the response body
@@ -103,7 +103,7 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
     // }
 
     if let Ok(Some(cookies)) = cookies::load_login_cookies(app.clone()) {
-        println!("Loading Cookies: {}", cookies); // Log the raw cookies
+        // println!("Loading Cookies: {}", cookies); // Log the raw cookies
         cookie_store.add_cookie_str(cookies.trim(), &url.parse().unwrap());
     }
 
@@ -132,7 +132,7 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
                 match res.text().await {
                     Ok(text) => {
                         if !totp_cookie.is_empty() {
-                            println!("Totp: {}", totp_cookie);
+                            // println!("Totp: {}", totp_cookie);
                             cookies::save_otp_cookies(app.clone(), totp_cookie).unwrap();
                         }
 
@@ -155,7 +155,7 @@ pub async fn get_logout(app: AppHandle) -> Result<String, String> {
 
     // Load login cookies and log them
     if let Ok(Some(cookies)) = cookies::load_login_cookies(app.clone()) {
-        println!("Loading Cookies"); // Log the raw cookies
+        println!("Loading Cookies");
         cookie_store.add_cookie_str(cookies.trim(), &url.parse().unwrap());
     }
 

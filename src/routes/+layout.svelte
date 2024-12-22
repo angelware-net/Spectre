@@ -15,7 +15,6 @@
 	import type { UserData } from '$lib/types/user';
 
 	onMount(async () => {
-		console.log("Initializing...")
 		await loadSettings();
 
 		console.log("Welcome to Spectre!");
