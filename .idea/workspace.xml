@@ -7,11 +7,8 @@
     <cargoProject FILE="$PROJECT_DIR$/src-tauri/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ec3eaae1-17a6-481e-b12a-22310f49585d" name="Changes" comment="Add websocket based system notifications">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src-tauri/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src-tauri/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/store.ts" afterDir="false" />
+    <list default="true" id="ec3eaae1-17a6-481e-b12a-22310f49585d" name="Changes" comment="Move top level async statement">
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -124,7 +121,7 @@
       <option name="presentableId" value="Default" />
       <updated>1734709463383</updated>
       <workItem from="1734709464965" duration="14490000" />
-      <workItem from="1734837399595" duration="1705000" />
+      <workItem from="1734837399595" duration="1947000" />
     </task>
     <task id="LOCAL-00001" summary="Add assets">
       <option name="closed" value="true" />
@@ -142,7 +139,23 @@
       <option name="project" value="LOCAL" />
       <updated>1734837780388</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Cleanup dependencies">
+      <option name="closed" value="true" />
+      <created>1734839196453</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1734839196453</updated>
+    </task>
+    <task id="LOCAL-00004" summary="Move top level async statement">
+      <option name="closed" value="true" />
+      <created>1734839215260</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1734839215260</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -151,6 +164,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Add assets" />
     <MESSAGE value="Add websocket based system notifications" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add websocket based system notifications" />
+    <MESSAGE value="Cleanup dependencies" />
+    <MESSAGE value="Move top level async statement" />
+    <option name="LAST_COMMIT_MESSAGE" value="Move top level async statement" />
   </component>
 </project>
