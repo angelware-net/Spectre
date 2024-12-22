@@ -3,6 +3,24 @@
 version = 3
 
 [[package]]
+name = "Spectre"
+version = "0.1.0"
+dependencies = [
+ "base64 0.22.1",
+ "log",
+ "serde",
+ "serde_json",
+ "tauri",
+ "tauri-build",
+ "tauri-plugin-http",
+ "tauri-plugin-log",
+ "tauri-plugin-notification",
+ "tauri-plugin-shell",
+ "tauri-plugin-store",
+ "tauri-plugin-websocket",
+]
+
+[[package]]
 name = "addr2line"
 version = "0.24.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -95,25 +113,6 @@ name = "anyhow"
 version = "1.0.89"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "86fdf8605db99b54d3cd748a44c6d04df638eb5dafb219b135d0149bd0db01f6"
-
-[[package]]
-name = "app"
-version = "0.1.0"
-dependencies = [
- "base64 0.22.1",
- "cookie",
- "log",
- "serde",
- "serde_json",
- "tauri",
- "tauri-build",
- "tauri-plugin-http",
- "tauri-plugin-log",
- "tauri-plugin-notification",
- "tauri-plugin-shell",
- "tauri-plugin-store",
- "tauri-plugin-websocket",
-]
 
 [[package]]
 name = "arrayvec"
@@ -2622,9 +2621,9 @@ checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
 
 [[package]]
 name = "open"
-version = "5.3.0"
+version = "5.3.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "61a877bf6abd716642a53ef1b89fb498923a4afca5c754f9050b4d081c05c4b3"
+checksum = "3ecd52f0b8d15c40ce4820aa251ed5de032e5d91fab27f7db2f40d42a8bdf69c"
 dependencies = [
  "is-wsl",
  "libc",
@@ -2713,9 +2712,9 @@ dependencies = [
 
 [[package]]
 name = "pathdiff"
-version = "0.2.2"
+version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d61c5ce1153ab5b689d0c074c4e7fc613e942dfb7dd9eea5ab202d2ad91fe361"
+checksum = "df94ce210e5bc13cb6651479fa48d14f601d9858cfe0467f43ae157023b938d3"
 
 [[package]]
 name = "percent-encoding"
