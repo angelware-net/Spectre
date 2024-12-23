@@ -19,15 +19,27 @@
 	import Globe from 'lucide-svelte/icons/globe';
 	import type { UserData } from '$lib/types/user';
 	import Favicon from '$lib/components/Favicon.svelte';
+	import { loadImage } from '$lib/utils/load-image';
+	import { onDestroy } from 'svelte';
 
 	let currentUser: UserData | null;
+	let avatarImageUrl: string | null = null;
 
-	currentUserStore.subscribe((userData: UserData | null) => {
+	currentUserStore.subscribe(async (userData: UserData | null) => {
 		if (userData) {
 			currentUser = userData;
+
+			if (currentUser?.userIcon || currentUser?.currentAvatarImageUrl) {
+				try {
+					avatarImageUrl = await loadImage(currentUser.userIcon || currentUser.currentAvatarImageUrl);
+				} catch (error) {
+					console.error('Failed to load avatar image:', error);
+					avatarImageUrl = '/path-to-fallback-avatar.png'; // Optional fallback
+				}
+			}
 		} else {
 			// If userData is null, redirect to home page
-			goto('/');
+			await goto('/');
 		}
 	});
 
@@ -42,8 +54,14 @@
 	}
 
 	const openGithub = () => {
-		open('https://github.com/uhKayla/spectre');
+		open('https://github.com/angelware-net/spectre');
 	};
+
+	onDestroy(() => {
+		if (avatarImageUrl) {
+			URL.revokeObjectURL(avatarImageUrl);
+		}
+	});
 </script>
 
 <style>
@@ -103,7 +121,8 @@
 			<DropdownMenu.Trigger asChild let:builder>
 				<Button builders={[builder]} variant="secondary" size="icon" class="rounded-full">
 					<Avatar.Root class="hidden h-9 w-9 sm:flex">
-						<Avatar.Image src={currentUser?.userIcon || currentUser?.currentAvatarImageUrl} alt="Avatar" />
+<!--						<Avatar.Image src={currentUser?.userIcon || currentUser?.currentAvatarImageUrl} alt="Avatar" />-->
+						<Avatar.Image src={avatarImageUrl} alt="User Avatar" />
 						<Avatar.Fallback><CircleUser class="h-5 w-5" /></Avatar.Fallback>
 					</Avatar.Root>
 					<span class="sr-only">Toggle user menu</span>

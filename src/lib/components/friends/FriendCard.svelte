@@ -7,11 +7,14 @@
 	import type { ExtendedFriend } from '$lib/types/extended-friend';
 	import { Button } from '$lib/components/ui/button';
 	import UserInfo from '$lib/components/friends/UserInfo.svelte';
+	import { loadImage } from '$lib/utils/load-image';
 
 	export let friend: ExtendedFriend;
+	let avatarImage: string;
 
 	onMount(async () => {
-	})
+		avatarImage = await loadImage(getUrl());
+	});
 
 	const getStatusClass = (state: string, status: string) => {
 		switch (state?.toLowerCase()) {
@@ -104,7 +107,7 @@
 
 <Card.Root>
 	<Card.Header class="w-full overflow-hidden p-0 h-24">
-		<div class="header-background h-64" style="background-image: url({getUrl()});">
+		<div class="header-background h-64" style="background-image: url({avatarImage});">
 		</div>
 	</Card.Header>
 	<Card.Title class="p-4 pb-0">
