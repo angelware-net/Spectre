@@ -10,6 +10,8 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from "$lib/components/ui/input";
 	import { onMount } from 'svelte';
+	import { saveNumericSetting, getNumericSetting } from '$lib/store';
+	import { clearCache } from '$lib/utils/cache-manager';
 
 	const themes = [
 		{ value: "default", label: "Default" },
@@ -23,7 +25,9 @@
 	let cacheSize: number = 500;
 
 	onMount(async () => {
-
+		let maxSize = await getNumericSetting('maximumCacheSize');
+		if (maxSize != null)
+			cacheSize = maxSize;
 	});
 
 	function handleThemeChange(value: { value: string, label: string } | undefined) {
@@ -33,13 +37,13 @@
 		}
 	}
 
-	function handleCacheSizeChange() {
-		console.log(`value changed ${cacheSize}`)
+	async function clearCacheManager() {
+		await clearCache();
 	}
 
-	const openGithub = () => {
-		open('https://github.com/angelware-net/spectre');
-	};
+	async function handleCacheSizeChange() {
+		await saveNumericSetting('maximumCacheSize', cacheSize);
+	}
 </script>
 
 <main>
@@ -80,6 +84,16 @@
 					<Table.Cell>
 						<div>
 							<Input type="number" placeholder="500" on:change={handleCacheSizeChange} bind:value={cacheSize} />
+						</div>
+					</Table.Cell>
+				</Table.Row>
+				<Table.Row class="flex flex-row justify-between">
+					<Table.Cell>
+						<h2 class="pt-2">Clear Cache</h2>
+					</Table.Cell>
+					<Table.Cell>
+						<div>
+							<Button variant="destructive" on:click={clearCacheManager}> Clear </Button>
 						</div>
 					</Table.Cell>
 				</Table.Row>

@@ -3,11 +3,12 @@
 * to half the size of the initial value based on recency. I know this is really hacky, I will implement a real solution soon:tm:
 */
 
-import { readDir, remove, BaseDirectory, stat } from '@tauri-apps/plugin-fs';
+import { BaseDirectory, exists, mkdir, readDir, remove, stat } from '@tauri-apps/plugin-fs';
+import { getNumericSetting } from '$lib/store';
 
 const cacheDir = 'cache';
-const maxSize = 500; // maximum size in mb
-const clearSize = maxSize / 2; // size to clear to, basically half the size of the cache
+const maxSize = await getNumericSetting('maximumCacheSize'); // maximum size in mb
+// const clearSize = maxSize / 2; // size to clear to, basically half the size of the cache
 
 export async function manageCacheSize() {
 	try {
@@ -28,11 +29,25 @@ export async function manageCacheSize() {
 
 		const totalSizeMB = fileSizes.reduce((sum, file) => sum + file.size, 0) / (1024 * 1024);
 
-		if (totalSizeMB > maxSize) {
-			await clearOldestFiles(fileSizes, totalSizeMB - clearSize);
+		if (maxSize != null) {
+			const clearSize = maxSize / 2;
+			if (totalSizeMB > maxSize) {
+				await clearOldestFiles(fileSizes, totalSizeMB - clearSize);
+			}
 		}
 	} catch (error) {
 		console.error('Error managing cache size:', error);
+	}
+}
+
+export async function clearCache() {
+	try {
+		if (await exists(cacheDir, { baseDir: BaseDirectory.AppCache })) {
+			await remove(cacheDir, { baseDir: BaseDirectory.AppCache, recursive: true });
+			await mkdir(cacheDir, { baseDir: BaseDirectory.AppCache });
+		}
+	} catch (error) {
+		console.error('Error managing clearing cache:', error);
 	}
 }
 
