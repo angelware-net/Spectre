@@ -13,7 +13,11 @@
 	let currentTime: string = 'Loading...';
 	let currentlyOnline: boolean = false;
 
-	let tickerItems: string[] = [
+	let tickerItems: string[] =  [
+		'Made with ❤️ by ANGELWARE',
+	];
+
+	$: tickerItems = [
 		'Made with ❤️ by ANGELWARE',
 		`Online Friends: ${onlineFriendsCount}`,
 		`Online Users: ${onlineUsers}`,
