@@ -7,6 +7,7 @@
 	import { currentUserStore } from '$lib/svelte-stores';
 	import type { UserData } from '$lib/types/user';
 	import { goto } from '$app/navigation';
+	import Footer2 from '$lib/components/Footer2.svelte';
 
 	let onlineFriendsCount = 0;
 
@@ -43,8 +44,8 @@
 	</div>
 </div>
 
-<div class="absolute bottom-0">
-	<Footer />
+<div class="absolute bottom-0 overflow-hidden">
+	<Footer2 />
 </div>
 
 <style>

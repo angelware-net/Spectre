@@ -20,6 +20,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
+	import * as Select from "$lib/components/ui/select/index.js";
 
 	// Icons
 	import { Grid2X2, List, LoaderCircle, LucideRefreshCw } from 'lucide-svelte';
@@ -131,16 +132,25 @@
 </script>
 
 <main class="p-4">
-	<!--{#if loading}-->
-	<!--		<div class="flex h-96 flex-col items-center justify-center">-->
-	<!--			<LoaderCircle class="h-7 animate-spin" />-->
-	<!--			Loading...-->
-	<!--		</div>-->
-	<!--	{:else}-->
 	<div class="p-4">
 		<div class="grid grid-cols-2">
 			<div class="text-3xl">Friends</div>
-			<div class="content-end items-end justify-end text-end">
+			<div class="flex flex-row items-end justify-end text-end">
+<!--				<div class="flex flex-row justify-end pr-4">-->
+<!--					<Select.Root>-->
+<!--						<Select.Trigger class="w-[180px]">-->
+<!--							<Select.Value placeholder="Sort" />-->
+<!--						</Select.Trigger>-->
+<!--						<Select.Content>-->
+<!--							<Select.Group>-->
+<!--								<Select.Item value="Status" label="Status">Status</Select.Item>-->
+<!--								<Select.Item value="Username" label="Username">Username</Select.Item>-->
+<!--								<Select.Item value="Location" label="Location">Location</Select.Item>-->
+<!--							</Select.Group>-->
+<!--						</Select.Content>-->
+<!--						<Select.Input name="themeSelector" />-->
+<!--					</Select.Root>-->
+<!--				</div>-->
 				<div class="flex flex-row justify-end">
 					<ToggleGroup.Root
 						type="single"
@@ -168,7 +178,7 @@
 	</div>
 
 	{#if viewMode === 'cards'}
-		<div class="grid grid-cols-3">
+		<div class="grid md:grid-cols-3 xs:grid-cols-1 sm:grid-cols-2">
 			{#each sortedFriends as friend}
 				<div class="p-2">
 					<FriendCard {friend} />
@@ -180,17 +190,17 @@
 			<Table.Root>
 				<Table.Header>
 					<Table.Row>
-						<Table.Head class="w-[100px]">Status</Table.Head>
-						<Table.Head>Name</Table.Head>
-						<Table.Head>Location</Table.Head>
-						<Table.Head class="text-right">Join</Table.Head>
+						<Table.Head class="w-[10px] sm:w-[50px] md:w-[100px]">Status</Table.Head>
+						<Table.Head class="">Name</Table.Head>
+						<Table.Head class="">Location</Table.Head>
+						<Table.Head class="text-right hidden sm:table-cell">Join</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
 					{#if loading}
 						{#each Array(5) as _, i}
 							<Table.Row class="">
-								<Table.Cell class="justify-center">
+								<Table.Cell class="flex justify-center items-center">
 									<Skeleton class="h-6 w-[250px]" />
 								</Table.Cell>
 								<Table.Cell>
@@ -209,8 +219,8 @@
 							<Table.Row class="">
 								<!--Status-->
 								<Tooltip.Root>
-									<Tooltip.Trigger>
-										<Table.Cell class="justify-center">
+									<Tooltip.Trigger class="flex justify-center items-center h-full p-4">
+										<Table.Cell class="">
 											<span class={getStatusClass(friend.state, friend.status)}></span>
 										</Table.Cell>
 									</Tooltip.Trigger>
@@ -260,12 +270,12 @@
 								</Table.Cell>
 
 								<!--Location-->
-								<Table.Cell>
+								<Table.Cell class="">
 									{#if friend?.locationName !== 'Private' && friend?.locationName !== 'On Website'}
 										<Dialog.Root>
 											<Dialog.Trigger>
 												<HoverCard.Root>
-													<HoverCard.Trigger>
+													<HoverCard.Trigger class="">
 														{friend?.locationName} ({friend?.locationCount} / {friend?.locationData
 															?.recommendedCapacity}) [{friend?.locationCapacity}]
 													</HoverCard.Trigger>
@@ -299,7 +309,7 @@
 								</Table.Cell>
 
 								<!--JoinButton-->
-								<Table.Cell class="text-right">
+								<Table.Cell class="text-right hidden sm:table-cell">
 									{#if friend.locationName !== 'Private' && friend.locationName !== 'On Website'}
 										<Dialog.Root>
 											<Dialog.Trigger>
@@ -321,7 +331,6 @@
 			</Table.Root>
 		</Card>
 	{/if}
-	<!--{/if}-->
 </main>
 
 <style>
@@ -343,6 +352,8 @@
 		height: 12px;
 		border-radius: 50%;
 		display: inline-block;
+		justify-content: center;
+		align-items: center;
 	}
 
 	.status-join-me {

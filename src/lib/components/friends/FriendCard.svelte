@@ -66,7 +66,11 @@
 	</Card.Title>
 	<Card.Content class="p-4 pt-2">
 		<div class="text-sm text-muted-foreground truncate">
-			{friend.statusDescription}
+			{#if friend.statusDescription !== ""}
+				{friend.statusDescription}
+			{:else}
+				{friend.status}
+			{/if}
 		</div>
 		<div class="truncate">
 			{#if friend.locationData !== undefined}

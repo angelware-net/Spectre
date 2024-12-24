@@ -7,11 +7,15 @@
     <cargoProject FILE="$PROJECT_DIR$/src-tauri/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ec3eaae1-17a6-481e-b12a-22310f49585d" name="Changes" comment="Reimplement settings menu">
+    <list default="true" id="ec3eaae1-17a6-481e-b12a-22310f49585d" name="Changes" comment="Cache settings">
+      <change afterPath="$PROJECT_DIR$/src/lib/components/Footer2.svelte" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/store.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/utils/cache-manager.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/cache-manager.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/settings/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/settings/+page.svelte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/components/Footer.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/Footer.svelte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/components/Header.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/Header.svelte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/components/Login.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/Login.svelte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/lib/components/friends/FriendCard.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/friends/FriendCard.svelte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/friends/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/friends/+page.svelte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/home/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/home/+page.svelte" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,6 +27,7 @@
       <list>
         <option value="TypeScript File" />
         <option value="+page" />
+        <option value="Footer2" />
       </list>
     </option>
   </component>
@@ -129,7 +134,7 @@
       <workItem from="1734837399595" duration="3555000" />
       <workItem from="1734963219533" duration="1324000" />
       <workItem from="1734988471279" duration="18152000" />
-      <workItem from="1735022978926" duration="1234000" />
+      <workItem from="1735022978926" duration="12027000" />
     </task>
     <task id="LOCAL-00001" summary="Add assets">
       <option name="closed" value="true" />
@@ -211,7 +216,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735021264140</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Cache settings">
+      <option name="closed" value="true" />
+      <created>1735024298882</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1735024298882</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -228,6 +241,7 @@
     <MESSAGE value="Remove unnecessary loading screen because it makes the app feel slower" />
     <MESSAGE value="Implement image caching" />
     <MESSAGE value="Reimplement settings menu" />
-    <option name="LAST_COMMIT_MESSAGE" value="Reimplement settings menu" />
+    <MESSAGE value="Cache settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cache settings" />
   </component>
 </project>

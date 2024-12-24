@@ -12,28 +12,6 @@
 	let twoFactorCode = '';
 	let requiresTwoFactorAuth = false;
 
-	// async function verifyTwoFactor() {
-	// 	try {
-	// 		const result = await invoke('verify_two_factor', {
-	// 			params: {
-	// 				code: twoFactorCode,
-	// 				use_email: useEmailOtp
-	// 			}
-	// 		});
-	// 		responseMessage = result;
-	// 		requiresTwoFactorAuth = false;
-	// 		useEmailOtp = false;
-	// 		console.log(result);
-	// 		toast("Successfully logged in!");
-	// 		goto("/home")
-	// 	}
-	// 	catch (error) {
-	// 		responseMessage = error;
-	// 		toast("An error occured!");
-	// 		console.error(error);
-	// 	}
-	// }
-
 	async function verifyTwoFactor() {
 		try {
 			let twofa = await invoke('get_totp', {

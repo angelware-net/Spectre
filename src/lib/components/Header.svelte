@@ -110,9 +110,9 @@
 		</Sheet.Trigger>
 		<Sheet.Content side="left">
 			<nav class="grid gap-6 text-lg font-medium">
-				<a href="/" class="flex items-center gap-2 text-lg font-semibold">
-					<Globe class="h-6 w-6" />
-					<span class="sr-only">Acme Inc</span>
+				<a href="/home" class="flex items-center gap-2 text-lg font-semibold">
+					<Favicon />
+					<span class="sr-only">Spectre</span>
 				</a>
 				<a
 					href="/dash"
@@ -131,14 +131,14 @@
 					Friends
 				</a>
 				<!--				<a href="/feed" class:text-foreground={$page.url.pathname === '/feed'} class:text-muted-foreground={$page.url.pathname !== '/feed'} class="hover:text-foreground"> Feed </a>-->
-				<a
-					href="/worlds"
-					class:text-foreground={$page.url.pathname === '/worlds'}
-					class:text-muted-foreground={$page.url.pathname !== '/worlds'}
-					class="hover:text-foreground"
-				>
-					Worlds
-				</a>
+<!--				<a-->
+<!--					href="/worlds"-->
+<!--					class:text-foreground={$page.url.pathname === '/worlds'}-->
+<!--					class:text-muted-foreground={$page.url.pathname !== '/worlds'}-->
+<!--					class="hover:text-foreground"-->
+<!--				>-->
+<!--					Worlds-->
+<!--				</a>-->
 			</nav>
 		</Sheet.Content>
 	</Sheet.Root>
@@ -156,7 +156,7 @@
 		<DropdownMenu.Root>
 			<DropdownMenu.Trigger asChild let:builder>
 				<Button builders={[builder]} variant="secondary" size="icon" class="rounded-full">
-					<Avatar.Root class="hidden h-9 w-9 sm:flex">
+					<Avatar.Root class="h-9 w-9">
 						<Avatar.Image src={avatarImageUrl} alt="User Avatar" />
 						<Avatar.Fallback><CircleUser class="h-5 w-5" /></Avatar.Fallback>
 					</Avatar.Root>
