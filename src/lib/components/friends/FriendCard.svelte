@@ -65,10 +65,10 @@
 		{friend.displayName}
 	</Card.Title>
 	<Card.Content class="p-4 pt-2">
-		<div class="text-sm text-muted-foreground">
+		<div class="text-sm text-muted-foreground truncate">
 			{friend.statusDescription}
 		</div>
-		<div>
+		<div class="truncate">
 			{#if friend.locationData !== undefined}
 				{friend.locationData.name}
 			{:else}

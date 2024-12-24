@@ -85,7 +85,7 @@ export async function loadSettings() {
 
 	if (savedTheme) {
 		currentTheme = savedTheme;
-		switchTheme(savedTheme);
+		await switchTheme(savedTheme);
 	}
 
 	if (savedMode === 'dark') {
