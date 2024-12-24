@@ -20,7 +20,7 @@
 	let loading = true;
 
 	onMount(async () => {
-		loading = true;
+		// loading = true;
 		await reloadData(false);
 
 		onlineFriendsCount = await getOnlineUsers();
@@ -32,7 +32,7 @@
 		console.log(onlineUsers);
 
 		await initializeData();
-		loading = false;
+		// loading = false;
 	});
 
 	const initializeData = async (forceReload = false) => {
@@ -46,17 +46,17 @@
 			externalUserData.size === 0 ||
 			instanceStore.size === 0
 		) {
-			loading = true;
+			// loading = true;
 			console.log(`Reloading Data: ${forceReload}`);
 			await reloadData(forceReload);
-			loading = false;
+			// loading = false;
 		}
 	};
 </script>
 
-{#if loading}
-	<div>loading...</div>
-{:else}
+<!--{#if loading}-->
+<!--	<div>loading...</div>-->
+<!--{:else}-->
 	<div class="grid h-1/2 grid-cols-4 p-4">
 		<div class="gap-4 p-4">
 			<FriendsCard friendsOnline={onlineFriendsCount} />
@@ -77,4 +77,4 @@
 			<EventsCard />
 		</div>
 	</div>
-{/if}
+<!--{/if}-->
