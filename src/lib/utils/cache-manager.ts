@@ -7,11 +7,11 @@ import { BaseDirectory, exists, mkdir, readDir, remove, stat } from '@tauri-apps
 import { getNumericSetting } from '$lib/store';
 
 const cacheDir = 'cache';
-const maxSize = await getNumericSetting('maximumCacheSize'); // maximum size in mb
-// const clearSize = maxSize / 2; // size to clear to, basically half the size of the cache
+let maxSize: number | null; // maximum size in mb
 
 export async function manageCacheSize() {
 	try {
+		maxSize = await getNumericSetting('maximumCacheSize');
 		const files = await readDir(cacheDir, { baseDir: BaseDirectory.AppCache });
 
 		const fileSizes: { path: string; size: number; modified: Date }[] = [];
@@ -21,7 +21,7 @@ export async function manageCacheSize() {
 				const fileMeta = await stat(`${cacheDir}/${file.name}`, { baseDir: BaseDirectory.AppCache });
 				fileSizes.push({
 					path: `${cacheDir}/${file.name}`,
-					size: fileMeta.size || 0, // In bytes
+					size: fileMeta.size || 0,
 					modified: new Date(fileMeta.mtime || 0)
 				});
 			}
