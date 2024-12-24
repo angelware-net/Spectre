@@ -9,7 +9,7 @@
 	import {
 		isPermissionGranted,
 		requestPermission,
-		sendNotification,
+		sendNotification
 	} from '@tauri-apps/plugin-notification';
 	import type { ExternalUserData } from '$lib/types/external-user';
 
@@ -34,11 +34,12 @@
 				let cookieString = cookie.match(/auth=(authcookie_[\w-]+)/);
 
 				if (cookieString != null && cookieString[1] != null) {
-					ws = await WebSocket.connect(`wss://pipeline.vrchat.cloud/?authToken=${cookieString[1]}`, {
-						headers: [
-							['User-Agent', 'Spectre/2.0']
-						]
-					});
+					ws = await WebSocket.connect(
+						`wss://pipeline.vrchat.cloud/?authToken=${cookieString[1]}`,
+						{
+							headers: [['User-Agent', 'Spectre/2.0']]
+						}
+					);
 
 					ws.addListener((webmsg) => {
 						// Check if the data is an object or string
@@ -49,22 +50,24 @@
 								let msgObject: WebsocketMessage = JSON.parse(webmsg.data);
 								handleWebSocketMessage(msgObject);
 							} catch (e) {
-								console.error("Failed to parse WebSocket message:", e, "Message:", webmsg.data);
+								console.error('Failed to parse WebSocket message:', e, 'Message:', webmsg.data);
 							}
 						} else if (typeof webmsg.data === 'object') {
 							// Directly handle the message if it’s an object
 							console.log('Raw WebSocket message (object):', webmsg.data);
 							handleWebSocketMessage(webmsg.data as WebsocketMessage);
 						} else {
-							console.warn("Received unsupported WebSocket message type:", webmsg.data);
+							console.warn('Received unsupported WebSocket message type:', webmsg.data);
 						}
 					});
-					console.log('Websocket connected...')
+					console.log('Websocket connected...');
 				} else {
-					console.error("Websocket could not be created because the authentication cookie was null or invalid.");
+					console.error(
+						'Websocket could not be created because the authentication cookie was null or invalid.'
+					);
 				}
 			} catch (e) {
-				console.error("An error occurred setting up the websocket: " + e);
+				console.error('An error occurred setting up the websocket: ' + e);
 			}
 		}
 	});
@@ -83,7 +86,7 @@
 						let detailsObject: InviteNotification = JSON.parse(detailsString);
 						let username = await getUsernameById(msg.senderUserId);
 
-						let title = `${username} sent you an invite to ${detailsObject.worldName}`
+						let title = `${username} sent you an invite to ${detailsObject.worldName}`;
 
 						await sendNotif(title, msg.message);
 					}
@@ -93,7 +96,7 @@
 					if (msg.senderUserId !== null) {
 						let username = await getUsernameById(msg.senderUserId);
 
-						let title = `${username} is requesting an invite!`
+						let title = `${username} is requesting an invite!`;
 
 						await sendNotif(title, msg.message);
 					}
@@ -103,7 +106,7 @@
 					if (msg.senderUserId !== null) {
 						let username = await getUsernameById(msg.senderUserId);
 
-						let title = `${username} sent you a friend request!`
+						let title = `${username} sent you a friend request!`;
 
 						await sendNotif(title, msg.message);
 					}
@@ -113,7 +116,7 @@
 					if (msg.senderUserId !== null) {
 						let username = await getUsernameById(msg.senderUserId);
 
-						let title = `${username} sent you a message!`
+						let title = `${username} sent you a message!`;
 
 						await sendNotif(title, msg.message);
 					}
@@ -123,7 +126,7 @@
 					if (msg.senderUserId !== null) {
 						let username = await getUsernameById(msg.senderUserId);
 
-						let title = `${username} responded to your invite request!`
+						let title = `${username} responded to your invite request!`;
 
 						await sendNotif(title, msg.message);
 					}
@@ -136,17 +139,15 @@
 			}
 
 			console.log(msg);
-
-
 		} else if (msgObject.type !== undefined) {
 			console.log(`WebSocket message type is ${msgObject.type}`);
 		} else {
-			console.log("WebSocket ping received! Connection is alive!");
+			console.log('WebSocket ping received! Connection is alive!');
 		}
 	}
 
 	async function getUsernameById(id: string) {
-		let userString = await invoke<string>('get_vrc_user', {userId: id});
+		let userString = await invoke<string>('get_vrc_user', { userId: id });
 		let userObject: ExternalUserData = JSON.parse(userString);
 		return userObject.displayName;
 	}
@@ -157,10 +158,10 @@
 		}
 	}
 
-	onDestroy(async () =>{
+	onDestroy(async () => {
 		if (ws != null) {
 			await ws.disconnect();
-			console.log("Websocket destroyed.")
+			console.log('Websocket destroyed.');
 		}
-	})
+	});
 </script>

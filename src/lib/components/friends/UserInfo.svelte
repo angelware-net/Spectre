@@ -6,62 +6,62 @@
 	// import { open } from '@tauri-apps/api/shell';
 
 	import { Button } from '$lib/components/ui/button';
-	import { ScrollArea } from "$lib/components/ui/scroll-area/index.js";
-	import { Separator } from "$lib/components/ui/separator/index.js";
-	import * as Card from "$lib/components/ui/card";
-	import * as Avatar from "$lib/components/ui/avatar";
-	import { Badge } from "$lib/components/ui/badge/index.js";
+	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
+	import { Separator } from '$lib/components/ui/separator/index.js';
+	import * as Card from '$lib/components/ui/card';
+	import * as Avatar from '$lib/components/ui/avatar';
+	import { Badge } from '$lib/components/ui/badge/index.js';
 
-	import Link from "lucide-svelte/icons/link";
-	import Twitter from "lucide-svelte/icons/twitter";
-	import Twitch from "lucide-svelte/icons/twitch";
-	import YouTube from "lucide-svelte/icons/youtube";
-	import Github from "lucide-svelte/icons/github";
-	import Facebook from "lucide-svelte/icons/facebook";
-	import Instagram from "lucide-svelte/icons/instagram";
+	import Link from 'lucide-svelte/icons/link';
+	import Twitter from 'lucide-svelte/icons/twitter';
+	import Twitch from 'lucide-svelte/icons/twitch';
+	import YouTube from 'lucide-svelte/icons/youtube';
+	import Github from 'lucide-svelte/icons/github';
+	import Facebook from 'lucide-svelte/icons/facebook';
+	import Instagram from 'lucide-svelte/icons/instagram';
 
 	export let userId: string;
 	let user: ExternalUserData | undefined;
 
 	const tagToBadgeMap: { [key: string]: string } = {
-		"system_supporter": "VRC+",
-		"system_trust_basic": "User",
-		"system_trust_known": "Known User",
-		"system_trust_trusted": "Trusted User",
-		"language_eng": "English",
-		"language_tur": "Turkish",
-		"language_deu": "Deutch",
-		"language_jp": "Japanese",
-		"language_kor": "Korean",
-		"language_por": "Portuguese"
+		system_supporter: 'VRC+',
+		system_trust_basic: 'User',
+		system_trust_known: 'Known User',
+		system_trust_trusted: 'Trusted User',
+		language_eng: 'English',
+		language_tur: 'Turkish',
+		language_deu: 'Deutch',
+		language_jp: 'Japanese',
+		language_kor: 'Korean',
+		language_por: 'Portuguese'
 	};
 
 	const tagToColorMap: { [key: string]: string } = {
-		"system_trust_basic": "blue",
-		"system_trust_known": "orange",
-		"system_trust_trusted": "purple",
-		"system_supporter": "gold",
-		"language_eng": "white",
-		"language_tur": "white",
-		"language_deu": "white",
-		"language_jp": "white",
-		"language_kor": "white",
-		"language_por": "white"
+		system_trust_basic: 'blue',
+		system_trust_known: 'orange',
+		system_trust_trusted: 'purple',
+		system_supporter: 'gold',
+		language_eng: 'white',
+		language_tur: 'white',
+		language_deu: 'white',
+		language_jp: 'white',
+		language_kor: 'white',
+		language_por: 'white'
 	};
 
 	const tagPriority = {
-		"system_trust_trusted": 3,
-		"system_trust_known": 2,
-		"system_trust_basic": 1
+		system_trust_trusted: 3,
+		system_trust_known: 2,
+		system_trust_basic: 1
 	};
 
 	const linkIconMap: { [key: string]: any } = {
-		"twitter.com": Twitter,
-		"twitch.com": Twitch,
-		"youtube.com": YouTube,
-		"github.com": Github,
-		"facebook.com": Facebook,
-		"instagram.com": Instagram
+		'twitter.com': Twitter,
+		'twitch.com': Twitch,
+		'youtube.com': YouTube,
+		'github.com': Github,
+		'facebook.com': Facebook,
+		'instagram.com': Instagram
 	};
 
 	function getFilteredTags(tags) {
@@ -74,8 +74,8 @@
 			return highest;
 		}, null);
 
-		const nonPrioritizedTags = tags.filter(tag => !tagPriority[tag] || tag === prioritizedTag);
-		return [prioritizedTag, ...nonPrioritizedTags.filter(tag => tag !== prioritizedTag)];
+		const nonPrioritizedTags = tags.filter((tag) => !tagPriority[tag] || tag === prioritizedTag);
+		return [prioritizedTag, ...nonPrioritizedTags.filter((tag) => tag !== prioritizedTag)];
 	}
 
 	function getIconForLink(link: string) {
@@ -89,7 +89,7 @@
 
 	const openUrl = (link: string) => {
 		// open(link)
-	}
+	};
 
 	onMount(() => {
 		const userMap = get(externalUserDataStore);
@@ -132,7 +132,9 @@
 			<h1>Links:</h1>
 			<div class="flex gap-4">
 				{#each user?.bioLinks ?? [] as link}
-					<Button variant="ghost" size="icon" on:click={openUrl(link)}><svelte:component this={getIconForLink(link)} /></Button>
+					<Button variant="ghost" size="icon" on:click={openUrl(link)}
+						><svelte:component this={getIconForLink(link)} /></Button
+					>
 				{/each}
 			</div>
 		</div>

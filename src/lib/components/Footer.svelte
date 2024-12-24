@@ -40,7 +40,7 @@
 
 	onMount(async () => {
 		try {
-			onlineUsersStore.subscribe(value => {
+			onlineUsersStore.subscribe((value) => {
 				onlineUsers = value;
 			});
 
@@ -50,7 +50,7 @@
 			onlineUsers = await getGlobalUserCount();
 			// dateTime = await getApiTime();
 
-			dateTime = await invoke("get_vrc_time");
+			dateTime = await invoke('get_vrc_time');
 
 			if (!dateTime) {
 				console.error('Invalid dateTime fetched from API');
@@ -65,83 +65,9 @@
 	$: tickerClass = currentlyOnline ? 'bg-green' : 'bg-background';
 </script>
 
-<style>
-    :root {
-        --ticker-bg-color: hsl(var(--background));
-    }
-
-    .ticker-container.bg-green {
-        --ticker-bg-color: green;
-    }
-
-    .ticker-container {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .ticker-wrapper {
-        position: relative;
-        width: 30%;
-        overflow: hidden;
-    }
-
-    .ticker-wrapper::before,
-    .ticker-wrapper::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        width: 15%;
-        height: 100%;
-        pointer-events: none;
-    }
-
-    .ticker-wrapper::before {
-        left: 0;
-        background: linear-gradient(to right, var(--ticker-bg-color), transparent);
-        z-index: 1;
-    }
-
-    .ticker-wrapper::after {
-        right: 0;
-        background: linear-gradient(to left, var(--ticker-bg-color), transparent);
-    }
-
-    /* ticker https://code-boxx.com/html-css-news-ticker-horizontal-vertical/*/
-    .hmove {
-        display: flex;
-        justify-content: space-between;
-    }
-    .hitem {
-        width: 100%;
-        flex-shrink: 0;
-    }
-    .hwrap {
-        overflow: hidden;
-        justify-content: space-between;
-    }
-
-    @keyframes tickerh {
-        0% {
-            transform: translatex(100%);
-        }
-        100% {
-            transform: translatex(-400%);
-        }
-    }
-    .hmove {
-        animation: tickerh linear 20s infinite;
-    }
-    .hmove:hover {
-        animation-play-state: paused;
-    }
-    /* end ticker */
-</style>
-
-<footer class="h-10 flex justify-center items-center w-screen bg-background border-t">
+<footer class="flex h-10 w-screen items-center justify-center border-t bg-background">
 	<div class="ticker-container {tickerClass}">
-		<div class="font-mono ticker-wrapper">
+		<div class="ticker-wrapper font-mono">
 			<div class="hwrap">
 				<div class="hmove">
 					<a class="hitem" on:click={openAw} href="/">Made with ❤️ by ANGELWARE</a>
@@ -153,3 +79,77 @@
 		</div>
 	</div>
 </footer>
+
+<style>
+	:root {
+		--ticker-bg-color: hsl(var(--background));
+	}
+
+	.ticker-container.bg-green {
+		--ticker-bg-color: green;
+	}
+
+	.ticker-container {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.ticker-wrapper {
+		position: relative;
+		width: 30%;
+		overflow: hidden;
+	}
+
+	.ticker-wrapper::before,
+	.ticker-wrapper::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		width: 15%;
+		height: 100%;
+		pointer-events: none;
+	}
+
+	.ticker-wrapper::before {
+		left: 0;
+		background: linear-gradient(to right, var(--ticker-bg-color), transparent);
+		z-index: 1;
+	}
+
+	.ticker-wrapper::after {
+		right: 0;
+		background: linear-gradient(to left, var(--ticker-bg-color), transparent);
+	}
+
+	/* ticker https://code-boxx.com/html-css-news-ticker-horizontal-vertical/*/
+	.hmove {
+		display: flex;
+		justify-content: space-between;
+	}
+	.hitem {
+		width: 100%;
+		flex-shrink: 0;
+	}
+	.hwrap {
+		overflow: hidden;
+		justify-content: space-between;
+	}
+
+	@keyframes tickerh {
+		0% {
+			transform: translatex(100%);
+		}
+		100% {
+			transform: translatex(-400%);
+		}
+	}
+	.hmove {
+		animation: tickerh linear 20s infinite;
+	}
+	.hmove:hover {
+		animation-play-state: paused;
+	}
+	/* end ticker */
+</style>

@@ -1,23 +1,28 @@
 <script lang="ts">
 	import '../app.css';
 
-	import { ModeWatcher } from "mode-watcher";
+	import { ModeWatcher } from 'mode-watcher';
 	import { loadSettings } from '$lib/utils/theme-switcher';
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/core';
 	import { goto } from '$app/navigation';
-	import { Toaster } from "$lib/components/ui/sonner";
+	import { Toaster } from '$lib/components/ui/sonner';
 	import Websocket from '$lib/components/Websocket.svelte';
 
 	import Header from '$lib/components/Header.svelte';
 
-	import { currentUserStore, loadingStore, onlineUsersStore, loginStatusStore } from '$lib/svelte-stores';
+	import {
+		currentUserStore,
+		loadingStore,
+		onlineUsersStore,
+		loginStatusStore
+	} from '$lib/svelte-stores';
 	import type { UserData } from '$lib/types/user';
 
 	onMount(async () => {
 		await loadSettings();
 
-		console.log("Welcome to Spectre!");
+		console.log('Welcome to Spectre!');
 
 		// Set loading state
 		loadingStore.set(true);
@@ -41,11 +46,11 @@
 		// Try and check login token status, then send the user to the correct location. Also sets the loading state.
 		try {
 			const login = await invoke('get_login', {
-				'username': '',
-				'password': ''
+				username: '',
+				password: ''
 			});
 
-			const response = typeof login === "string" ? JSON.parse(login) : login;
+			const response = typeof login === 'string' ? JSON.parse(login) : login;
 
 			// If response requires 2fa for whatever reason, send to login, otherwise send home.
 			if (response.requiresTwoFactorAuth) {
@@ -56,7 +61,7 @@
 				// Try to save the response to the currentUserStore
 				const userData = response as UserData;
 				currentUserStore.set(userData);
-				console.log(userData.displayName + " has logged in!");
+				console.log(userData.displayName + ' has logged in!');
 
 				loginStatusStore.set(true);
 				await goto('/home');
@@ -66,7 +71,7 @@
 			// If there is an error (such as 401) login must have failed, send to login page.
 		} catch (e) {
 			loginStatusStore.set(false);
-			console.error("Login failed! Returning to login page!", e);
+			console.error('Login failed! Returning to login page!', e);
 			await goto('/login');
 			loadingStore.set(false);
 		}

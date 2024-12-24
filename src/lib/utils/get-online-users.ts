@@ -8,13 +8,17 @@ export const getOnlineUsers = async () => {
 
 	let joinableUsersCount = 0;
 
-	friendsData.forEach(friend => {
+	friendsData.forEach((friend) => {
 		const user = userData.get(friend.id);
-		if (user?.location !== "offline" && user?.location !== "" && user?.status !== "offline" && user?.state !== "active") {
+		if (
+			user?.location !== 'offline' &&
+			user?.location !== '' &&
+			user?.status !== 'offline' &&
+			user?.state !== 'active'
+		) {
 			joinableUsersCount++;
 		}
-	}
-);
+	});
 
 	return joinableUsersCount;
 };

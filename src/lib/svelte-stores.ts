@@ -14,4 +14,3 @@ export const externalUserDataStore = writable<Map<string, ExternalUserData>>(new
 export const instanceDataStore = writable<Map<string, InstanceData>>(new Map());
 
 export const loginStatusStore = writable<boolean>(false);
-

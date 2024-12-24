@@ -8,9 +8,9 @@ export const getJoinableUsers = async () => {
 
 	let joinableUsersCount = 0;
 
-	friendsData.forEach(friend => {
+	friendsData.forEach((friend) => {
 		const user = userData.get(friend.id);
-		if (user?.location !== "private" && user?.location !== "offline") {
+		if (user?.location !== 'private' && user?.location !== 'offline') {
 			joinableUsersCount++;
 		}
 	});

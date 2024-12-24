@@ -12,7 +12,7 @@ export interface Friend {
 	last_platform: string;
 	profilePicOverride: string;
 	pronouns: string;
-	status: "join me" | "active" | "ask me" | "busy";  // Add other statuses if there are more
+	status: 'join me' | 'active' | 'ask me' | 'busy'; // Add other statuses if there are more
 	statusDescription: string;
 	tags: string[];
 	userIcon: string;

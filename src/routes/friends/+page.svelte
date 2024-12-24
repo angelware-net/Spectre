@@ -5,7 +5,7 @@
 
 	// Types
 	// import type { Friend } from '$lib/types/friend';
-	import type { ExtendedFriend } from '$lib/types/extended-friend'
+	import type { ExtendedFriend } from '$lib/types/extended-friend';
 
 	// Stores
 	import { friendsStore } from '$lib/svelte-stores';
@@ -14,14 +14,14 @@
 
 	// UI
 	import { Button } from '$lib/components/ui/button';
-	import { Skeleton } from "$lib/components/ui/skeleton/index.js";
-	import * as ToggleGroup from "$lib/components/ui/toggle-group";
+	import { Skeleton } from '$lib/components/ui/skeleton/index.js';
+	import * as ToggleGroup from '$lib/components/ui/toggle-group';
 	import { Card } from '$lib/components/ui/card';
-	import * as Table from "$lib/components/ui/table/index.js";
-	import * as Tooltip from "$lib/components/ui/tooltip/index.js";
-	import * as Dialog from "$lib/components/ui/dialog";
-	import * as HoverCard from "$lib/components/ui/hover-card/index.js";
-	import * as Avatar from "$lib/components/ui/avatar/index.js";
+	import * as Table from '$lib/components/ui/table/index.js';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import * as Dialog from '$lib/components/ui/dialog';
+	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
+	import * as Avatar from '$lib/components/ui/avatar/index.js';
 
 	// Icons
 	import { Grid2X2, List, LoaderCircle, LucideRefreshCw } from 'lucide-svelte';
@@ -40,23 +40,23 @@
 
 	const getStatusClass = (state: string, status: string) => {
 		switch (state?.toLowerCase()) {
-			case "online":
+			case 'online':
 				switch (status?.toLowerCase()) {
-					case "join me":
-						return "status-circle status-join-me";
-					case "active":
-						return "status-circle status-active";
-					case "ask me":
-						return "status-circle status-ask-me";
-					case "busy":
-						return "status-circle status-busy";
+					case 'join me':
+						return 'status-circle status-join-me';
+					case 'active':
+						return 'status-circle status-active';
+					case 'ask me':
+						return 'status-circle status-ask-me';
+					case 'busy':
+						return 'status-circle status-busy';
 					default:
-						return "";
+						return '';
 				}
-			case "active":
-				return "status-circle status-website";
+			case 'active':
+				return 'status-circle status-website';
 			default:
-				return "";
+				return '';
 		}
 	};
 
@@ -68,124 +68,88 @@
 			const externalUserDataStoreData = get(externalUserDataStore);
 			const instanceStoreData = get(instanceDataStore);
 
-			if (friendsStoreData.size === 0 || externalUserDataStoreData.size === 0 || instanceStoreData.size ===0) {
+			if (
+				friendsStoreData.size === 0 ||
+				externalUserDataStoreData.size === 0 ||
+				instanceStoreData.size === 0
+			) {
 				await loadData();
 			} else {
-				console.log("Data exists, skipping reload!")
+				console.log('Data exists, skipping reload!');
 			}
 			loading = false;
-
 		} catch (error) {
 			console.error('Failed to load friends:', error);
 		}
 	});
 
-	$: sortedFriends = Array.from($friendsStore.values()).map(friend => {
-		const userData = $externalUserDataStore.get(friend.id);
-		const instanceData = $instanceDataStore.get(friend.id);
-		const state = userData?.state || 'offline';
-		const status = state === 'online' ? userData?.status ?? 'Offline' : (state === 'active' ? 'On Website' : 'Offline');
-		const locationName = state === 'offline' ? 'Offline' : (state === 'active' ? 'On Website' : (instanceData?.world?.name || (friend.location === 'private' ? 'Private' : 'Loading...')));
-		const locationCount = instanceData?.userCount;
-		const locationCapacity = instanceData?.capacity;
-		const locationData = instanceData?.world;
+	$: sortedFriends = Array.from($friendsStore.values())
+		.map((friend) => {
+			const userData = $externalUserDataStore.get(friend.id);
+			const instanceData = $instanceDataStore.get(friend.id);
+			const state = userData?.state || 'offline';
+			const status =
+				state === 'online'
+					? (userData?.status ?? 'Offline')
+					: state === 'active'
+						? 'On Website'
+						: 'Offline';
+			const locationName =
+				state === 'offline'
+					? 'Offline'
+					: state === 'active'
+						? 'On Website'
+						: instanceData?.world?.name ||
+							(friend.location === 'private' ? 'Private' : 'Loading...');
+			const locationCount = instanceData?.userCount;
+			const locationCapacity = instanceData?.capacity;
+			const locationData = instanceData?.world;
 
-		return {
-			...friend,
-			state,
-			status,
-			locationName,
-			locationCount,
-			locationCapacity,
-			locationData
-		} as ExtendedFriend;
-	}).sort((a, b) => {
-		const stateOrder = {
-			'online:join me': 1,
-			'online:active': 2,
-			'online:ask me': 3,
-			'online:busy': 4,
-			'active': 5,
-			'offline': 6
-		};
+			return {
+				...friend,
+				state,
+				status,
+				locationName,
+				locationCount,
+				locationCapacity,
+				locationData
+			} as ExtendedFriend;
+		})
+		.sort((a, b) => {
+			const stateOrder = {
+				'online:join me': 1,
+				'online:active': 2,
+				'online:ask me': 3,
+				'online:busy': 4,
+				active: 5,
+				offline: 6
+			};
 
-		const aKey = `${a.state}:${a.status}`.toLowerCase();
-		const bKey = `${b.state}:${b.status}`.toLowerCase();
+			const aKey = `${a.state}:${a.status}`.toLowerCase();
+			const bKey = `${b.state}:${b.status}`.toLowerCase();
 
-		return (stateOrder[aKey] || stateOrder[a.state]) - (stateOrder[bKey] || stateOrder[b.state]);
-	});
-
-
+			return (stateOrder[aKey] || stateOrder[a.state]) - (stateOrder[bKey] || stateOrder[b.state]);
+		});
 </script>
-
-<style>
-    .header-background {
-        background-size: cover;
-        background-position: center;
-        height: 200px;
-        width: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        border-top-left-radius: 0.5rem;
-        border-top-right-radius: 0.5rem;
-    }
-
-    .status-circle {
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        display: inline-block;
-    }
-
-    .status-join-me {
-        background-color: deepskyblue;
-    }
-
-    .status-active {
-        background-color: green;
-    }
-
-    .status-ask-me {
-        background-color: orange;
-    }
-
-    .status-busy {
-        background-color: darkred;
-    }
-
-    .status-website {
-        background-color: gray;
-    }
-
-    @keyframes rotate {
-        from {
-            transform: rotate(0deg);
-        }
-        to {
-            transform: rotate(360deg);
-        }
-    }
-
-    .rotating {
-        animation: rotate 1s linear infinite;
-    }
-</style>
 
 <main class="p-4">
 	{#if loading}
-		<div class="flex flex-col justify-center items-center h-96">
-			<LoaderCircle class="animate-spin h-7" />
+		<div class="flex h-96 flex-col items-center justify-center">
+			<LoaderCircle class="h-7 animate-spin" />
 			Loading...
 		</div>
 	{:else}
 		<div class="p-4">
 			<div class="grid grid-cols-2">
 				<div class="text-3xl">Friends</div>
-				<div class="justify-end content-end items-end text-end">
+				<div class="content-end items-end justify-end text-end">
 					<div class="flex flex-row justify-end">
-						<ToggleGroup.Root type="single" class="pr-4" value={viewMode} onValueChange={(e) => viewMode = e}>
+						<ToggleGroup.Root
+							type="single"
+							class="pr-4"
+							value={viewMode}
+							onValueChange={(e) => (viewMode = e)}
+						>
 							<ToggleGroup.Item value="cards">
 								<Grid2X2 />
 							</ToggleGroup.Item>
@@ -195,9 +159,9 @@
 						</ToggleGroup.Root>
 						<Button variant="outline" on:click={handleRefresh} size="icon">
 							{#if loading}
-								<LucideRefreshCw class="h-[1.2rem] w-[1.2rem] transition-all rotating" />
+								<LucideRefreshCw class="rotating h-[1.2rem] w-[1.2rem] transition-all" />
 							{:else}
-								<LucideRefreshCw class="h-[1.2rem] w-[1.2rem] transition-all rotating" />
+								<LucideRefreshCw class="rotating h-[1.2rem] w-[1.2rem] transition-all" />
 							{/if}
 						</Button>
 					</div>
@@ -209,7 +173,7 @@
 			<div class="grid grid-cols-3">
 				{#each sortedFriends as friend}
 					<div class="p-2">
-						<FriendCard friend={friend}/>
+						<FriendCard {friend} />
 					</div>
 				{/each}
 			</div>
@@ -229,22 +193,23 @@
 							{#each Array(5) as _, i}
 								<Table.Row class="">
 									<Table.Cell class="justify-center">
-										<Skeleton class="h-6 w-[250px]"/>
+										<Skeleton class="h-6 w-[250px]" />
 									</Table.Cell>
 									<Table.Cell>
-										<Skeleton class="h-6 w-[250px]"/>
+										<Skeleton class="h-6 w-[250px]" />
 									</Table.Cell>
 									<Table.Cell>
-										<Skeleton class="h-6 w-[250px]"/>
+										<Skeleton class="h-6 w-[250px]" />
 									</Table.Cell>
 									<Table.Cell class="text-right">
-										<Skeleton class="h-6 w-[250px]"/>
+										<Skeleton class="h-6 w-[250px]" />
 									</Table.Cell>
 								</Table.Row>
 							{/each}
 						{:else}
 							{#each sortedFriends as friend, i (i)}
 								<Table.Row class="">
+
 									<!--Status-->
 									<Tooltip.Root>
 										<Tooltip.Trigger>
@@ -268,7 +233,7 @@
 													<HoverCard.Content class="w-80">
 														<div class="flex space-x-4">
 															<Avatar.Root>
-																{#if friend.userIcon === null || friend.userIcon === ""}
+																{#if friend.userIcon === null || friend.userIcon === ''}
 																	<Avatar.Image src={friend.currentAvatarThumbnailImageUrl} />
 																{:else}
 																	<Avatar.Image src={friend.userIcon} />
@@ -277,9 +242,15 @@
 															</Avatar.Root>
 															<div class="space-y-1">
 																<h4 class="text-sm font-semibold">{friend.displayName}</h4>
-																<p class="text-sm whitespace-pre-line">{friend.statusDescription}</p>
-																<div class="text-xs text-muted-foreground flex items-center pt-2">{friend.status}</div>
-																<div class="text-xs text-muted-foreground flex items-center pt-2">{friend.bio}</div>
+																<p class="whitespace-pre-line text-sm">
+																	{friend.statusDescription}
+																</p>
+																<div class="flex items-center pt-2 text-xs text-muted-foreground">
+																	{friend.status}
+																</div>
+																<div class="flex items-center pt-2 text-xs text-muted-foreground">
+																	{friend.bio}
+																</div>
 															</div>
 														</div>
 													</HoverCard.Content>
@@ -293,12 +264,13 @@
 
 									<!--Location-->
 									<Table.Cell>
-										{#if friend?.locationName !== "Private" && friend?.locationName !== "On Website"}
+										{#if friend?.locationName !== 'Private' && friend?.locationName !== 'On Website'}
 											<Dialog.Root>
 												<Dialog.Trigger>
 													<HoverCard.Root>
 														<HoverCard.Trigger>
-															{friend?.locationName} ({friend?.locationCount} / {friend?.locationData?.recommendedCapacity}) [{friend?.locationCapacity}]
+															{friend?.locationName} ({friend?.locationCount} / {friend
+																?.locationData?.recommendedCapacity}) [{friend?.locationCapacity}]
 														</HoverCard.Trigger>
 														<HoverCard.Content class="w-80">
 															<div class="flex space-x-4">
@@ -308,15 +280,20 @@
 																</Avatar.Root>
 																<div class="space-y-1">
 																	<h4 class="text-sm font-semibold">{friend?.locationName}</h4>
-																	<p class="text-xs whitespace-pre-line">{friend?.locationData?.description}</p>
-																	<div class="text-xs text-muted-foreground flex items-center pt-2">{friend?.locationCount} / {friend?.locationData?.recommendedCapacity} ({friend?.locationCapacity})</div>
+																	<p class="whitespace-pre-line text-xs">
+																		{friend?.locationData?.description}
+																	</p>
+																	<div class="flex items-center pt-2 text-xs text-muted-foreground">
+																		{friend?.locationCount} / {friend?.locationData
+																			?.recommendedCapacity} ({friend?.locationCapacity})
+																	</div>
 																</div>
 															</div>
 														</HoverCard.Content>
 													</HoverCard.Root>
 												</Dialog.Trigger>
 												<Dialog.Content>
-<!--													<Instance userId="{friend.id}" />-->
+													<!--													<Instance userId="{friend.id}" />-->
 												</Dialog.Content>
 											</Dialog.Root>
 										{:else}
@@ -326,17 +303,19 @@
 
 									<!--JoinButton-->
 									<Table.Cell class="text-right">
-										{#if friend.locationName !== "Private" && friend.locationName !== "On Website" }
+										{#if friend.locationName !== 'Private' && friend.locationName !== 'On Website'}
 											<Dialog.Root>
 												<Dialog.Trigger>
 													<Button>Details</Button>
 												</Dialog.Trigger>
 												<Dialog.Content>
-													<UserInfo userId="{friend.id}" />
+													<UserInfo userId={friend.id} />
 												</Dialog.Content>
 											</Dialog.Root>
 										{:else}
-											<Button disabled variant="outline" class="text-muted-foreground">Details</Button>
+											<Button disabled variant="outline" class="text-muted-foreground"
+												>Details</Button
+											>
 										{/if}
 									</Table.Cell>
 								</Table.Row>
@@ -348,3 +327,58 @@
 		{/if}
 	{/if}
 </main>
+
+<style>
+	.header-background {
+		background-size: cover;
+		background-position: center;
+		height: 200px;
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		overflow: hidden;
+		border-top-left-radius: 0.5rem;
+		border-top-right-radius: 0.5rem;
+	}
+
+	.status-circle {
+		width: 12px;
+		height: 12px;
+		border-radius: 50%;
+		display: inline-block;
+	}
+
+	.status-join-me {
+		background-color: deepskyblue;
+	}
+
+	.status-active {
+		background-color: green;
+	}
+
+	.status-ask-me {
+		background-color: orange;
+	}
+
+	.status-busy {
+		background-color: darkred;
+	}
+
+	.status-website {
+		background-color: gray;
+	}
+
+	@keyframes rotate {
+		from {
+			transform: rotate(0deg);
+		}
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	.rotating {
+		animation: rotate 1s linear infinite;
+	}
+</style>

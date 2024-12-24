@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { invoke } from '@tauri-apps/api/core';
-	import { Button } from "$lib/components/ui/button/index.js";
-	import * as Card from "$lib/components/ui/card/index.js";
-	import { Input } from "$lib/components/ui/input/index.js";
-	import { Label } from "$lib/components/ui/label/index.js";
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
 
@@ -37,15 +37,15 @@
 	async function verifyTwoFactor() {
 		try {
 			let twofa = await invoke('get_totp', {
-				'totp': twoFactorCode
+				totp: twoFactorCode
 			});
 
 			console.log(twofa);
-			toast("Login Success!");
+			toast('Login Success!');
 
 			await goto('/home');
-		} catch(e) {
-			console.error("Error verifying 2fa: ", e)
+		} catch (e) {
+			console.error('Error verifying 2fa: ', e);
 		}
 	}
 
@@ -53,33 +53,32 @@
 		try {
 			console.log('Logging in...');
 			let login = await invoke('get_login', {
-				'username': email,
-				'password': password
+				username: email,
+				password: password
 			});
 
 			console.log('Got login, processing...');
 			console.log(login);
 
-			const response = typeof login === "string" ? JSON.parse(login) : login;
+			const response = typeof login === 'string' ? JSON.parse(login) : login;
 
 			if (response.requiresTwoFactorAuth) {
-				console.log("2fa required");
-				if (response.requiresTwoFactorAuth.includes("totp")){
-					console.log("totp required");
+				console.log('2fa required');
+				if (response.requiresTwoFactorAuth.includes('totp')) {
+					console.log('totp required');
 
 					requiresTwoFactorAuth = true;
 				} else {
-					console.log("otp required");
+					console.log('otp required');
 				}
 			} else {
-				console.log(login)
-				toast("Login Success!");
+				console.log(login);
+				toast('Login Success!');
 				await goto('/home');
 			}
-
 		} catch (error) {
-			console.error("Error during login:", error);
-			toast("Login Error!");
+			console.error('Error during login:', error);
+			toast('Login Error!');
 		}
 	}
 </script>
@@ -87,7 +86,9 @@
 <Card.Root class="w-full max-w-sm">
 	<Card.Header>
 		<Card.Title class="text-2xl">Login</Card.Title>
-		<Card.Description>Enter your email and password below to login to your account.</Card.Description>
+		<Card.Description
+			>Enter your email and password below to login to your account.</Card.Description
+		>
 	</Card.Header>
 	<Card.Content class="grid gap-4">
 		<div class="grid gap-2">
@@ -112,5 +113,5 @@
 			<Button class="w-full" on:click={login}>Sign in</Button>
 		{/if}
 	</Card.Footer>
-<!--	<p>{responseMessage}</p>-->
+	<!--	<p>{responseMessage}</p>-->
 </Card.Root>

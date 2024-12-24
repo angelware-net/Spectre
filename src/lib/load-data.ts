@@ -14,14 +14,14 @@ import { get } from 'svelte/store';
 
 // Delay util function
 function delay(ms: number) {
-	return new Promise(resolve => setTimeout(resolve, ms));
+	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export async function loadData() {
 	// Load friends list
-	const friendsResponse = await invoke<string>("get_vrc_friends");
+	const friendsResponse = await invoke<string>('get_vrc_friends');
 	const friendsList: Friend[] = JSON.parse(friendsResponse);
-	friendsStore.set(new Map(friendsList.map(friend => [friend.id, friend])));
+	friendsStore.set(new Map(friendsList.map((friend) => [friend.id, friend])));
 	console.log(friendsList);
 
 	// Setup maps
@@ -33,28 +33,34 @@ export async function loadData() {
 	for (let i = 0; i < friendsList.length; i += batchSize) {
 		const batch = friendsList.slice(i, i + batchSize);
 
-		await Promise.all(batch.map(async friend => {
-			try {
-				// Load user's data
-				const userString = await invoke<string>('get_vrc_user', {
-					userId: friend.id
-				});
-				const userData: ExternalUserData = JSON.parse(userString);
-				userDataMap.set(friend.id, userData);
-
-				// If location is public, load and map location data
-				if (userData.location && userData.location !== 'private' && userData.location !== 'Private' && userData.location !== 'offline') {
-					const instanceString = await invoke<string>('get_vrc_instance', {
-						instanceId: userData.location
+		await Promise.all(
+			batch.map(async (friend) => {
+				try {
+					// Load user's data
+					const userString = await invoke<string>('get_vrc_user', {
+						userId: friend.id
 					});
-					const instanceData: InstanceData = JSON.parse(instanceString);
-					instanceDataMap.set(friend.id, instanceData);
-				}
+					const userData: ExternalUserData = JSON.parse(userString);
+					userDataMap.set(friend.id, userData);
 
-			} catch (error) {
-				console.error(`Error loading user data for ${friend.id}`, error);
-			}
-		}));
+					// If location is public, load and map location data
+					if (
+						userData.location &&
+						userData.location !== 'private' &&
+						userData.location !== 'Private' &&
+						userData.location !== 'offline'
+					) {
+						const instanceString = await invoke<string>('get_vrc_instance', {
+							instanceId: userData.location
+						});
+						const instanceData: InstanceData = JSON.parse(instanceString);
+						instanceDataMap.set(friend.id, instanceData);
+					}
+				} catch (error) {
+					console.error(`Error loading user data for ${friend.id}`, error);
+				}
+			})
+		);
 
 		// Wait 1 second before sending the next batch
 		await delay(10);
@@ -69,8 +75,13 @@ export const reloadData = async (forceReload: boolean) => {
 	const externalUserData = get(externalUserDataStore);
 	const instanceStore = get(instanceDataStore);
 
-	if (forceReload || friends.size === 0 || externalUserData.size === 0 || instanceStore.size === 0) {
-		console.log("Reloading data...");
+	if (
+		forceReload ||
+		friends.size === 0 ||
+		externalUserData.size === 0 ||
+		instanceStore.size === 0
+	) {
+		console.log('Reloading data...');
 		await loadData();
 	}
 };

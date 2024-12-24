@@ -5,7 +5,18 @@ let currentTheme: string = 'default';
 
 export async function switchTheme(theme: string) {
 	const isDarkMode = document.documentElement.classList.contains('dark');
-	document.documentElement.classList.remove('rose-light', 'rose-dark', 'blue-light', 'blue-dark', 'green-light', 'green-dark', 'orange-light', 'orange-dark', 'violet-light', 'violet-dark');
+	document.documentElement.classList.remove(
+		'rose-light',
+		'rose-dark',
+		'blue-light',
+		'blue-dark',
+		'green-light',
+		'green-dark',
+		'orange-light',
+		'orange-dark',
+		'violet-light',
+		'violet-dark'
+	);
 
 	switch (theme) {
 		case 'rose':
@@ -30,7 +41,18 @@ export async function switchTheme(theme: string) {
 }
 
 export async function handleModeChange(isDarkMode: boolean) {
-	document.documentElement.classList.remove('rose-light', 'rose-dark', 'blue-light', 'blue-dark', 'green-light', 'green-dark', 'orange-light', 'orange-dark', 'violet-light', 'violet-dark');
+	document.documentElement.classList.remove(
+		'rose-light',
+		'rose-dark',
+		'blue-light',
+		'blue-dark',
+		'green-light',
+		'green-dark',
+		'orange-light',
+		'orange-dark',
+		'violet-light',
+		'violet-dark'
+	);
 
 	switch (currentTheme) {
 		case 'rose':

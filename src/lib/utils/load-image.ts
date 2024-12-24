@@ -3,17 +3,17 @@
 
 import { fetch } from '@tauri-apps/plugin-http';
 
+/*
+ * Fetches images as binary data, and converts to a blob url.
+ */
 export async function loadImage(url: string): Promise<string> {
 	try {
-		// Fetch the image as binary data
 		const response = await fetch(url, { method: 'GET' });
 
-		// Convert the binary data to a Blob
-		const blob = await response.blob(); // Adjust MIME type as needed
+		const blob = await response.blob();
 
 		const forcedBlob = new Blob([blob], { type: 'image/png' });
 
-		// Create and return a blob URL
 		return URL.createObjectURL(forcedBlob);
 	} catch (error) {
 		console.error('Error loading image:', error);

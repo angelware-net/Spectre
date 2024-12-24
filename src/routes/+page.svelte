@@ -8,7 +8,7 @@
 	// Loading boolean
 	let isLoading = false;
 	loadingStore.subscribe((value) => {
-		 isLoading = value;
+		isLoading = value;
 	});
 
 	// Online users count (verifies vrc is online)
@@ -18,13 +18,11 @@
 	});
 
 	// Mount function
-	onMount(async () => {
-
-	});
+	onMount(async () => {});
 </script>
 
 <main>
-	<div class="flex flex-col justify-center items-center h-96">
+	<div class="flex h-96 flex-col items-center justify-center">
 		{#if isLoading}
 			<LoaderCircle class="animate-spin-slow h-7" />
 			<h2>Loading...</h2>
