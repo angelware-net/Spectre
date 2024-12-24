@@ -7,127 +7,23 @@
     <cargoProject FILE="$PROJECT_DIR$/src-tauri/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="ec3eaae1-17a6-481e-b12a-22310f49585d" name="Changes" comment="Load images via backend">
+    <list default="true" id="ec3eaae1-17a6-481e-b12a-22310f49585d" name="Changes" comment="Remove unnecessary loading screen because it makes the app feel slower">
+      <change afterPath="$PROJECT_DIR$/src/lib/utils/cache-manager.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/components.json" beforeDir="false" afterPath="$PROJECT_DIR$/components.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/Favicon.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/Favicon.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/Footer.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/Footer.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/Header.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/Header.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/Login.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/Login.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/Websocket.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/Websocket.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/cards/BarCard.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/cards/BarCard.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/cards/CalloutCard.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/cards/CalloutCard.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/cards/EventsCard.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/cards/EventsCard.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/cards/FriendsCard.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/cards/FriendsCard.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/cards/JoinableCard.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/cards/JoinableCard.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/cards/TotalPlayerCard.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/cards/TotalPlayerCard.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/content/Bars.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/content/Bars.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/friends/FriendCard.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/friends/FriendCard.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/friends/UserInfo.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/friends/UserInfo.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/avatar/avatar-fallback.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/avatar/avatar-fallback.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/avatar/avatar-image.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/avatar/avatar-image.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/avatar/avatar.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/avatar/avatar.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/avatar/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/avatar/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/badge/badge.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/badge/badge.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/badge/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/badge/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/button/button.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/button/button.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/button/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/button/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/card/card-content.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/card/card-content.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/card/card-description.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/card/card-description.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/card/card-footer.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/card/card-footer.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/card/card-header.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/card/card-header.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/card/card-title.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/card/card-title.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/card/card.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/card/card.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/card/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/card/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-content.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-content.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-description.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-description.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-footer.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-footer.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-header.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-header.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-overlay.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-overlay.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-portal.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-portal.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-title.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dialog/dialog-title.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dialog/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dialog/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-checkbox-item.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-checkbox-item.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-content.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-content.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-item.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-item.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-label.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-label.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-radio-group.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-radio-group.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-radio-item.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-radio-item.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-separator.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-separator.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-shortcut.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-shortcut.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-sub-content.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-sub-content.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-sub-trigger.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/dropdown-menu-sub-trigger.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/dropdown-menu/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/hover-card/hover-card-content.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/hover-card/hover-card-content.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/hover-card/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/hover-card/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/input/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/input/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/input/input.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/input/input.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/label/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/label/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/label/label.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/label/label.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/scroll-area/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/scroll-area/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/scroll-area/scroll-area-scrollbar.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/scroll-area/scroll-area-scrollbar.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/scroll-area/scroll-area.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/scroll-area/scroll-area.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/separator/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/separator/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/separator/separator.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/separator/separator.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/sheet/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/sheet/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-content.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-content.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-description.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-description.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-footer.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-footer.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-header.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-header.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-overlay.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-overlay.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-portal.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-portal.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-title.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/sheet/sheet-title.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/skeleton/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/skeleton/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/skeleton/skeleton.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/skeleton/skeleton.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/sonner/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/sonner/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/sonner/sonner.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/sonner/sonner.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/table/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/table/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/table/table-body.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/table/table-body.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/table/table-caption.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/table/table-caption.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/table/table-cell.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/table/table-cell.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/table/table-footer.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/table/table-footer.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/table/table-head.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/table/table-head.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/table/table-header.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/table/table-header.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/table/table-row.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/table/table-row.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/table/table.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/table/table.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/tabs/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/tabs/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/tabs/tabs-content.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/tabs/tabs-content.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/tabs/tabs-list.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/tabs/tabs-list.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/tabs/tabs-trigger.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/tabs/tabs-trigger.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/toggle-group/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/toggle-group/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/toggle-group/toggle-group-item.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/toggle-group/toggle-group-item.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/toggle-group/toggle-group.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/toggle-group/toggle-group.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/toggle/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/toggle/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/toggle/toggle.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/toggle/toggle.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/tooltip/index.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/tooltip/index.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/ui/tooltip/tooltip-content.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/ui/tooltip/tooltip-content.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/load-data.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/load-data.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/store.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/store.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/styles/stars.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/styles/stars.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/svelte-stores.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/svelte-stores.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/types/extended-friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/types/extended-friend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/types/external-user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/types/external-user.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/types/friend.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/types/friend.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/types/instance.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/types/instance.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/types/notification.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/types/notification.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/types/user.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/types/user.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/types/websocket-msg.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/types/websocket-msg.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/utils.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/utils/get-global-count.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/get-global-count.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/utils/get-joinable-users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/get-joinable-users.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/utils/get-online-users.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/get-online-users.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src-tauri/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src-tauri/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src-tauri/capabilities/default.json" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/capabilities/default.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src-tauri/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src-tauri/src/web/cookies.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/src/web/cookies.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src-tauri/src/web/login.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/src/web/login.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src-tauri/src/web/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/src/web/mod.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/lib/utils/load-image.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/load-image.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/utils/theme-switcher.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/utils/theme-switcher.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routes/+layout.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/+layout.svelte" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routes/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/+page.svelte" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routes/dash/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/dash/+page.svelte" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routes/friends/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/friends/+page.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/home/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/home/+page.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/routes/login/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/login/+page.svelte" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tailwind.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/tailwind.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/vite.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/vite.config.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -243,7 +139,7 @@
       <workItem from="1734709464965" duration="14490000" />
       <workItem from="1734837399595" duration="3555000" />
       <workItem from="1734963219533" duration="1324000" />
-      <workItem from="1734988471279" duration="6676000" />
+      <workItem from="1734988471279" duration="13719000" />
     </task>
     <task id="LOCAL-00001" summary="Add assets">
       <option name="closed" value="true" />
@@ -293,7 +189,23 @@
       <option name="project" value="LOCAL" />
       <updated>1734993598267</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="Prettier">
+      <option name="closed" value="true" />
+      <created>1735010643532</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1735010643532</updated>
+    </task>
+    <task id="LOCAL-00008" summary="Remove unnecessary loading screen because it makes the app feel slower">
+      <option name="closed" value="true" />
+      <created>1735011406815</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1735011406815</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -306,6 +218,8 @@
     <MESSAGE value="Move top level async statement" />
     <MESSAGE value="README.md" />
     <MESSAGE value="Load images via backend" />
-    <option name="LAST_COMMIT_MESSAGE" value="Load images via backend" />
+    <MESSAGE value="Prettier" />
+    <MESSAGE value="Remove unnecessary loading screen because it makes the app feel slower" />
+    <option name="LAST_COMMIT_MESSAGE" value="Remove unnecessary loading screen because it makes the app feel slower" />
   </component>
 </project>

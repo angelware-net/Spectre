@@ -57,24 +57,24 @@
 <!--{#if loading}-->
 <!--	<div>loading...</div>-->
 <!--{:else}-->
-	<div class="grid h-1/2 grid-cols-4 p-4">
-		<div class="gap-4 p-4">
-			<FriendsCard friendsOnline={onlineFriendsCount} />
-		</div>
-		<div class="h-1/2 gap-4 p-4">
-			<JoinableCard joinableOnline={joinableUsersCount} />
-		</div>
-		<div class="col-span-2 h-1/2 gap-4 p-4">
-			<CalloutCard />
-		</div>
-		<div class="col-span-2 h-1/2 gap-4 p-4">
-			<TotalPlayerCard totalOnline={onlineUsers} />
-		</div>
-		<div class="gap-4 p-4">
-			<BarCard />
-		</div>
-		<div class="h-1/2 gap-4 p-4">
-			<EventsCard />
-		</div>
+<div class="grid h-1/2 grid-cols-4 p-4">
+	<div class="gap-4 p-4">
+		<FriendsCard friendsOnline={onlineFriendsCount} />
 	</div>
+	<div class="h-1/2 gap-4 p-4">
+		<JoinableCard joinableOnline={joinableUsersCount} />
+	</div>
+	<div class="col-span-2 h-1/2 gap-4 p-4">
+		<CalloutCard />
+	</div>
+	<div class="col-span-2 h-1/2 gap-4 p-4">
+		<TotalPlayerCard totalOnline={onlineUsers} />
+	</div>
+	<div class="gap-4 p-4">
+		<BarCard />
+	</div>
+	<div class="h-1/2 gap-4 p-4">
+		<EventsCard />
+	</div>
+</div>
 <!--{/if}-->

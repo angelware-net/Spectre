@@ -23,6 +23,9 @@
       ]
     },
     "websocket:default",
-    "notification:default"
+    "notification:default",
+    "fs:default",
+    "fs:allow-app-write-recursive",
+    "fs:allow-app-meta-recursive"
   ]
 }

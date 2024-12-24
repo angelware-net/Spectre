@@ -3,7 +3,7 @@ use crate::web::cookies::clear_login_cookies;
 use base64::{engine::general_purpose, Engine as _};
 use std::sync::Arc;
 use tauri::AppHandle;
-use tauri_plugin_http::reqwest::cookie::{Jar};
+use tauri_plugin_http::reqwest::cookie::Jar;
 use tauri_plugin_http::reqwest::header::{AUTHORIZATION, SET_COOKIE, USER_AGENT};
 use tauri_plugin_http::reqwest::Client;
 

@@ -1,10 +1,8 @@
 <script lang="ts">
-	// import { invoke } from '@tauri-apps/api/core';
 	import { onMount } from 'svelte';
 	import { loadData, reloadData } from '$lib/load-data';
 
 	// Types
-	// import type { Friend } from '$lib/types/friend';
 	import type { ExtendedFriend } from '$lib/types/extended-friend';
 
 	// Stores
@@ -133,123 +131,158 @@
 </script>
 
 <main class="p-4">
-	{#if loading}
-		<div class="flex h-96 flex-col items-center justify-center">
-			<LoaderCircle class="h-7 animate-spin" />
-			Loading...
-		</div>
-	{:else}
-		<div class="p-4">
-			<div class="grid grid-cols-2">
-				<div class="text-3xl">Friends</div>
-				<div class="content-end items-end justify-end text-end">
-					<div class="flex flex-row justify-end">
-						<ToggleGroup.Root
-							type="single"
-							class="pr-4"
-							value={viewMode}
-							onValueChange={(e) => (viewMode = e)}
-						>
-							<ToggleGroup.Item value="cards">
-								<Grid2X2 />
-							</ToggleGroup.Item>
-							<ToggleGroup.Item value="list">
-								<List />
-							</ToggleGroup.Item>
-						</ToggleGroup.Root>
-						<Button variant="outline" on:click={handleRefresh} size="icon">
-							{#if loading}
-								<LucideRefreshCw class="rotating h-[1.2rem] w-[1.2rem] transition-all" />
-							{:else}
-								<LucideRefreshCw class="rotating h-[1.2rem] w-[1.2rem] transition-all" />
-							{/if}
-						</Button>
-					</div>
+	<!--{#if loading}-->
+	<!--		<div class="flex h-96 flex-col items-center justify-center">-->
+	<!--			<LoaderCircle class="h-7 animate-spin" />-->
+	<!--			Loading...-->
+	<!--		</div>-->
+	<!--	{:else}-->
+	<div class="p-4">
+		<div class="grid grid-cols-2">
+			<div class="text-3xl">Friends</div>
+			<div class="content-end items-end justify-end text-end">
+				<div class="flex flex-row justify-end">
+					<ToggleGroup.Root
+						type="single"
+						class="pr-4"
+						value={viewMode}
+						onValueChange={(e) => (viewMode = e)}
+					>
+						<ToggleGroup.Item value="cards">
+							<Grid2X2 />
+						</ToggleGroup.Item>
+						<ToggleGroup.Item value="list">
+							<List />
+						</ToggleGroup.Item>
+					</ToggleGroup.Root>
+					<Button variant="outline" on:click={handleRefresh} size="icon">
+						{#if loading}
+							<LucideRefreshCw class="rotating h-[1.2rem] w-[1.2rem] transition-all" />
+						{:else}
+							<LucideRefreshCw class="rotating h-[1.2rem] w-[1.2rem] transition-all" />
+						{/if}
+					</Button>
 				</div>
 			</div>
 		</div>
+	</div>
 
-		{#if viewMode === 'cards'}
-			<div class="grid grid-cols-3">
-				{#each sortedFriends as friend}
-					<div class="p-2">
-						<FriendCard {friend} />
-					</div>
-				{/each}
-			</div>
-		{:else if viewMode === 'list'}
-			<Card>
-				<Table.Root>
-					<Table.Header>
-						<Table.Row>
-							<Table.Head class="w-[100px]">Status</Table.Head>
-							<Table.Head>Name</Table.Head>
-							<Table.Head>Location</Table.Head>
-							<Table.Head class="text-right">Join</Table.Head>
-						</Table.Row>
-					</Table.Header>
-					<Table.Body>
-						{#if loading}
-							{#each Array(5) as _, i}
-								<Table.Row class="">
-									<Table.Cell class="justify-center">
-										<Skeleton class="h-6 w-[250px]" />
-									</Table.Cell>
-									<Table.Cell>
-										<Skeleton class="h-6 w-[250px]" />
-									</Table.Cell>
-									<Table.Cell>
-										<Skeleton class="h-6 w-[250px]" />
-									</Table.Cell>
-									<Table.Cell class="text-right">
-										<Skeleton class="h-6 w-[250px]" />
-									</Table.Cell>
-								</Table.Row>
-							{/each}
-						{:else}
-							{#each sortedFriends as friend, i (i)}
-								<Table.Row class="">
+	{#if viewMode === 'cards'}
+		<div class="grid grid-cols-3">
+			{#each sortedFriends as friend}
+				<div class="p-2">
+					<FriendCard {friend} />
+				</div>
+			{/each}
+		</div>
+	{:else if viewMode === 'list'}
+		<Card>
+			<Table.Root>
+				<Table.Header>
+					<Table.Row>
+						<Table.Head class="w-[100px]">Status</Table.Head>
+						<Table.Head>Name</Table.Head>
+						<Table.Head>Location</Table.Head>
+						<Table.Head class="text-right">Join</Table.Head>
+					</Table.Row>
+				</Table.Header>
+				<Table.Body>
+					{#if loading}
+						{#each Array(5) as _, i}
+							<Table.Row class="">
+								<Table.Cell class="justify-center">
+									<Skeleton class="h-6 w-[250px]" />
+								</Table.Cell>
+								<Table.Cell>
+									<Skeleton class="h-6 w-[250px]" />
+								</Table.Cell>
+								<Table.Cell>
+									<Skeleton class="h-6 w-[250px]" />
+								</Table.Cell>
+								<Table.Cell class="text-right">
+									<Skeleton class="h-6 w-[250px]" />
+								</Table.Cell>
+							</Table.Row>
+						{/each}
+					{:else}
+						{#each sortedFriends as friend, i (i)}
+							<Table.Row class="">
+								<!--Status-->
+								<Tooltip.Root>
+									<Tooltip.Trigger>
+										<Table.Cell class="justify-center">
+											<span class={getStatusClass(friend.state, friend.status)}></span>
+										</Table.Cell>
+									</Tooltip.Trigger>
+									<Tooltip.Content>
+										<p>{friend.status}</p>
+									</Tooltip.Content>
+								</Tooltip.Root>
 
-									<!--Status-->
-									<Tooltip.Root>
-										<Tooltip.Trigger>
-											<Table.Cell class="justify-center">
-												<span class={getStatusClass(friend.state, friend.status)}></span>
-											</Table.Cell>
-										</Tooltip.Trigger>
-										<Tooltip.Content>
-											<p>{friend.status}</p>
-										</Tooltip.Content>
-									</Tooltip.Root>
+								<!--Name-->
+								<Table.Cell>
+									<Dialog.Root>
+										<Dialog.Trigger>
+											<HoverCard.Root>
+												<HoverCard.Trigger>
+													{friend.displayName}
+												</HoverCard.Trigger>
+												<HoverCard.Content class="w-80">
+													<div class="flex space-x-4">
+														<Avatar.Root>
+															{#if friend.userIcon === null || friend.userIcon === ''}
+																<Avatar.Image src={friend.currentAvatarThumbnailImageUrl} />
+															{:else}
+																<Avatar.Image src={friend.userIcon} />
+															{/if}
+															<Avatar.Fallback>SK</Avatar.Fallback>
+														</Avatar.Root>
+														<div class="space-y-1">
+															<h4 class="text-sm font-semibold">{friend.displayName}</h4>
+															<p class="whitespace-pre-line text-sm">
+																{friend.statusDescription}
+															</p>
+															<div class="flex items-center pt-2 text-xs text-muted-foreground">
+																{friend.status}
+															</div>
+															<div class="flex items-center pt-2 text-xs text-muted-foreground">
+																{friend.bio}
+															</div>
+														</div>
+													</div>
+												</HoverCard.Content>
+											</HoverCard.Root>
+										</Dialog.Trigger>
+										<Dialog.Content>
+											<UserInfo userId={friend.id} />
+										</Dialog.Content>
+									</Dialog.Root>
+								</Table.Cell>
 
-									<!--Name-->
-									<Table.Cell>
+								<!--Location-->
+								<Table.Cell>
+									{#if friend?.locationName !== 'Private' && friend?.locationName !== 'On Website'}
 										<Dialog.Root>
 											<Dialog.Trigger>
 												<HoverCard.Root>
 													<HoverCard.Trigger>
-														{friend.displayName}
+														{friend?.locationName} ({friend?.locationCount} / {friend?.locationData
+															?.recommendedCapacity}) [{friend?.locationCapacity}]
 													</HoverCard.Trigger>
 													<HoverCard.Content class="w-80">
 														<div class="flex space-x-4">
 															<Avatar.Root>
-																{#if friend.userIcon === null || friend.userIcon === ''}
-																	<Avatar.Image src={friend.currentAvatarThumbnailImageUrl} />
-																{:else}
-																	<Avatar.Image src={friend.userIcon} />
-																{/if}
+																<Avatar.Image src={friend?.locationData?.thumbnailImageUrl} />
 																<Avatar.Fallback>SK</Avatar.Fallback>
 															</Avatar.Root>
 															<div class="space-y-1">
-																<h4 class="text-sm font-semibold">{friend.displayName}</h4>
-																<p class="whitespace-pre-line text-sm">
-																	{friend.statusDescription}
+																<h4 class="text-sm font-semibold">{friend?.locationName}</h4>
+																<p class="whitespace-pre-line text-xs">
+																	{friend?.locationData?.description}
 																</p>
 																<div class="flex items-center pt-2 text-xs text-muted-foreground">
-																	{friend.status}
-																</div>
-																<div class="flex items-center pt-2 text-xs text-muted-foreground">
-																	{friend.bio}
+																	{friend?.locationCount} / {friend?.locationData
+																		?.recommendedCapacity} ({friend?.locationCapacity})
 																</div>
 															</div>
 														</div>
@@ -257,75 +290,38 @@
 												</HoverCard.Root>
 											</Dialog.Trigger>
 											<Dialog.Content>
+												<!--													<Instance userId="{friend.id}" />-->
+											</Dialog.Content>
+										</Dialog.Root>
+									{:else}
+										{friend.locationName}
+									{/if}
+								</Table.Cell>
+
+								<!--JoinButton-->
+								<Table.Cell class="text-right">
+									{#if friend.locationName !== 'Private' && friend.locationName !== 'On Website'}
+										<Dialog.Root>
+											<Dialog.Trigger>
+												<Button>Details</Button>
+											</Dialog.Trigger>
+											<Dialog.Content>
 												<UserInfo userId={friend.id} />
 											</Dialog.Content>
 										</Dialog.Root>
-									</Table.Cell>
-
-									<!--Location-->
-									<Table.Cell>
-										{#if friend?.locationName !== 'Private' && friend?.locationName !== 'On Website'}
-											<Dialog.Root>
-												<Dialog.Trigger>
-													<HoverCard.Root>
-														<HoverCard.Trigger>
-															{friend?.locationName} ({friend?.locationCount} / {friend
-																?.locationData?.recommendedCapacity}) [{friend?.locationCapacity}]
-														</HoverCard.Trigger>
-														<HoverCard.Content class="w-80">
-															<div class="flex space-x-4">
-																<Avatar.Root>
-																	<Avatar.Image src={friend?.locationData?.thumbnailImageUrl} />
-																	<Avatar.Fallback>SK</Avatar.Fallback>
-																</Avatar.Root>
-																<div class="space-y-1">
-																	<h4 class="text-sm font-semibold">{friend?.locationName}</h4>
-																	<p class="whitespace-pre-line text-xs">
-																		{friend?.locationData?.description}
-																	</p>
-																	<div class="flex items-center pt-2 text-xs text-muted-foreground">
-																		{friend?.locationCount} / {friend?.locationData
-																			?.recommendedCapacity} ({friend?.locationCapacity})
-																	</div>
-																</div>
-															</div>
-														</HoverCard.Content>
-													</HoverCard.Root>
-												</Dialog.Trigger>
-												<Dialog.Content>
-													<!--													<Instance userId="{friend.id}" />-->
-												</Dialog.Content>
-											</Dialog.Root>
-										{:else}
-											{friend.locationName}
-										{/if}
-									</Table.Cell>
-
-									<!--JoinButton-->
-									<Table.Cell class="text-right">
-										{#if friend.locationName !== 'Private' && friend.locationName !== 'On Website'}
-											<Dialog.Root>
-												<Dialog.Trigger>
-													<Button>Details</Button>
-												</Dialog.Trigger>
-												<Dialog.Content>
-													<UserInfo userId={friend.id} />
-												</Dialog.Content>
-											</Dialog.Root>
-										{:else}
-											<Button disabled variant="outline" class="text-muted-foreground"
-												>Details</Button
-											>
-										{/if}
-									</Table.Cell>
-								</Table.Row>
-							{/each}
-						{/if}
-					</Table.Body>
-				</Table.Root>
-			</Card>
-		{/if}
+									{:else}
+										<Button disabled variant="outline" class="text-muted-foreground">Details</Button
+										>
+									{/if}
+								</Table.Cell>
+							</Table.Row>
+						{/each}
+					{/if}
+				</Table.Body>
+			</Table.Root>
+		</Card>
 	{/if}
+	<!--{/if}-->
 </main>
 
 <style>

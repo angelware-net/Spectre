@@ -18,14 +18,18 @@
 		loginStatusStore
 	} from '$lib/svelte-stores';
 	import type { UserData } from '$lib/types/user';
+	import { manageCacheSize } from '$lib/utils/cache-manager';
 
 	onMount(async () => {
+		// Set loading state
+		loadingStore.set(true);
+
 		await loadSettings();
 
 		console.log('Welcome to Spectre!');
 
-		// Set loading state
-		loadingStore.set(true);
+		// Check and manage cache size
+		await manageCacheSize();
 
 		// Check api status by getting users online
 		try {

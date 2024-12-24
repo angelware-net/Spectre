@@ -1,6 +1,6 @@
 use serde_json::{json, Value};
 use std::path::PathBuf;
-use tauri_plugin_store::{StoreExt};
+use tauri_plugin_store::StoreExt;
 
 // Cookies manager for login and otp
 
@@ -54,7 +54,10 @@ pub fn load_login_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<O
 }
 
 #[tauri::command]
-pub fn save_login_cookies(app: tauri::AppHandle, cookies: String, ) -> tauri_plugin_store::Result<String> {
+pub fn save_login_cookies(
+    app: tauri::AppHandle,
+    cookies: String,
+) -> tauri_plugin_store::Result<String> {
     let store_path = PathBuf::from(".cookies.dat");
 
     // let stores = app
@@ -76,7 +79,7 @@ pub fn save_login_cookies(app: tauri::AppHandle, cookies: String, ) -> tauri_plu
 
     store.set(
         "cookies".to_string(),
-        json!({"value": format!("{}", cookies)})
+        json!({"value": format!("{}", cookies)}),
     );
 
     println!("Saved login cookie");
@@ -105,7 +108,10 @@ pub fn clear_login_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<
 }
 
 #[tauri::command]
-pub fn save_otp_cookies(app: tauri::AppHandle, cookies: String, ) -> tauri_plugin_store::Result<String> {
+pub fn save_otp_cookies(
+    app: tauri::AppHandle,
+    cookies: String,
+) -> tauri_plugin_store::Result<String> {
     let store_path = PathBuf::from(".cookies.dat");
     // let stores = app
     //     .try_state::<StoreCollection<Wry>>()
@@ -126,7 +132,7 @@ pub fn save_otp_cookies(app: tauri::AppHandle, cookies: String, ) -> tauri_plugi
 
     store.set(
         "cookies".to_string(),
-        json!({"value": format!("{}", cookies)})
+        json!({"value": format!("{}", cookies)}),
     );
 
     // store.close_resource();
