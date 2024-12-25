@@ -15,6 +15,6 @@ pub async fn get_vrc_friends(app: AppHandle) -> Result<String, String> {
 
     match vrc_get_request(app, req).await {
         Ok(response) => Ok(response),
-        Err(e) => Err(e.to_string()),
+        Err(e) => Err(format!("Error getting friends!: {}", e.to_string())),
     }
 }

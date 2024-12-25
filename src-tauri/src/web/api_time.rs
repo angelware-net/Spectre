@@ -19,9 +19,9 @@ pub async fn get_vrc_time() -> Result<String, String> {
                     Err(e) => Err(format!("Failed to get time: {}", e)),
                 }
             } else {
-                Err(format!("Request failed with status: {}", res.status()))
+                Err(format!("Datetime request failed with status: {}", res.status()))
             }
         }
-        Err(_) => Err("Request failed".to_string()),
+        Err(_) => Err("Datetime request failed".to_string()),
     }
 }

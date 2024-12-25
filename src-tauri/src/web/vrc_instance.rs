@@ -15,6 +15,6 @@ pub async fn get_vrc_instance(app: AppHandle, instance_id: String) -> Result<Str
 
     match vrc_get_request(app, req).await {
         Ok(response) => Ok(response),
-        Err(e) => Err(e.to_string()),
+        Err(e) => Err(format!("Error getting instance!: {}", e.to_string())),
     }
 }

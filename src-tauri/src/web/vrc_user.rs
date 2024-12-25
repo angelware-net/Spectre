@@ -15,6 +15,6 @@ pub async fn get_vrc_user(app: AppHandle, user_id: String) -> Result<String, Str
 
     match vrc_get_request(app, req).await {
         Ok(response) => Ok(response),
-        Err(e) => Err(e.to_string()),
+        Err(e) => Err(format!("Error getting user!: {}", e.to_string())),
     }
 }
