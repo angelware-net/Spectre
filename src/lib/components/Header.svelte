@@ -19,6 +19,7 @@
 	import Favicon from '$lib/components/Favicon.svelte';
 	import { loadImage } from '$lib/utils/load-image';
 	import { onDestroy } from 'svelte';
+	import { disconnectSocket } from '$lib/components/Websocket.svelte';
 
 	let currentUser: UserData | null;
 	let avatarImageUrl: string | null = null;
@@ -40,12 +41,14 @@
 		} else {
 			// If userData is null, redirect to home page, this is because if there is no userdata we must not be signed in.
 			await goto('/');
+			goto('/');
 		}
 	});
 
 	async function logout() {
 		try {
 			await invoke('get_logout');
+			await disconnectSocket();
 			await goto('/login');
 		} catch (error) {
 			console.error(error);

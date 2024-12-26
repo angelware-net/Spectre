@@ -68,9 +68,11 @@
 				console.log(userData.displayName + ' has logged in!');
 
 				loginStatusStore.set(true);
-				await goto('/home');
 				loadingStore.set(false);
+				console.log('Going to homepage...');
+				await goto('/home');
 			}
+			await goto('/home');
 
 			// If there is an error (such as 401) login must have failed, send to login page.
 		} catch (e) {

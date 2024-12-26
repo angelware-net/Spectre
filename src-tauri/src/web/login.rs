@@ -60,6 +60,15 @@ pub async fn get_login(
                     .collect::<Vec<&str>>()
                     .join("; ");
 
+                let totp_cookie  = res
+                    .headers()
+                    .get_all(SET_COOKIE)
+                    .iter()
+                    .filter_map(|header_value| header_value.to_str().ok())
+                    .filter(|cookie| cookie.contains("twoFactorAuth="))
+                    .collect::<Vec<&str>>()
+                    .join("; ");
+
                 // Now, consume `res` by calling `text`
                 match res.text().await {
                     Ok(text) => {
@@ -68,6 +77,14 @@ pub async fn get_login(
                             println!("Saved cookie");
                             // println!("{}", text);
                             cookies::save_login_cookies(app.clone(), auth_cookie.clone()).unwrap();
+                            // println!("{}", auth_cookie);
+                        }
+
+                        if !totp_cookie.is_empty() {
+                            // Save the auth cookie if it exists
+                            println!("Saved totp cookie");
+                            // println!("{}", text);
+                            cookies::save_otp_cookies(app.clone(), totp_cookie.clone()).unwrap();
                             // println!("{}", auth_cookie);
                         }
 
@@ -120,7 +137,16 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
     match req.send().await {
         Ok(res) => {
             if res.status().is_success() {
-                let totp_cookie = res
+                let cookie = res
+                    .headers()
+                    .get_all(SET_COOKIE)
+                    .iter()
+                    .filter_map(|header_value| header_value.to_str().ok())
+                    .filter(|cookie| cookie.contains("auth="))
+                    .collect::<Vec<&str>>()
+                    .join("; ");
+
+                let totp_cookie  = res
                     .headers()
                     .get_all(SET_COOKIE)
                     .iter()
@@ -131,9 +157,17 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
 
                 match res.text().await {
                     Ok(text) => {
-                        if !totp_cookie.is_empty() {
+                        if !cookie.is_empty() {
                             // println!("Totp: {}", totp_cookie);
-                            cookies::save_otp_cookies(app.clone(), totp_cookie).unwrap();
+                            cookies::save_login_cookies(app.clone(), cookie).unwrap();
+                        }
+
+                        if !totp_cookie.is_empty() {
+                            // Save the auth cookie if it exists
+                            println!("Saved totp cookie");
+                            // println!("{}", text);
+                            cookies::save_otp_cookies(app.clone(), totp_cookie.clone()).unwrap();
+                            // println!("{}", auth_cookie);
                         }
 
                         Ok(text)

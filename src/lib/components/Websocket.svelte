@@ -17,7 +17,6 @@
 	let permissionGranted: boolean = false;
 
 	// setup notifications
-	// TODO: Move this into layout function
 	onMount(async () => {
 		permissionGranted = await isPermissionGranted();
 
@@ -26,6 +25,13 @@
 			permissionGranted = permission === 'granted';
 		}
 	});
+
+	export async function disconnectSocket() {
+		if (ws) {
+			console.log('Disconnecting Websocket...');
+			await ws.disconnect();
+		}
+	}
 
 	loginStatusStore.subscribe(async (isLoggedIn) => {
 		if (isLoggedIn && !ws) {

@@ -44,6 +44,7 @@ pub fn load_login_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<O
     };
 
     // store.close_resource();
+    println!("{}", cookies_string);
 
     if let Ok(parsed_json) = serde_json::from_str::<Value>(&cookies_string.to_string()) {
         if let Some(cookie_str) = parsed_json.get("value").and_then(|v| v.as_str()) {
@@ -131,8 +132,8 @@ pub fn save_otp_cookies(
     let store = app.store(store_path)?;
 
     store.set(
-        "cookies".to_string(),
-        json!({"value": format!("{}", cookies)}),
+        "otp_cookies".to_string(),
+        json!({"otp": format!("{}", cookies)}),
     );
 
     // store.close_resource();
@@ -158,7 +159,7 @@ pub fn load_otp_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<Opt
     // })
 
     let store = app.store(store_path)?;
-    let cookies_string = match store.get("cookies") {
+    let cookies_string = match store.get("otp_cookies") {
         Some(value) => value,
         None => {
             store.close_resource();
@@ -169,7 +170,7 @@ pub fn load_otp_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<Opt
     // store.close_resource();
 
     if let Ok(parsed_json) = serde_json::from_str::<Value>(&cookies_string.to_string()) {
-        if let Some(cookie_str) = parsed_json.get("value").and_then(|v| v.as_str()) {
+        if let Some(cookie_str) = parsed_json.get("otp").and_then(|v| v.as_str()) {
             return Ok(Some(cookie_str.to_string()));
         }
     }

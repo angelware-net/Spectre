@@ -6,6 +6,8 @@
 	import { Label } from '$lib/components/ui/label/index.js';
 	import { toast } from 'svelte-sonner';
 	import { goto } from '$app/navigation';
+	import type { UserData } from '$lib/types/user';
+	import { currentUserStore } from '$lib/svelte-stores';
 
 	let email = '';
 	let password = '';
@@ -50,9 +52,13 @@
 					console.log('otp required');
 				}
 			} else {
-				console.log(login);
+				const userData = response as UserData;
+				currentUserStore.set(userData);
+				console.log(userData.displayName + ' has logged in!');
+
 				toast('Login Success!');
 				await goto('/home');
+				goto('/home');
 			}
 		} catch (error) {
 			console.error('Error during login:', error);
