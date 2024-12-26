@@ -60,7 +60,7 @@ pub async fn get_login(
                     .collect::<Vec<&str>>()
                     .join("; ");
 
-                let totp_cookie  = res
+                let totp_cookie = res
                     .headers()
                     .get_all(SET_COOKIE)
                     .iter()
@@ -146,7 +146,7 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
                     .collect::<Vec<&str>>()
                     .join("; ");
 
-                let totp_cookie  = res
+                let totp_cookie = res
                     .headers()
                     .get_all(SET_COOKIE)
                     .iter()

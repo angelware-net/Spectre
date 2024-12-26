@@ -19,7 +19,7 @@
 	import Favicon from '$lib/components/Favicon.svelte';
 	import { loadImage } from '$lib/utils/load-image';
 	import { onDestroy } from 'svelte';
-	import { disconnectSocket } from '$lib/components/Websocket.svelte';
+	import disconnectSocket from '$lib/components/Websocket.svelte';
 
 	let currentUser: UserData | null;
 	let avatarImageUrl: string | null = null;
