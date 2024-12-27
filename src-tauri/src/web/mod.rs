@@ -8,3 +8,4 @@ pub(crate) mod vrc_instance;
 pub(crate) mod vrc_request;
 pub(crate) mod vrc_user;
 pub(crate) mod vrc_users;
+pub(crate) mod vrc_group;

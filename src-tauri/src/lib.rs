@@ -39,6 +39,7 @@ pub fn run() {
             web::vrc_friends::get_vrc_friends,
             web::vrc_user::get_vrc_user,
             web::vrc_instance::get_vrc_instance,
+            web::vrc_group::get_vrc_group,
             // Cookies handling
             web::cookies::load_login_cookies,
             web::cookies::save_login_cookies,

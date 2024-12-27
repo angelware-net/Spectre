@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { loadData, reloadData } from '$lib/load-data';
+	import { getFriendImage } from '$lib/utils/get-friend-image';
+	import { loadImage } from '$lib/utils/load-image';
 
 	// Types
 	import type { ExtendedFriend } from '$lib/types/extended-friend';
@@ -27,6 +29,7 @@
 	import { get } from 'svelte/store';
 	import FriendCard from '$lib/components/friends/FriendCard.svelte';
 	import UserInfo from '$lib/components/friends/UserInfo.svelte';
+	import Instance from '$lib/components/Instance.svelte';
 
 	let loading: boolean = true;
 	let viewMode: string | undefined = 'cards';
@@ -240,12 +243,13 @@
 												<HoverCard.Content class="w-80">
 													<div class="flex space-x-4">
 														<Avatar.Root>
-															{#if friend.userIcon === null || friend.userIcon === ''}
-																<Avatar.Image src={friend.currentAvatarThumbnailImageUrl} />
-															{:else}
-																<Avatar.Image src={friend.userIcon} />
-															{/if}
-															<Avatar.Fallback>SK</Avatar.Fallback>
+															{#await getFriendImage(friend)}
+																<Avatar.Fallback>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback>
+															{:then url}
+																<Avatar.Image src={url} alt="Avatar" />
+															{:catch error}
+																<Avatar.Fallback>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback>
+															{/await}
 														</Avatar.Root>
 														<div class="space-y-1">
 															<h4 class="text-sm font-semibold">{friend.displayName}</h4>
@@ -282,7 +286,15 @@
 													<HoverCard.Content class="w-80">
 														<div class="flex space-x-4">
 															<Avatar.Root>
-																<Avatar.Image src={friend?.locationData?.thumbnailImageUrl} />
+																{#if friend !== undefined && friend.locationData !== undefined}
+																	{#await loadImage(friend.locationData.imageUrl)}
+																		<Avatar.Fallback>{friend.locationData.name.charAt(0).toUpperCase()}</Avatar.Fallback>
+																	{:then url}
+																		<Avatar.Image src={url} alt="Avatar" />
+																	{:catch error}
+																		<Avatar.Fallback>{friend.locationData.name.charAt(0).toUpperCase()}</Avatar.Fallback>
+																	{/await}
+																{/if}
 																<Avatar.Fallback>SK</Avatar.Fallback>
 															</Avatar.Root>
 															<div class="space-y-1">
@@ -300,7 +312,7 @@
 												</HoverCard.Root>
 											</Dialog.Trigger>
 											<Dialog.Content>
-												<!--													<Instance userId="{friend.id}" />-->
+												<Instance userId="{friend.id}" />
 											</Dialog.Content>
 										</Dialog.Root>
 									{:else}

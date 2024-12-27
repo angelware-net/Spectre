@@ -8,13 +8,15 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ec3eaae1-17a6-481e-b12a-22310f49585d" name="Changes" comment="Single instance support; spectre will now focus the main window if an attempt is made to open another instance">
+      <change afterPath="$PROJECT_DIR$/src-tauri/src/web/vrc_group.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/components/Instance.svelte" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/types/group.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/utils/get-friend-by-instance.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/lib/utils/get-friend-image.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src-tauri/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src-tauri/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src-tauri/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src-tauri/src/web/api_time.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/src/web/api_time.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src-tauri/src/web/login.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/src/web/login.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/lib/components/Header.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/lib/components/Header.svelte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src-tauri/src/web/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src-tauri/src/web/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/routes/friends/+page.svelte" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/friends/+page.svelte" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,9 +29,11 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript File" />
         <option value="Footer2" />
         <option value="+page" />
+        <option value="Instance" />
+        <option value="Rust File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>
@@ -141,7 +145,8 @@
       <workItem from="1735022978926" duration="15330000" />
       <workItem from="1735070185091" duration="997000" />
       <workItem from="1735075523338" duration="6978000" />
-      <workItem from="1735151866227" duration="7865000" />
+      <workItem from="1735151866227" duration="10447000" />
+      <workItem from="1735228383938" duration="10783000" />
     </task>
     <task id="LOCAL-00001" summary="Add assets">
       <option name="closed" value="true" />
@@ -279,7 +284,15 @@
       <option name="project" value="LOCAL" />
       <updated>1735172338331</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="Single instance support; spectre will now focus the main window if an attempt is made to open another instance">
+      <option name="closed" value="true" />
+      <created>1735175737132</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1735175737132</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
