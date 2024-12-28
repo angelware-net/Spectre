@@ -204,7 +204,7 @@
 						{#each Array(5) as _, i}
 							<Table.Row class="">
 								<Table.Cell class="flex justify-center items-center">
-									<Skeleton class="h-6 w-[250px]" />
+									<Skeleton class="h-6 w-[25px]" />
 								</Table.Cell>
 								<Table.Cell>
 									<Skeleton class="h-6 w-[250px]" />

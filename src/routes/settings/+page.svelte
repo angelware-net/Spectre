@@ -4,7 +4,7 @@
 	import { switchTheme } from '$lib/utils/theme-switcher';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from "$lib/components/ui/card";
-	import Footer from '$lib/components/Footer.svelte';
+	import Footer from '$lib/components/Footer2.svelte';
 	// import { open } from '@tauri-apps/api/shell';
 	import * as Table from "$lib/components/ui/table/index.js";
 	import { Separator } from '$lib/components/ui/separator';
