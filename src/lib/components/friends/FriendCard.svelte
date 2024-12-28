@@ -33,6 +33,8 @@
 				}
 			case 'active':
 				return 'status-circle status-website';
+			case 'offline':
+				return 'status-circle status-offline';
 			default:
 				return '';
 		}
@@ -130,8 +132,12 @@
 	}
 
 	.status-website {
-		background-color: gray;
+		background-color: lightgray;
 	}
+
+  .status-offline {
+      background-color: dimgray;
+  }
 
 	@keyframes rotate {
 		from {

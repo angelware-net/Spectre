@@ -57,6 +57,8 @@
 				}
 			case 'active':
 				return 'status-circle status-website';
+			case 'offline':
+				return 'status-circle status-offline';
 			default:
 				return '';
 		}
@@ -275,7 +277,7 @@
 
 								<!--Location-->
 								<Table.Cell class="">
-									{#if friend?.locationName !== 'Private' && friend?.locationName !== 'On Website'}
+									{#if friend?.locationName !== 'Private' && friend?.locationName !== 'On Website' && friend.locationName !== 'Offline'}
 										<Dialog.Root>
 											<Dialog.Trigger>
 												<HoverCard.Root>
@@ -322,13 +324,13 @@
 
 								<!--JoinButton-->
 								<Table.Cell class="text-right hidden sm:table-cell">
-									{#if friend.locationName !== 'Private' && friend.locationName !== 'On Website'}
+									{#if friend.locationName !== 'Private' && friend.locationName !== 'On Website' && friend.locationName !== 'Offline'}
 										<Dialog.Root>
 											<Dialog.Trigger>
 												<Button>Details</Button>
 											</Dialog.Trigger>
 											<Dialog.Content>
-												<UserInfo userId={friend.id} />
+												<Instance userId="{friend.id}" />
 											</Dialog.Content>
 										</Dialog.Root>
 									{:else}
@@ -385,8 +387,12 @@
 	}
 
 	.status-website {
-		background-color: gray;
+		background-color: lightgray;
 	}
+
+  .status-offline {
+			background-color: dimgray;
+  }
 
 	@keyframes rotate {
 		from {

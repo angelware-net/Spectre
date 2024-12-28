@@ -3,7 +3,7 @@
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import type { ExternalUserData } from '$lib/types/external-user';
-	// import { open } from '@tauri-apps/api/shell';
+	import { open } from '@tauri-apps/plugin-shell';
 
 	import { Button } from '$lib/components/ui/button';
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
@@ -88,7 +88,7 @@
 	}
 
 	const openUrl = (link: string) => {
-		// open(link)
+		open(link)
 	};
 
 	onMount(() => {

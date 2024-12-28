@@ -44,7 +44,7 @@ pub fn load_login_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<O
     };
 
     // store.close_resource();
-    println!("{}", cookies_string);
+    // println!("{}", cookies_string);
 
     if let Ok(parsed_json) = serde_json::from_str::<Value>(&cookies_string.to_string()) {
         if let Some(cookie_str) = parsed_json.get("value").and_then(|v| v.as_str()) {
@@ -83,7 +83,7 @@ pub fn save_login_cookies(
         json!({"value": format!("{}", cookies)}),
     );
 
-    println!("Saved login cookie");
+    // println!("Saved login cookie");
     // store.close_resource();
     Ok("Okay".to_string())
 }
