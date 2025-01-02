@@ -8,6 +8,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import UserInfo from '$lib/components/friends/UserInfo.svelte';
 	import { loadImage } from '$lib/utils/load-image';
+	import Instance from '$lib/components/Instance.svelte';
 
 	export let friend: ExtendedFriend;
 	let avatarImage: string;
@@ -52,8 +53,15 @@
 </script>
 
 <Card.Root>
-	<Card.Header class="h-24 w-full overflow-hidden p-0">
-		<div class="header-background h-64" style="background-image: url({avatarImage});"></div>
+	<Card.Header class="flex h-28 w-full overflow-hidden p-0">
+		<Dialog.Root>
+			<Dialog.Trigger class="block w-full h-full overflow-hidden">
+				<div class="header-background h-64 bg-center" style="background-image: url({avatarImage});"></div>
+			</Dialog.Trigger>
+			<Dialog.Content>
+				<UserInfo userId={friend.id} />
+			</Dialog.Content>
+		</Dialog.Root>
 	</Card.Header>
 	<Card.Title class="p-4 pb-0">
 		<Tooltip.Root>
@@ -64,7 +72,14 @@
 				<p>{friend.status}</p>
 			</Tooltip.Content>
 		</Tooltip.Root>
-		{friend.displayName}
+		<Dialog.Root>
+			<Dialog.Trigger>
+				{friend.displayName}
+			</Dialog.Trigger>
+			<Dialog.Content>
+				<UserInfo userId={friend.id} />
+			</Dialog.Content>
+		</Dialog.Root>
 	</Card.Title>
 	<Card.Content class="p-4 pt-2">
 		<div class="text-sm text-muted-foreground truncate">
@@ -84,11 +99,11 @@
 	</Card.Content>
 	<Card.Footer class="w-full p-4 pt-0">
 		<Dialog.Root>
-			<Dialog.Trigger>
+			<Dialog.Trigger class="w-full">
 				<Button class="w-full">Details</Button>
 			</Dialog.Trigger>
 			<Dialog.Content>
-				<UserInfo userId={friend.id} />
+				<Instance userId="{friend.id}" />
 			</Dialog.Content>
 		</Dialog.Root>
 	</Card.Footer>
