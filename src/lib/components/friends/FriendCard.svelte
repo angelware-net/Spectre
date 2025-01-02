@@ -55,8 +55,11 @@
 <Card.Root>
 	<Card.Header class="flex h-28 w-full overflow-hidden p-0">
 		<Dialog.Root>
-			<Dialog.Trigger class="block w-full h-full overflow-hidden">
-				<div class="header-background h-64 bg-center" style="background-image: url({avatarImage});"></div>
+			<Dialog.Trigger class="block h-full w-full overflow-hidden">
+				<div
+					class="header-background h-64 bg-center"
+					style="background-image: url({avatarImage});"
+				></div>
 			</Dialog.Trigger>
 			<Dialog.Content>
 				<UserInfo userId={friend.id} />
@@ -82,8 +85,8 @@
 		</Dialog.Root>
 	</Card.Title>
 	<Card.Content class="p-4 pt-2">
-		<div class="text-sm text-muted-foreground truncate">
-			{#if friend.statusDescription !== ""}
+		<div class="truncate text-sm text-muted-foreground">
+			{#if friend.statusDescription !== ''}
 				{friend.statusDescription}
 			{:else}
 				{friend.status}
@@ -103,7 +106,7 @@
 				<Button class="w-full">Details</Button>
 			</Dialog.Trigger>
 			<Dialog.Content>
-				<Instance userId="{friend.id}" />
+				<Instance userId={friend.id} />
 			</Dialog.Content>
 		</Dialog.Root>
 	</Card.Footer>
@@ -150,9 +153,9 @@
 		background-color: lightgray;
 	}
 
-  .status-offline {
-      background-color: dimgray;
-  }
+	.status-offline {
+		background-color: dimgray;
+	}
 
 	@keyframes rotate {
 		from {

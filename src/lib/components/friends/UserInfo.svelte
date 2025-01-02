@@ -89,7 +89,7 @@
 	}
 
 	const openUrl = (link: string) => {
-		open(link)
+		open(link);
 	};
 
 	onMount(() => {

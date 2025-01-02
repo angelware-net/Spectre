@@ -51,7 +51,7 @@
 	};
 </script>
 
-<div class="grid h-1/2 xs:grid-cols-1 md:grid-cols-4 p-4">
+<div class="xs:grid-cols-1 grid h-1/2 p-4 md:grid-cols-4">
 	<div class="gap-4 p-4">
 		<FriendsCard friendsOnline={onlineFriendsCount} />
 	</div>

@@ -16,7 +16,8 @@
         "width": 920,
         "height": 680,
         "resizable": true,
-        "fullscreen": false
+        "fullscreen": false,
+        "additionalBrowserArgs": "--enable-features=OverlayScrollbar"
       }
     ],
     "security": {

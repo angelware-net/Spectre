@@ -48,11 +48,12 @@
 		const userMap = get(instanceDataStore);
 		instance = userMap.get(userId);
 
-		if (instance != undefined)
-			instanceImage = instance.world.thumbnailImageUrl;
+		if (instance != undefined) instanceImage = instance.world.thumbnailImageUrl;
 
 		if (instance?.ownerId.startsWith('usr')) {
-			let instanceOwnerUserJson = await invoke<string>('get_vrc_user', { userId: instance?.ownerId });
+			let instanceOwnerUserJson = await invoke<string>('get_vrc_user', {
+				userId: instance?.ownerId
+			});
 			instanceOwnerUser = JSON.parse(instanceOwnerUserJson);
 
 			if (instanceOwnerUser != undefined && instanceOwnerUser.userIcon != '') {
@@ -61,7 +62,9 @@
 				instanceOwnerImage = await loadImage(instanceOwnerUser.currentAvatarImageUrl);
 			}
 		} else if (instance?.ownerId.startsWith('grp')) {
-			let instanceOwnerGroupJson = await invoke<string>('get_vrc_group', { groupId: instance?.ownerId });
+			let instanceOwnerGroupJson = await invoke<string>('get_vrc_group', {
+				groupId: instance?.ownerId
+			});
 			instanceOwnerGroup = JSON.parse(instanceOwnerGroupJson);
 
 			if (instanceOwnerGroup != undefined && instanceOwnerGroup.iconUrl != '') {
@@ -77,7 +80,6 @@
 
 <div class="mt-5">
 	<div class="grid gap-8">
-
 		<!--Section-->
 		<div class="flex items-center gap-4">
 			<Avatar.Root class="hidden h-11 w-11 sm:flex">
@@ -88,21 +90,26 @@
 				<p class="text-sm font-medium leading-none">
 					{instance?.world.name || 'World Name'}
 				</p>
-				<p class="text-sm text-muted-foreground">({instance?.userCount} / {instance?.recommendedCapacity})
-					[{instance?.capacity}]</p>
 				<p class="text-sm text-muted-foreground">
-					{#if instance?.type === "hidden"} Friends+
-					{:else if instance?.type === "friends"} Friends
-					{:else if instance?.type === "group"}
-						{#if instance?.groupAccessType === "plus"}
+					({instance?.userCount} / {instance?.recommendedCapacity}) [{instance?.capacity}]
+				</p>
+				<p class="text-sm text-muted-foreground">
+					{#if instance?.type === 'hidden'}
+						Friends+
+					{:else if instance?.type === 'friends'}
+						Friends
+					{:else if instance?.type === 'group'}
+						{#if instance?.groupAccessType === 'plus'}
 							Group+
-						{:else if instance?.groupAccessType === "public"}
+						{:else if instance?.groupAccessType === 'public'}
 							Group Public
 						{:else}
 							Group
 						{/if}
-					{:else if instance?.type === "public"} Public
-					{:else} Public
+					{:else if instance?.type === 'public'}
+						Public
+					{:else}
+						Public
 					{/if}
 				</p>
 			</div>
@@ -116,13 +123,20 @@
 							<DropdownMenu.Label>Options</DropdownMenu.Label>
 							<DropdownMenu.Separator />
 							<DropdownMenu.Item
-								on:click={joinUrl(`vrchat://launch?ref=vrchat.com&id=${instance?.worldId}:${instance?.instanceId}`)}>
+								on:click={joinUrl(
+									`vrchat://launch?ref=vrchat.com&id=${instance?.worldId}:${instance?.instanceId}`
+								)}
+							>
 								Join Instance
 							</DropdownMenu.Item>
-							<DropdownMenu.Item on:click={inviteMyself(instance?.worldId, instance?.instanceId)}>Invite Me
+							<DropdownMenu.Item on:click={inviteMyself(instance?.worldId, instance?.instanceId)}
+								>Invite Me
 							</DropdownMenu.Item>
 							<DropdownMenu.Item
-								on:click={openUrl(`https://vrchat.com/home/launch?worldId=${instance?.worldId}&instanceId=${instance?.instanceId}`)}>
+								on:click={openUrl(
+									`https://vrchat.com/home/launch?worldId=${instance?.worldId}&instanceId=${instance?.instanceId}`
+								)}
+							>
 								Open Instance
 							</DropdownMenu.Item>
 						</DropdownMenu.Group>
@@ -147,14 +161,17 @@
 					<div class="flex items-center gap-4">
 						<Avatar.Root class="hidden h-9 w-9 sm:flex">
 							<Avatar.Image src={instanceOwnerImage} alt="Avatar" />
-							<Avatar.Fallback>{instanceOwnerUser?.displayName?.charAt(0).toUpperCase() || 'NA'}</Avatar.Fallback>
+							<Avatar.Fallback
+								>{instanceOwnerUser?.displayName?.charAt(0).toUpperCase() || 'NA'}</Avatar.Fallback
+							>
 						</Avatar.Root>
 						<div class="grid gap-1">
 							<p class="text-sm font-medium leading-none">
 								{instanceOwnerUser?.displayName || 'Username'}
 							</p>
-							<p
-								class="text-sm text-muted-foreground">{instanceOwnerUser?.statusDescription || instanceOwnerUser?.status}</p>
+							<p class="text-sm text-muted-foreground">
+								{instanceOwnerUser?.statusDescription || instanceOwnerUser?.status}
+							</p>
 						</div>
 					</div>
 				{/if}
@@ -162,7 +179,9 @@
 					<div class="flex items-center gap-4">
 						<Avatar.Root class="hidden h-9 w-9 sm:flex">
 							<Avatar.Image src={instanceGroupOwnerImage} alt="Group Icon" />
-							<Avatar.Fallback>{instanceOwnerGroup?.name?.charAt(0).toUpperCase() || 'NA'}</Avatar.Fallback>
+							<Avatar.Fallback
+								>{instanceOwnerGroup?.name?.charAt(0).toUpperCase() || 'NA'}</Avatar.Fallback
+							>
 						</Avatar.Root>
 						<div class="grid gap-1">
 							<p class="text-sm font-medium leading-none">
@@ -187,7 +206,9 @@
 							<p class="text-sm font-medium leading-none">
 								{friend.displayName}
 							</p>
-							<p class="text-sm text-muted-foreground">{friend.statusDescription || friend.status}</p>
+							<p class="text-sm text-muted-foreground">
+								{friend.statusDescription || friend.status}
+							</p>
 						</div>
 					</div>
 				{/each}

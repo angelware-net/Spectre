@@ -30,7 +30,7 @@ export const friendsByInstanceId = derived(
 // Function to get friends by instanceId
 export const getFriendsByInstanceId = (instanceId: string) => {
 	let instanceFriends: Friend[] = [];
-	friendsByInstanceId.subscribe(map => {
+	friendsByInstanceId.subscribe((map) => {
 		instanceFriends = map.get(instanceId) || [];
 	})();
 	return instanceFriends;

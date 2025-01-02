@@ -4,24 +4,23 @@
 	import type { UserData } from '$lib/types/user.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
-
-	import Link from "lucide-svelte/icons/link";
-	import Twitter from "lucide-svelte/icons/twitter";
-	import Twitch from "lucide-svelte/icons/twitch";
-	import YouTube from "lucide-svelte/icons/youtube";
-	import Github from "lucide-svelte/icons/github";
-	import Facebook from "lucide-svelte/icons/facebook";
-	import Instagram from "lucide-svelte/icons/instagram";
+	import Link from 'lucide-svelte/icons/link';
+	import Twitter from 'lucide-svelte/icons/twitter';
+	import Twitch from 'lucide-svelte/icons/twitch';
+	import YouTube from 'lucide-svelte/icons/youtube';
+	import Github from 'lucide-svelte/icons/github';
+	import Facebook from 'lucide-svelte/icons/facebook';
+	import Instagram from 'lucide-svelte/icons/instagram';
 
 	export let currentUser: UserData | null;
 
 	const linkIconMap: { [key: string]: any } = {
-		"twitter.com": Twitter,
-		"twitch.com": Twitch,
-		"youtube.com": YouTube,
-		"github.com": Github,
-		"facebook.com": Facebook,
-		"instagram.com": Instagram
+		'twitter.com': Twitter,
+		'twitch.com': Twitch,
+		'youtube.com': YouTube,
+		'github.com': Github,
+		'facebook.com': Facebook,
+		'instagram.com': Instagram
 	};
 
 	function getIconForLink(link: string) {
@@ -34,14 +33,12 @@
 	}
 
 	const openUrl = (link: string) => {
-		open(link)
-	}
+		open(link);
+	};
 </script>
 
 <div class="flex flex-col space-y-2">
-	<h1 class="text-xl text">
-		Bio
-	</h1>
+	<h1 class="text text-xl">Bio</h1>
 	<ScrollArea class="h-64 rounded-md border p-4" orientation="both">
 		<p class="text-sm" style="white-space: pre-line">{currentUser?.bio}</p>
 	</ScrollArea>

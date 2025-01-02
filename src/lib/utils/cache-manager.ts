@@ -1,7 +1,7 @@
 /*
-* Crude cache manager, runs a check at startup to verify the cache size isnt over an amount, if it is, it clears the cache
-* to half the size of the initial value based on recency. I know this is really hacky, I will implement a real solution soon:tm:
-*/
+ * Crude cache manager, runs a check at startup to verify the cache size isnt over an amount, if it is, it clears the cache
+ * to half the size of the initial value based on recency. I know this is really hacky, I will implement a real solution soon:tm:
+ */
 
 import { BaseDirectory, exists, mkdir, readDir, remove, stat } from '@tauri-apps/plugin-fs';
 import { getNumericSetting } from '$lib/store';
@@ -18,7 +18,9 @@ export async function manageCacheSize() {
 
 		for (const file of files) {
 			if (file.isFile) {
-				const fileMeta = await stat(`${cacheDir}/${file.name}`, { baseDir: BaseDirectory.AppCache });
+				const fileMeta = await stat(`${cacheDir}/${file.name}`, {
+					baseDir: BaseDirectory.AppCache
+				});
 				fileSizes.push({
 					path: `${cacheDir}/${file.name}`,
 					size: fileMeta.size || 0,
@@ -51,7 +53,10 @@ export async function clearCache() {
 	}
 }
 
-async function clearOldestFiles(fileSizes: { path: string; size: number; modified: Date }[], excessSizeMB: number): Promise<void> {
+async function clearOldestFiles(
+	fileSizes: { path: string; size: number; modified: Date }[],
+	excessSizeMB: number
+): Promise<void> {
 	// sort files by last modified time
 	fileSizes.sort((a, b) => a.modified.getTime() - b.modified.getTime());
 

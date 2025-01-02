@@ -22,7 +22,7 @@
 	import * as Dialog from '$lib/components/ui/dialog';
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
-	import * as Select from "$lib/components/ui/select/index.js";
+	import * as Select from '$lib/components/ui/select/index.js';
 
 	// Icons
 	import { Grid2X2, List, LoaderCircle, LucideRefreshCw } from 'lucide-svelte';
@@ -141,21 +141,21 @@
 		<div class="grid grid-cols-2">
 			<div class="text-3xl">Friends</div>
 			<div class="flex flex-row items-end justify-end text-end">
-<!--				<div class="flex flex-row justify-end pr-4">-->
-<!--					<Select.Root>-->
-<!--						<Select.Trigger class="w-[180px]">-->
-<!--							<Select.Value placeholder="Sort" />-->
-<!--						</Select.Trigger>-->
-<!--						<Select.Content>-->
-<!--							<Select.Group>-->
-<!--								<Select.Item value="Status" label="Status">Status</Select.Item>-->
-<!--								<Select.Item value="Username" label="Username">Username</Select.Item>-->
-<!--								<Select.Item value="Location" label="Location">Location</Select.Item>-->
-<!--							</Select.Group>-->
-<!--						</Select.Content>-->
-<!--						<Select.Input name="themeSelector" />-->
-<!--					</Select.Root>-->
-<!--				</div>-->
+				<!--				<div class="flex flex-row justify-end pr-4">-->
+				<!--					<Select.Root>-->
+				<!--						<Select.Trigger class="w-[180px]">-->
+				<!--							<Select.Value placeholder="Sort" />-->
+				<!--						</Select.Trigger>-->
+				<!--						<Select.Content>-->
+				<!--							<Select.Group>-->
+				<!--								<Select.Item value="Status" label="Status">Status</Select.Item>-->
+				<!--								<Select.Item value="Username" label="Username">Username</Select.Item>-->
+				<!--								<Select.Item value="Location" label="Location">Location</Select.Item>-->
+				<!--							</Select.Group>-->
+				<!--						</Select.Content>-->
+				<!--						<Select.Input name="themeSelector" />-->
+				<!--					</Select.Root>-->
+				<!--				</div>-->
 				<div class="flex flex-row justify-end">
 					<ToggleGroup.Root
 						type="single"
@@ -183,7 +183,7 @@
 	</div>
 
 	{#if viewMode === 'cards'}
-		<div class="grid md:grid-cols-3 xs:grid-cols-1 sm:grid-cols-2">
+		<div class="xs:grid-cols-1 grid sm:grid-cols-2 md:grid-cols-3">
 			{#each sortedFriends as friend}
 				<div class="p-2">
 					<FriendCard {friend} />
@@ -198,14 +198,14 @@
 						<Table.Head class="w-[10px] sm:w-[50px] md:w-[100px]">Status</Table.Head>
 						<Table.Head class="">Name</Table.Head>
 						<Table.Head class="">Location</Table.Head>
-						<Table.Head class="text-right hidden sm:table-cell">Join</Table.Head>
+						<Table.Head class="hidden text-right sm:table-cell">Join</Table.Head>
 					</Table.Row>
 				</Table.Header>
 				<Table.Body>
 					{#if loading}
 						{#each Array(5) as _, i}
 							<Table.Row class="">
-								<Table.Cell class="flex justify-center items-center">
+								<Table.Cell class="flex items-center justify-center">
 									<Skeleton class="h-6 w-[25px]" />
 								</Table.Cell>
 								<Table.Cell>
@@ -224,7 +224,7 @@
 							<Table.Row class="">
 								<!--Status-->
 								<Tooltip.Root>
-									<Tooltip.Trigger class="flex justify-center items-center h-full p-4">
+									<Tooltip.Trigger class="flex h-full items-center justify-center p-4">
 										<Table.Cell class="">
 											<span class={getStatusClass(friend.state, friend.status)}></span>
 										</Table.Cell>
@@ -246,11 +246,15 @@
 													<div class="flex space-x-4">
 														<Avatar.Root>
 															{#await getFriendImage(friend)}
-																<Avatar.Fallback>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback>
+																<Avatar.Fallback
+																	>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback
+																>
 															{:then url}
 																<Avatar.Image src={url} alt="Avatar" />
 															{:catch error}
-																<Avatar.Fallback>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback>
+																<Avatar.Fallback
+																	>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback
+																>
 															{/await}
 														</Avatar.Root>
 														<div class="space-y-1">
@@ -290,11 +294,19 @@
 															<Avatar.Root>
 																{#if friend !== undefined && friend.locationData !== undefined}
 																	{#await loadImage(friend.locationData.imageUrl)}
-																		<Avatar.Fallback>{friend.locationData.name.charAt(0).toUpperCase()}</Avatar.Fallback>
+																		<Avatar.Fallback
+																			>{friend.locationData.name
+																				.charAt(0)
+																				.toUpperCase()}</Avatar.Fallback
+																		>
 																	{:then url}
 																		<Avatar.Image src={url} alt="Avatar" />
 																	{:catch error}
-																		<Avatar.Fallback>{friend.locationData.name.charAt(0).toUpperCase()}</Avatar.Fallback>
+																		<Avatar.Fallback
+																			>{friend.locationData.name
+																				.charAt(0)
+																				.toUpperCase()}</Avatar.Fallback
+																		>
 																	{/await}
 																{/if}
 																<Avatar.Fallback>SK</Avatar.Fallback>
@@ -314,7 +326,7 @@
 												</HoverCard.Root>
 											</Dialog.Trigger>
 											<Dialog.Content>
-												<Instance userId="{friend.id}" />
+												<Instance userId={friend.id} />
 											</Dialog.Content>
 										</Dialog.Root>
 									{:else}
@@ -323,14 +335,14 @@
 								</Table.Cell>
 
 								<!--JoinButton-->
-								<Table.Cell class="text-right hidden sm:table-cell">
+								<Table.Cell class="hidden text-right sm:table-cell">
 									{#if friend.locationName !== 'Private' && friend.locationName !== 'On Website' && friend.locationName !== 'Offline'}
 										<Dialog.Root>
 											<Dialog.Trigger>
 												<Button>Details</Button>
 											</Dialog.Trigger>
 											<Dialog.Content>
-												<Instance userId="{friend.id}" />
+												<Instance userId={friend.id} />
 											</Dialog.Content>
 										</Dialog.Root>
 									{:else}
@@ -390,9 +402,9 @@
 		background-color: lightgray;
 	}
 
-  .status-offline {
-			background-color: dimgray;
-  }
+	.status-offline {
+		background-color: dimgray;
+	}
 
 	@keyframes rotate {
 		from {

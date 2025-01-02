@@ -124,39 +124,39 @@
 	}
 
 	/* ticker https://code-boxx.com/html-css-news-ticker-horizontal-vertical/*/
-  .hmove {
-      display: flex;
-      align-items: center; /* Vertically align text */
-      gap: 20rem; /* Add spacing between items */
-      animation: tickerh linear 20s infinite;
-      will-change: transform; /* Optimize for animations */
-  }
+	.hmove {
+		display: flex;
+		align-items: center; /* Vertically align text */
+		gap: 20rem; /* Add spacing between items */
+		animation: tickerh linear 20s infinite;
+		will-change: transform; /* Optimize for animations */
+	}
 
-  .hitem {
-      white-space: nowrap; /* Prevent wrapping */
-      text-overflow: ellipsis; /* Hide overflowing text */
-      overflow: hidden; /* Prevent overflow */
-      line-height: 2.5rem; /* Match the height of the footer */
-      flex-shrink: 0; /* Prevent shrinking */
-  }
+	.hitem {
+		white-space: nowrap; /* Prevent wrapping */
+		text-overflow: ellipsis; /* Hide overflowing text */
+		overflow: hidden; /* Prevent overflow */
+		line-height: 2.5rem; /* Match the height of the footer */
+		flex-shrink: 0; /* Prevent shrinking */
+	}
 
-  .hwrap {
-      overflow: hidden; /* Hide content outside bounds */
-      width: 100%; /* Ensure full-width container */
-      display: flex;
-      align-items: center; /* Vertically align items */
-      position: relative; /* Contain child elements */
-      box-sizing: border-box; /* Ensure no additional width from padding */
-  }
+	.hwrap {
+		overflow: hidden; /* Hide content outside bounds */
+		width: 100%; /* Ensure full-width container */
+		display: flex;
+		align-items: center; /* Vertically align items */
+		position: relative; /* Contain child elements */
+		box-sizing: border-box; /* Ensure no additional width from padding */
+	}
 
-  @keyframes tickerh {
-      0% {
-          transform: translateX(100%);
-      }
-      100% {
-          transform: translateX(-100%);
-      }
-  }
+	@keyframes tickerh {
+		0% {
+			transform: translateX(100%);
+		}
+		100% {
+			transform: translateX(-100%);
+		}
+	}
 	.hmove {
 		animation: tickerh linear 20s infinite;
 	}

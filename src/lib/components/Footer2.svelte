@@ -11,15 +11,13 @@
 	let dateTime: string = '';
 	let currentTime: string = 'Loading...';
 
-	let tickerItems: string[] = [
-		'Made with ❤️ by ANGELWARE',
-	];
+	let tickerItems: string[] = ['Made with ❤️ by ANGELWARE'];
 
 	$: tickerItems = [
 		'Made with ❤️ by ANGELWARE',
 		`Online Friends: ${onlineFriendsCount}`,
 		`Online Users: ${onlineUsers}`,
-		`VRChat Time: ${currentTime}`,
+		`VRChat Time: ${currentTime}`
 	];
 
 	let currentTickerIndex = 0;
@@ -59,7 +57,7 @@
 			const fadeOut = tickerElement.animate(
 				[
 					{ opacity: 1, transform: 'translateX(0)' },
-					{ opacity: 0, transform: 'translateX(10%)' },
+					{ opacity: 0, transform: 'translateX(10%)' }
 				],
 				{ duration: fadeDuration, easing: 'ease-in' }
 			);
@@ -73,7 +71,7 @@
 				tickerElement!.animate(
 					[
 						{ opacity: 0, transform: 'translateX(-10%)' },
-						{ opacity: 1, transform: 'translateX(0)' },
+						{ opacity: 1, transform: 'translateX(0)' }
 					],
 					{ duration: fadeDuration, easing: 'ease-out' }
 				);
@@ -121,15 +119,15 @@
 </footer>
 
 <style>
-    .ticker-container {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        overflow: hidden;
-    }
+	.ticker-container {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		overflow: hidden;
+	}
 
-    .ticker-text {
-        white-space: nowrap;
-    }
+	.ticker-text {
+		white-space: nowrap;
+	}
 </style>
