@@ -41,6 +41,8 @@ pub fn run() {
             web::vrc_user::get_vrc_user,
             web::vrc_instance::get_vrc_instance,
             web::vrc_group::get_vrc_group,
+            web::vrc_avatar_list::get_vrc_avatar_list,
+            web::vrc_current_avatar::get_vrc_current_avatar,
             // Cookies handling
             web::cookies::load_login_cookies,
             web::cookies::save_login_cookies,

@@ -39,12 +39,14 @@
 </script>
 
 <div class="flex flex-col space-y-2">
-	<h1>Bio:</h1>
-	<ScrollArea class="h-40 rounded-md border p-4" orientation="both">
+	<h1 class="text-xl text">
+		Bio
+	</h1>
+	<ScrollArea class="h-64 rounded-md border p-4" orientation="both">
 		<p class="text-sm" style="white-space: pre-line">{currentUser?.bio}</p>
 	</ScrollArea>
 </div>
-<div class="flex flex-col space-y-2">
+<div class="flex flex-col space-y-2 pt-4">
 	<h1>Links:</h1>
 	<div class="flex gap-4">
 		{#each currentUser?.bioLinks ?? [] as link}

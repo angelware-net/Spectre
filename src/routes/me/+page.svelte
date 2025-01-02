@@ -4,6 +4,7 @@
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
 	import { goto } from '$app/navigation';
+	import { open } from '@tauri-apps/plugin-shell';
 
 	import * as Avatar from "$lib/components/ui/avatar";
 	import { Button } from '$lib/components/ui/button';
@@ -11,25 +12,17 @@
 	import { Separator } from "$lib/components/ui/separator/index.js";
 	import * as Tabs from "$lib/components/ui/tabs";
 
-	import Link from "lucide-svelte/icons/link";
-	import Twitter from "lucide-svelte/icons/twitter";
-	import Twitch from "lucide-svelte/icons/twitch";
-	import YouTube from "lucide-svelte/icons/youtube";
-	import Github from "lucide-svelte/icons/github";
-	import Facebook from "lucide-svelte/icons/facebook";
-	import Instagram from "lucide-svelte/icons/instagram";
-
 	import Bio from '$lib/components/me/Bio.svelte';
-	import Json from '$lib/components/me/Json.svelte';
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
+	import OwnAvatar from '$lib/components/me/OwnAvatar.svelte';
 
 	let currentUser: UserData | null;
 
-	onMount(async () => {
+	onMount(() => {
 		currentUser = get(currentUserStore);
 
 		if (currentUser == null) {
-			await goto('/');
+			goto('/');
 		}
 	});
 
@@ -65,15 +58,6 @@
 		"system_trust_basic": 1
 	};
 
-	const linkIconMap: { [key: string]: any } = {
-		"twitter.com": Twitter,
-		"twitch.com": Twitch,
-		"youtube.com": YouTube,
-		"github.com": Github,
-		"facebook.com": Facebook,
-		"instagram.com": Instagram
-	};
-
 	function getFilteredTags(tags) {
 		if (!tags) return [];
 
@@ -88,17 +72,9 @@
 		return [prioritizedTag, ...nonPrioritizedTags.filter(tag => tag !== prioritizedTag)];
 	}
 
-	function getIconForLink(link: string) {
-		for (const domain in linkIconMap) {
-			if (link.includes(domain)) {
-				return linkIconMap[domain];
-			}
-		}
-		return Link;
-	}
-
-	const openUrl = (link: string) => {
-		open(link)
+	function openProfile() {
+		if (currentUser != null)
+			open(`https://vrchat.com/home/user/${currentUser.id}`);
 	}
 
 	function formatUserData(userData: UserData | null): string {
@@ -116,14 +92,25 @@
 					<Avatar.Fallback>{currentUser?.displayName?.charAt(0).toUpperCase() || 'NA'}</Avatar.Fallback>
 				</Avatar.Root>
 				<div class="grid gap-1">
-					<p class="text-xl font-medium leading-none">
-						{currentUser?.displayName || 'Username'}
-					</p>
+					<div class="flex flex-row">
+						<p class="text-xl font-medium leading-none">
+							{currentUser?.displayName || 'Username'}
+						</p>
+						<p class="p-2 pt-0 pb-0">
+							{#each getFilteredTags(currentUser?.tags) as tag}
+								{#if tagToBadgeMap[tag]}
+									<Badge class="mr-1" variant="outline" style="border-color: {tagToColorMap[tag]}; color: white;">
+										{tagToBadgeMap[tag]}
+									</Badge>
+								{/if}
+							{/each}
+						</p>
+					</div>
 					<p class="text-sm text-muted-foreground">{currentUser?.statusDescription || currentUser?.status}</p>
 				</div>
 			</div>
 			<div class="flex flex-grow justify-end items-center">
-				<Button class="ml-auto font-medium">View Website</Button>
+				<Button on:click={openProfile} class="ml-auto font-medium">View Website</Button>
 			</div>
 			<div class="flex flex-row items-end justify-end text-end">
 			</div>
@@ -141,45 +128,22 @@
 				<Tabs.Trigger value="json">JSON</Tabs.Trigger>
 			</Tabs.List>
 			<Tabs.Content value="bio">
-				<div class="grid gap-8 mt-5">
-					<div class="">
-						<div class="flex items-center gap-4">
-							<Avatar.Root class="hidden h-9 w-9 sm:flex">
-								<Avatar.Image src={currentUser?.userIcon || currentUser?.currentAvatarImageUrl} alt="Avatar" />
-								<Avatar.Fallback>{currentUser?.displayName?.charAt(0).toUpperCase() || 'NA'}</Avatar.Fallback>
-							</Avatar.Root>
-							<div class="grid gap-1">
-								<p class="text-sm font-medium leading-none">
-									{currentUser?.displayName || 'Username'}
-								</p>
-								<p class="text-sm text-muted-foreground">{currentUser?.statusDescription || currentUser?.status}</p>
-							</div>
-						</div>
-						<p class="pt-2">
-							{#each getFilteredTags(currentUser?.tags) as tag}
-								{#if tagToBadgeMap[tag]}
-									<Badge variant="outline" style="border-color: {tagToColorMap[tag]}; color: white;">
-										{tagToBadgeMap[tag]}
-									</Badge>
-								{/if}
-							{/each}
-						</p>
-					</div>
-					<Separator />
-				</div>
-				<div class="pt-4">
+				<div class="pt-2">
 					<Bio currentUser="{currentUser}"/>
 				</div>
 			</Tabs.Content>
 			<Tabs.Content value="avatar">
-				{#if currentUser !== null}
-<!--					<OwnAvatar userId="{currentUser.id}"/>-->
-					<div class="flex w-full h-full justify-center items-center">
-						Coming Soon!
-					</div>
-				{:else}
-					Avatar couldn't be loaded!
-				{/if}
+				<div class="pt-2">
+					{#if currentUser !== null}
+						{#if currentUser?.id}
+							<OwnAvatar userId={currentUser.id} />
+						{:else}
+							<p>Avatar data is not available.</p>
+						{/if}
+					{:else}
+						Avatar couldn't be loaded!
+					{/if}
+				</div>
 			</Tabs.Content>
 			<Tabs.Content value="worlds">
 				{#if currentUser !== null}
