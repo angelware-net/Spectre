@@ -11,6 +11,7 @@
 	import * as Card from '$lib/components/ui/card';
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge/index.js';
+	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
 
 	import Link from 'lucide-svelte/icons/link';
 	import Twitter from 'lucide-svelte/icons/twitter';
@@ -132,9 +133,16 @@
 			<h1>Links:</h1>
 			<div class="flex gap-4">
 				{#each user?.bioLinks ?? [] as link}
-					<Button variant="ghost" size="icon" on:click={openUrl(link)}
-						><svelte:component this={getIconForLink(link)} /></Button
-					>
+					<Button variant="ghost" size="icon" on:click={openUrl(link)}>
+						<Tooltip.Root>
+							<Tooltip.Trigger>
+								<svelte:component this={getIconForLink(link)} />
+							</Tooltip.Trigger>
+							<Tooltip.Content>
+								{link}
+							</Tooltip.Content>
+						</Tooltip.Root>
+					</Button>
 				{/each}
 			</div>
 		</div>
