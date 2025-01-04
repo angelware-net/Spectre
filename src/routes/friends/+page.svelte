@@ -11,6 +11,7 @@
 	import { friendsStore } from '$lib/svelte-stores';
 	import { externalUserDataStore } from '$lib/svelte-stores';
 	import { instanceDataStore } from '$lib/svelte-stores';
+	import { getSetting, saveSetting } from '$lib/store';
 
 	// UI
 	import { Button } from '$lib/components/ui/button';
@@ -32,12 +33,39 @@
 	import Instance from '$lib/components/Instance.svelte';
 
 	let loading: boolean = true;
-	let viewMode: string | undefined = 'cards';
+	let viewMode: string = 'cards';
+	let sortMode: string = 'Status';
+	let friendsWithImages: Array<ExtendedFriend & { avatarUrl: string }> = [];
+
+	async function getViewMode() {
+		let viewModeSetting = await getSetting('friendsViewMode');
+
+		if (viewModeSetting != null) {
+			viewMode = viewModeSetting;
+		}
+	}
+
+	async function setViewMode(viewModeSetting: string | undefined) {
+		console.log('setting view mode');
+		if (viewModeSetting != undefined)
+			viewMode = viewModeSetting;
+		else
+			viewMode = 'cards';
+
+		await saveSetting('friendsViewMode', viewMode);
+	}
 
 	async function handleRefresh() {
 		loading = true;
 		await reloadData(true);
 		loading = false;
+	}
+
+	function handleSortChange(value: { value: string, label: string } | undefined) {
+		if (value) {
+			sortMode = value.value;
+			console.log("Sort mode changed");
+		}
 	}
 
 	const getStatusClass = (state: string, status: string) => {
@@ -64,31 +92,10 @@
 		}
 	};
 
-	onMount(async () => {
-		try {
-			loading = true;
-			// load friends data, friends user data, and location data
-			const friendsStoreData = get(friendsStore);
-			const externalUserDataStoreData = get(externalUserDataStore);
-			const instanceStoreData = get(instanceDataStore);
+	let sortedFriends: Array<ExtendedFriend & { avatarUrl: string }> = [];
 
-			if (
-				friendsStoreData.size === 0 ||
-				externalUserDataStoreData.size === 0 ||
-				instanceStoreData.size === 0
-			) {
-				await loadData();
-			} else {
-				console.log('Data exists, skipping reload!');
-			}
-			loading = false;
-		} catch (error) {
-			console.error('Failed to load friends:', error);
-		}
-	});
-
-	$: sortedFriends = Array.from($friendsStore.values())
-		.map((friend) => {
+	async function loadFriendsWithImages() {
+		const friends = Array.from($friendsStore.values()).map((friend) => {
 			const userData = $externalUserDataStore.get(friend.id);
 			const instanceData = $instanceDataStore.get(friend.id);
 			const state = userData?.state || 'offline';
@@ -104,36 +111,87 @@
 					: state === 'active'
 						? 'On Website'
 						: instanceData?.world?.name ||
-							(friend.location === 'private' ? 'Private' : 'Loading...');
-			const locationCount = instanceData?.userCount;
-			const locationCapacity = instanceData?.capacity;
-			const locationData = instanceData?.world;
+						(friend.location === 'private' ? 'Private' : 'Loading...');
 
 			return {
 				...friend,
 				state,
 				status,
 				locationName,
-				locationCount,
-				locationCapacity,
-				locationData
-			} as ExtendedFriend;
-		})
-		.sort((a, b) => {
+				locationCount: instanceData?.userCount,
+				locationCapacity: instanceData?.capacity,
+				locationData: instanceData?.world,
+			};
+		});
+
+		friendsWithImages = await Promise.all(
+			friends.map(async (friend) => {
+				const avatarUrl = await getFriendImage(friend);
+				return { ...friend, avatarUrl };
+			})
+		);
+	}
+
+	$: sortedFriends = [...friendsWithImages].sort((a, b) => {
+		const locationOrder = (location) => {
+			if (location === 'On Website') return 1;
+			if (location === 'Offline') return 2;
+			return 0;
+		};
+
+		if (sortMode === 'Status') {
 			const stateOrder = {
 				'online:join me': 1,
 				'online:active': 2,
 				'online:ask me': 3,
 				'online:busy': 4,
 				active: 5,
-				offline: 6
+				offline: 6,
 			};
-
 			const aKey = `${a.state}:${a.status}`.toLowerCase();
 			const bKey = `${b.state}:${b.status}`.toLowerCase();
+			const statusComparison =
+				(stateOrder[aKey] || stateOrder[a.state]) -
+				(stateOrder[bKey] || stateOrder[b.state]);
+			if (statusComparison !== 0) return statusComparison;
+			return a.displayName.localeCompare(b.displayName);
+		} else if (sortMode === 'Username') {
+			const locationComparison = locationOrder(a.locationName) - locationOrder(b.locationName);
+			if (locationComparison !== 0) return locationComparison;
+			return a.displayName.localeCompare(b.displayName);
+		} else if (sortMode === 'Location') {
+			const locationComparison = locationOrder(a.locationName) - locationOrder(b.locationName);
+			if (locationComparison !== 0) return locationComparison;
+			return a.locationName.localeCompare(b.locationName);
+		}
+		return 0;
+	});
 
-			return (stateOrder[aKey] || stateOrder[a.state]) - (stateOrder[bKey] || stateOrder[b.state]);
-		});
+	onMount(async () => {
+		loading = true;
+		await getViewMode();
+		try {
+			// load friends data, friends user data, and location data
+			const friendsStoreData = get(friendsStore);
+			const externalUserDataStoreData = get(externalUserDataStore);
+			const instanceStoreData = get(instanceDataStore);
+
+			if (
+				friendsStoreData.size === 0 ||
+				externalUserDataStoreData.size === 0 ||
+				instanceStoreData.size === 0
+			) {
+				await loadData();
+			} else {
+				console.log('Data exists, skipping reload!');
+			}
+			await loadFriendsWithImages();
+			loading = false;
+		} catch (error) {
+			console.error('Failed to load friends:', error);
+		}
+	});
+
 </script>
 
 <main class="p-4">
@@ -141,27 +199,27 @@
 		<div class="grid grid-cols-2">
 			<div class="text-3xl">Friends</div>
 			<div class="flex flex-row items-end justify-end text-end">
-				<!--				<div class="flex flex-row justify-end pr-4">-->
-				<!--					<Select.Root>-->
-				<!--						<Select.Trigger class="w-[180px]">-->
-				<!--							<Select.Value placeholder="Sort" />-->
-				<!--						</Select.Trigger>-->
-				<!--						<Select.Content>-->
-				<!--							<Select.Group>-->
-				<!--								<Select.Item value="Status" label="Status">Status</Select.Item>-->
-				<!--								<Select.Item value="Username" label="Username">Username</Select.Item>-->
-				<!--								<Select.Item value="Location" label="Location">Location</Select.Item>-->
-				<!--							</Select.Group>-->
-				<!--						</Select.Content>-->
-				<!--						<Select.Input name="themeSelector" />-->
-				<!--					</Select.Root>-->
-				<!--				</div>-->
+				<div class="flex flex-row justify-end pr-4">
+					<Select.Root onSelectedChange={handleSortChange}>
+						<Select.Trigger class="w-[180px]">
+							<Select.Value placeholder="Sort" />
+						</Select.Trigger>
+						<Select.Content>
+							<Select.Group>
+								<Select.Item value="Status" label="Status">Status</Select.Item>
+								<Select.Item value="Username" label="Username">Username</Select.Item>
+								<Select.Item value="Location" label="Location">Location</Select.Item>
+							</Select.Group>
+						</Select.Content>
+						<Select.Input name="themeSelector" />
+					</Select.Root>
+				</div>
 				<div class="flex flex-row justify-end">
 					<ToggleGroup.Root
 						type="single"
 						class="pr-4"
 						value={viewMode}
-						onValueChange={(e) => (viewMode = e)}
+						onValueChange={(e) => (setViewMode(e))}
 					>
 						<ToggleGroup.Item value="cards">
 							<Grid2X2 />
@@ -186,7 +244,7 @@
 		<div class="xs:grid-cols-1 grid sm:grid-cols-2 md:grid-cols-3">
 			{#each sortedFriends as friend}
 				<div class="p-2">
-					<FriendCard {friend} />
+					<FriendCard {friend} avatarUrl={friend.avatarUrl} />
 				</div>
 			{/each}
 		</div>

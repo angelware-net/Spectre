@@ -11,6 +11,7 @@
 	import Instance from '$lib/components/Instance.svelte';
 
 	export let friend: ExtendedFriend;
+	export let avatarUrl: string;
 	let avatarImage: string;
 
 	onMount(async () => {
@@ -58,7 +59,7 @@
 			<Dialog.Trigger class="block h-full w-full overflow-hidden">
 				<div
 					class="header-background h-64 bg-center"
-					style="background-image: url({avatarImage});"
+					style="background-image: url({avatarUrl});"
 				></div>
 			</Dialog.Trigger>
 			<Dialog.Content>
