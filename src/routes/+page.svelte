@@ -1,58 +1,38 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { invoke } from '@tauri-apps/api/tauri';
-	import { user } from '$lib/stores/user';
-	import { goto } from '$app/navigation';
-	import Login from '$lib/components/Login.svelte';
-	import { parseUserData } from '$lib/utils/parseUserData';
-	import type { UserData } from '$lib/types/user';
 
-	interface UserResponse {
-		username: string | null;
-		requires_two_factor_auth: string[] | null;
-		message: string | null;
-		response_body: string | null;
-	}
+	import { LoaderCircle } from 'lucide-svelte';
 
-	let isLoading = true;
+	import { loadingStore, onlineUsersStore } from '$lib/svelte-stores';
 
-	onMount(async () => {
-		try {
-			const isLoggedIn = await invoke<boolean>('is_logged_in');
-
-			if (isLoggedIn) {
-				try {
-					const loginParams = { encoded_credentials: '' }; // This should be filled with actual data
-					const userDataResponse: UserResponse = await invoke('login', { params: loginParams });
-					if (userDataResponse.response_body) {
-						const userData: UserData = parseUserData(userDataResponse.response_body);
-						user.set(userData);
-						goto('/home');
-					} else {
-						throw new Error('No response body in login response');
-					}
-				} catch (error) {
-					const errorMessage = error?.message || error.toString();
-					if (errorMessage.includes('401')) {
-						isLoading = false;
-					} else {
-						console.error('Login failed:', errorMessage);
-					}
-				}
-			} else {
-				isLoading = false;
-			}
-		} catch (error) {
-			console.error('Error checking login status:', error?.message || error.toString());
-			isLoading = false;
-		}
+	// Loading boolean
+	let isLoading = false;
+	loadingStore.subscribe((value) => {
+		isLoading = value;
 	});
+
+	// Online users count (verifies vrc is online)
+	let onlineUsersCount: number = 0;
+	onlineUsersStore.subscribe((value) => {
+		onlineUsersCount = value;
+	});
+
+	// Mount function
+	onMount(async () => {});
 </script>
 
-<main class="flex justify-center items-center object-center p-6">
-	{#if isLoading}
-		<p>Loading...</p>
-	{:else}
-		<Login />
-	{/if}
+<main>
+	<div class="flex h-96 flex-col items-center justify-center">
+		{#if isLoading}
+			<LoaderCircle class="h-7 animate-spin" />
+			<h2>Loading...</h2>
+			{#if onlineUsersCount === 0}
+				<p>Checking VRChat status...</p>
+			{:else if onlineUsersCount === -1}
+				<p>VRChat appears to be down! Spectre cannot run if VRChat is not available!</p>
+			{/if}
+		{:else}
+			<h2>Finished Loading...</h2>
+		{/if}
+	</div>
 </main>

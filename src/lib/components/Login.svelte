@@ -1,66 +1,68 @@
 <script lang="ts">
-	import { invoke } from '@tauri-apps/api';
-	import { Button } from "$lib/components/ui/button/index.js";
-	import * as Card from "$lib/components/ui/card/index.js";
-	import { Input } from "$lib/components/ui/input/index.js";
-	import { Label } from "$lib/components/ui/label/index.js";
-	import { encode as base64_encode } from 'js-base64';
-	import { goto } from '$app/navigation';
+	import { invoke } from '@tauri-apps/api/core';
+	import { Button } from '$lib/components/ui/button/index.js';
+	import * as Card from '$lib/components/ui/card/index.js';
+	import { Input } from '$lib/components/ui/input/index.js';
+	import { Label } from '$lib/components/ui/label/index.js';
 	import { toast } from 'svelte-sonner';
+	import { goto } from '$app/navigation';
+	import type { UserData } from '$lib/types/user';
+	import { currentUserStore } from '$lib/svelte-stores';
 
 	let email = '';
 	let password = '';
 	let twoFactorCode = '';
-	let responseMessage: unknown = '';
 	let requiresTwoFactorAuth = false;
-	let useEmailOtp = false;
-
-	async function login() {
-		try {
-			const encodedCredentials = base64_encode(`${email}:${password}`);
-			const result = await invoke('login', {
-				params: {
-					encoded_credentials: encodedCredentials
-				}
-			});
-			if (result.requires_two_factor_auth) {
-				requiresTwoFactorAuth = true;
-				useEmailOtp = result.requires_two_factor_auth.includes('emailOtp');
-				toast("Check your email or device for your two-factor code!");
-			}
-			else {
-				responseMessage = result.message || `User: ${result.displayname}`;
-				toast("Successfully logged in!");
-				goto("/home");
-			}
-			console.log(result);
-		}
-		catch (error) {
-			responseMessage = error;
-			toast("An error occured!");
-			console.error(error);
-		}
-	}
 
 	async function verifyTwoFactor() {
 		try {
-			const result = await invoke('verify_two_factor', {
-				params: {
-					code: twoFactorCode,
-					use_email: useEmailOtp
-				}
+			let twofa = await invoke('get_totp', {
+				totp: twoFactorCode
 			});
-			responseMessage = result;
-			requiresTwoFactorAuth = false;
-			useEmailOtp = false;
-			console.log(result);
-			toast("Successfully logged in!");
-			goto("/home")
+
+			console.log(twofa);
+			toast('Login Success!');
+
+			await goto('/home');
+		} catch (e) {
+			console.error('Error verifying 2fa: ', e);
 		}
-		catch (error) {
-			responseMessage = error;
-			toast("An error occured!");
-			console.error(error);
+	}
+
+	async function login() {
+		try {
+			console.log('Logging in...');
+			let login = await invoke('get_login', {
+				username: email,
+				password: password
+			});
+
+			console.log('Got login, processing...');
+			console.log(login);
+
+			const response = typeof login === 'string' ? JSON.parse(login) : login;
+
+			if (response.requiresTwoFactorAuth) {
+				console.log('2fa required');
+				if (response.requiresTwoFactorAuth.includes('totp')) {
+					console.log('totp required');
+
+					requiresTwoFactorAuth = true;
+				} else {
+					console.log('otp required');
+				}
+			} else {
+				const userData = response as UserData;
+				currentUserStore.set(userData);
+				console.log(userData.displayName + ' has logged in!');
+
+				toast('Login Success!');
+				await goto('/home');
+				goto('/home');
+			}
+		} catch (error) {
+			console.error('Error during login:', error);
+			toast('Login Error!');
 		}
 	}
 </script>
@@ -68,7 +70,9 @@
 <Card.Root class="w-full max-w-sm">
 	<Card.Header>
 		<Card.Title class="text-2xl">Login</Card.Title>
-		<Card.Description>Enter your email and password below to login to your account.</Card.Description>
+		<Card.Description
+			>Enter your email and password below to login to your account.</Card.Description
+		>
 	</Card.Header>
 	<Card.Content class="grid gap-4">
 		<div class="grid gap-2">
@@ -93,5 +97,5 @@
 			<Button class="w-full" on:click={login}>Sign in</Button>
 		{/if}
 	</Card.Footer>
-<!--	<p>{responseMessage}</p>-->
+	<!--	<p>{responseMessage}</p>-->
 </Card.Root>

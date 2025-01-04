@@ -1,15 +1,11 @@
 <script lang="ts">
-	import { user } from '$lib/stores/user';
-	import type { UserData } from '$lib/types/user';
-	import { goto } from '$app/navigation';
-	import { getUsersOnline } from '$lib/utils/getUsersOnline';
 	import { onMount } from 'svelte';
-	import { getApiTime } from '$lib/utils/getApiTime';
-	import { getOnlineUsers } from '$lib/utils/getOnlineUsers';
-	import { open } from '@tauri-apps/api/shell';
-	import { reloadData } from '$lib/functions/loadData';
-	import { get } from 'svelte/store';
-	import { checkUserStatus } from '$lib/functions/checkUserStatus';
+
+	import { onlineUsersStore } from '$lib/svelte-stores';
+	import { invoke } from '@tauri-apps/api/core';
+	import { getOnlineUsers } from '$lib/utils/get-online-users';
+	import { getGlobalUserCount } from '$lib/utils/get-global-count';
+	import { reloadData } from '$lib/load-data';
 
 	let onlineFriendsCount = 0;
 	let onlineUsers = 0;
@@ -18,7 +14,6 @@
 	let currentlyOnline: boolean = false;
 
 	function cleanDateTimeString(dateTime: string): string {
-		// Remove any extraneous quotes and trim the string
 		return dateTime.replace(/(^")|("$)/g, '').trim();
 	}
 
@@ -27,7 +22,7 @@
 			const cleanedDateTime = cleanDateTimeString(initialDateTime);
 			const date = new Date(cleanedDateTime);
 			if (isNaN(date.getTime())) {
-				throw new Error('Invalid Date');
+				console.error('Invalid Date');
 			}
 			const now = new Date();
 			const diffInSeconds = Math.floor((now.getTime() - date.getTime()) / 1000);
@@ -45,13 +40,20 @@
 
 	onMount(async () => {
 		try {
+			onlineUsersStore.subscribe((value) => {
+				onlineUsers = value;
+			});
+
 			await reloadData(false);
-			currentlyOnline = await checkUserStatus();
+			// currentlyOnline = await checkUserStatus();
 			onlineFriendsCount = await getOnlineUsers();
-			onlineUsers = await getUsersOnline();
-			dateTime = await getApiTime();
+			onlineUsers = await getGlobalUserCount();
+			// dateTime = await getApiTime();
+
+			dateTime = await invoke('get_vrc_time');
+
 			if (!dateTime) {
-				throw new Error('Invalid dateTime fetched from API');
+				console.error('Invalid dateTime fetched from API');
 			}
 			updateCurrentTime(dateTime);
 			setInterval(() => updateCurrentTime(dateTime), 1000);
@@ -63,83 +65,9 @@
 	$: tickerClass = currentlyOnline ? 'bg-green' : 'bg-background';
 </script>
 
-<style>
-    :root {
-        --ticker-bg-color: hsl(var(--background));
-    }
-
-    .ticker-container.bg-green {
-        --ticker-bg-color: green;
-    }
-
-    .ticker-container {
-        width: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .ticker-wrapper {
-        position: relative;
-        width: 30%;
-        overflow: hidden;
-    }
-
-    .ticker-wrapper::before,
-    .ticker-wrapper::after {
-        content: '';
-        position: absolute;
-        top: 0;
-        width: 15%;
-        height: 100%;
-        pointer-events: none;
-    }
-
-    .ticker-wrapper::before {
-        left: 0;
-        background: linear-gradient(to right, var(--ticker-bg-color), transparent);
-        z-index: 1;
-    }
-
-    .ticker-wrapper::after {
-        right: 0;
-        background: linear-gradient(to left, var(--ticker-bg-color), transparent);
-    }
-
-    /* ticker https://code-boxx.com/html-css-news-ticker-horizontal-vertical/*/
-    .hmove {
-        display: flex;
-        justify-content: space-between;
-    }
-    .hitem {
-        width: 100%;
-        flex-shrink: 0;
-    }
-    .hwrap {
-        overflow: hidden;
-        justify-content: space-between;
-    }
-
-    @keyframes tickerh {
-        0% {
-            transform: translatex(100%);
-        }
-        100% {
-            transform: translatex(-400%);
-        }
-    }
-    .hmove {
-        animation: tickerh linear 20s infinite;
-    }
-    .hmove:hover {
-        animation-play-state: paused;
-    }
-    /* end ticker */
-</style>
-
-<footer class="h-10 flex justify-center items-center w-screen bg-background border-t">
+<footer class="flex h-10 w-screen items-center justify-center border-t bg-background">
 	<div class="ticker-container {tickerClass}">
-		<div class="font-mono ticker-wrapper">
+		<div class="ticker-wrapper font-mono">
 			<div class="hwrap">
 				<div class="hmove">
 					<a class="hitem" on:click={openAw} href="/">Made with ❤️ by ANGELWARE</a>
@@ -151,3 +79,89 @@
 		</div>
 	</div>
 </footer>
+
+<style>
+	:root {
+		--ticker-bg-color: hsl(var(--background));
+	}
+
+	.ticker-container.bg-green {
+		--ticker-bg-color: green;
+	}
+
+	.ticker-container {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+	}
+
+	.ticker-wrapper {
+		position: relative;
+		width: 30%;
+		overflow: hidden;
+	}
+
+	.ticker-wrapper::before,
+	.ticker-wrapper::after {
+		content: '';
+		position: absolute;
+		top: 0;
+		width: 15%;
+		height: 100%;
+		pointer-events: none;
+	}
+
+	.ticker-wrapper::before {
+		left: 0;
+		background: linear-gradient(to right, var(--ticker-bg-color), transparent);
+		z-index: 1;
+	}
+
+	.ticker-wrapper::after {
+		right: 0;
+		background: linear-gradient(to left, var(--ticker-bg-color), transparent);
+	}
+
+	/* ticker https://code-boxx.com/html-css-news-ticker-horizontal-vertical/*/
+	.hmove {
+		display: flex;
+		align-items: center; /* Vertically align text */
+		gap: 20rem; /* Add spacing between items */
+		animation: tickerh linear 20s infinite;
+		will-change: transform; /* Optimize for animations */
+	}
+
+	.hitem {
+		white-space: nowrap; /* Prevent wrapping */
+		text-overflow: ellipsis; /* Hide overflowing text */
+		overflow: hidden; /* Prevent overflow */
+		line-height: 2.5rem; /* Match the height of the footer */
+		flex-shrink: 0; /* Prevent shrinking */
+	}
+
+	.hwrap {
+		overflow: hidden; /* Hide content outside bounds */
+		width: 100%; /* Ensure full-width container */
+		display: flex;
+		align-items: center; /* Vertically align items */
+		position: relative; /* Contain child elements */
+		box-sizing: border-box; /* Ensure no additional width from padding */
+	}
+
+	@keyframes tickerh {
+		0% {
+			transform: translateX(100%);
+		}
+		100% {
+			transform: translateX(-100%);
+		}
+	}
+	.hmove {
+		animation: tickerh linear 20s infinite;
+	}
+	.hmove:hover {
+		animation-play-state: paused;
+	}
+	/* end ticker */
+</style>

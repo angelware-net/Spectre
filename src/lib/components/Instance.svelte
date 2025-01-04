@@ -3,26 +3,21 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import { Separator } from '$lib/components/ui/separator/index.js';
-	import * as Card from "$lib/components/ui/card";
-	import * as Avatar from "$lib/components/ui/avatar";
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+	import * as Avatar from '$lib/components/ui/avatar';
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
-	import type { ExternalUserData } from '$lib/types/externalUser';
-	import type { InstanceData } from '$lib/types/instance';
-	import type { Friend } from '$lib/types/friend';
-
-	import { open } from '@tauri-apps/api/shell';
+	import { instanceDataStore } from '$lib/svelte-stores';
 	import { onMount } from 'svelte';
 	import { get } from 'svelte/store';
-
-	import { externalUserData } from '$lib/stores/externalUserStore';
-	import { instanceDataStore } from '$lib/stores/instanceStore';
-	import { loadUser } from '$lib/utils/getUser';
-	import { getFriendsByInstanceId } from '$lib/utils/getFriendsByInstanceId';
+	import type { InstanceData } from '$lib/types/instance';
+	import type { ExternalUserData } from '$lib/types/external-user';
+	import type { Friend } from '$lib/types/friend';
 	import type { GroupData } from '$lib/types/group';
-	import { loadGroup } from '$lib/utils/getGroupById';
-	import { sendInviteToMyself } from '$lib/utils/postInviteSelfToInstance';
+	import { invoke } from '@tauri-apps/api/core';
+	import { getFriendsByInstanceId } from '$lib/utils/get-friend-by-instance';
 	import { toast } from 'svelte-sonner';
+	import { loadImage } from '$lib/utils/load-image';
+	import { getFriendImage } from '$lib/utils/get-friend-image';
 
 	export let userId: string;
 	let instance: InstanceData | undefined;
@@ -30,29 +25,51 @@
 	let instanceOwnerGroup: GroupData | undefined;
 	let friendsInInstance: Friend[] = [];
 
+	let instanceImage: string;
+	let instanceOwnerImage: string;
+	let instanceGroupOwnerImage: string;
+
 	const openUrl = (link: string) => {
 		open(link);
-		toast("Opening instance in browser...")
-	}
+		toast('Opening instance in browser...');
+	};
 
 	const joinUrl = (link: string) => {
 		open(link);
-		toast("Joining instance through weblink...")
-	}
+		toast('Joining instance through weblink...');
+	};
 
 	const inviteMyself = (worldId: string, instanceId: string) => {
-		sendInviteToMyself(worldId, instanceId);
-		toast("Invite sent!");
-	}
+		// sendInviteToMyself(worldId, instanceId);
+		toast('Invite sent!');
+	};
 
 	onMount(async () => {
 		const userMap = get(instanceDataStore);
 		instance = userMap.get(userId);
 
-		if (instance?.ownerId.startsWith("usr")) {
-			instanceOwnerUser = await loadUser(instance?.ownerId)
-		} else if (instance?.ownerId.startsWith("grp")) {
-			instanceOwnerGroup = await loadGroup(instance?.ownerId)
+		if (instance != undefined) instanceImage = instance.world.thumbnailImageUrl;
+
+		if (instance?.ownerId.startsWith('usr')) {
+			let instanceOwnerUserJson = await invoke<string>('get_vrc_user', {
+				userId: instance?.ownerId
+			});
+			instanceOwnerUser = JSON.parse(instanceOwnerUserJson);
+
+			if (instanceOwnerUser != undefined && instanceOwnerUser.userIcon != '') {
+				instanceOwnerImage = await loadImage(instanceOwnerUser.userIcon);
+			} else if (instanceOwnerUser != undefined) {
+				instanceOwnerImage = await loadImage(instanceOwnerUser.currentAvatarImageUrl);
+			}
+		} else if (instance?.ownerId.startsWith('grp')) {
+			let instanceOwnerGroupJson = await invoke<string>('get_vrc_group', {
+				groupId: instance?.ownerId
+			});
+			instanceOwnerGroup = JSON.parse(instanceOwnerGroupJson);
+
+			if (instanceOwnerGroup != undefined && instanceOwnerGroup.iconUrl != '') {
+				instanceGroupOwnerImage = await loadImage(instanceOwnerGroup.iconUrl);
+			}
 		}
 
 		if (instance?.instanceId) {
@@ -60,33 +77,39 @@
 		}
 	});
 </script>
+
 <div class="mt-5">
 	<div class="grid gap-8">
-
 		<!--Section-->
 		<div class="flex items-center gap-4">
 			<Avatar.Root class="hidden h-11 w-11 sm:flex">
-				<Avatar.Image src={instance?.world.thumbnailImageUrl} alt="World Thumbnail" />
+				<Avatar.Image src={instanceImage} alt="World Thumbnail" />
 				<Avatar.Fallback>{instance?.world?.name?.charAt(0).toUpperCase() || 'NA'}</Avatar.Fallback>
 			</Avatar.Root>
 			<div class="grid gap-1">
 				<p class="text-sm font-medium leading-none">
 					{instance?.world.name || 'World Name'}
 				</p>
-				<p class="text-sm text-muted-foreground">({instance?.userCount} / {instance?.recommendedCapacity}) [{instance?.capacity}]</p>
 				<p class="text-sm text-muted-foreground">
-					{#if instance?.type === "hidden"} Friends+
-					{:else if instance?.type === "friends"} Friends
-					{:else if instance?.type === "group"}
-						{#if instance?.groupAccessType === "plus"}
+					({instance?.userCount} / {instance?.recommendedCapacity}) [{instance?.capacity}]
+				</p>
+				<p class="text-sm text-muted-foreground">
+					{#if instance?.type === 'hidden'}
+						Friends+
+					{:else if instance?.type === 'friends'}
+						Friends
+					{:else if instance?.type === 'group'}
+						{#if instance?.groupAccessType === 'plus'}
 							Group+
-						{:else if instance?.groupAccessType === "public"}
+						{:else if instance?.groupAccessType === 'public'}
 							Group Public
 						{:else}
 							Group
 						{/if}
-					{:else if instance?.type === "public"} Public
-					{:else} Public
+					{:else if instance?.type === 'public'}
+						Public
+					{:else}
+						Public
 					{/if}
 				</p>
 			</div>
@@ -99,9 +122,23 @@
 						<DropdownMenu.Group>
 							<DropdownMenu.Label>Options</DropdownMenu.Label>
 							<DropdownMenu.Separator />
-							<DropdownMenu.Item on:click={joinUrl(`vrchat://launch?ref=vrchat.com&id=${instance?.worldId}:${instance?.instanceId}`)}>Join Instance</DropdownMenu.Item>
-							<DropdownMenu.Item on:click={inviteMyself(instance?.worldId, instance?.instanceId)}>Invite Me</DropdownMenu.Item>
-							<DropdownMenu.Item on:click={openUrl(`https://vrchat.com/home/launch?worldId=${instance?.worldId}&instanceId=${instance?.instanceId}`)}>Open Instance</DropdownMenu.Item>
+							<DropdownMenu.Item
+								on:click={joinUrl(
+									`vrchat://launch?ref=vrchat.com&id=${instance?.worldId}:${instance?.instanceId}`
+								)}
+							>
+								Join Instance
+							</DropdownMenu.Item>
+							<DropdownMenu.Item on:click={inviteMyself(instance?.worldId, instance?.instanceId)}
+								>Invite Me
+							</DropdownMenu.Item>
+							<DropdownMenu.Item
+								on:click={openUrl(
+									`https://vrchat.com/home/launch?worldId=${instance?.worldId}&instanceId=${instance?.instanceId}`
+								)}
+							>
+								Open Instance
+							</DropdownMenu.Item>
 						</DropdownMenu.Group>
 					</DropdownMenu.Content>
 				</DropdownMenu.Root>
@@ -123,22 +160,28 @@
 				{#if instanceOwnerUser !== undefined}
 					<div class="flex items-center gap-4">
 						<Avatar.Root class="hidden h-9 w-9 sm:flex">
-							<Avatar.Image src={instanceOwnerUser?.userIcon || instanceOwnerUser?.currentAvatarImageUrl} alt="Avatar" />
-							<Avatar.Fallback>{instanceOwnerUser?.displayName?.charAt(0).toUpperCase() || 'NA'}</Avatar.Fallback>
+							<Avatar.Image src={instanceOwnerImage} alt="Avatar" />
+							<Avatar.Fallback
+								>{instanceOwnerUser?.displayName?.charAt(0).toUpperCase() || 'NA'}</Avatar.Fallback
+							>
 						</Avatar.Root>
 						<div class="grid gap-1">
 							<p class="text-sm font-medium leading-none">
 								{instanceOwnerUser?.displayName || 'Username'}
 							</p>
-							<p class="text-sm text-muted-foreground">{instanceOwnerUser?.statusDescription || instanceOwnerUser?.status}</p>
+							<p class="text-sm text-muted-foreground">
+								{instanceOwnerUser?.statusDescription || instanceOwnerUser?.status}
+							</p>
 						</div>
 					</div>
 				{/if}
 				{#if instanceOwnerGroup !== undefined}
 					<div class="flex items-center gap-4">
 						<Avatar.Root class="hidden h-9 w-9 sm:flex">
-							<Avatar.Image src={instanceOwnerGroup?.iconUrl} alt="Group Icon" />
-							<Avatar.Fallback>{instanceOwnerGroup?.name?.charAt(0).toUpperCase() || 'NA'}</Avatar.Fallback>
+							<Avatar.Image src={instanceGroupOwnerImage} alt="Group Icon" />
+							<Avatar.Fallback
+								>{instanceOwnerGroup?.name?.charAt(0).toUpperCase() || 'NA'}</Avatar.Fallback
+							>
 						</Avatar.Root>
 						<div class="grid gap-1">
 							<p class="text-sm font-medium leading-none">
@@ -151,14 +194,21 @@
 				{#each friendsInInstance as friend}
 					<div class="flex items-center gap-4">
 						<Avatar.Root class="hidden h-9 w-9 sm:flex">
-							<Avatar.Image src={friend.userIcon || friend.currentAvatarImageUrl} alt="Avatar" />
-							<Avatar.Fallback>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback>
+							{#await getFriendImage(friend)}
+								<Avatar.Fallback>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback>
+							{:then url}
+								<Avatar.Image src={url} alt="Avatar" />
+							{:catch error}
+								<Avatar.Fallback>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback>
+							{/await}
 						</Avatar.Root>
 						<div class="grid gap-1">
 							<p class="text-sm font-medium leading-none">
 								{friend.displayName}
 							</p>
-							<p class="text-sm text-muted-foreground">{friend.status}</p>
+							<p class="text-sm text-muted-foreground">
+								{friend.statusDescription || friend.status}
+							</p>
 						</div>
 					</div>
 				{/each}
