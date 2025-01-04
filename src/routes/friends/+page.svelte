@@ -26,7 +26,7 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 
 	// Icons
-	import { Grid2X2, List, LoaderCircle, LucideRefreshCw } from 'lucide-svelte';
+	import { Grid2X2, List, LucideRefreshCw } from 'lucide-svelte';
 	import { get } from 'svelte/store';
 	import FriendCard from '$lib/components/friends/FriendCard.svelte';
 	import UserInfo from '$lib/components/friends/UserInfo.svelte';
@@ -47,10 +47,8 @@
 
 	async function setViewMode(viewModeSetting: string | undefined) {
 		console.log('setting view mode');
-		if (viewModeSetting != undefined)
-			viewMode = viewModeSetting;
-		else
-			viewMode = 'cards';
+		if (viewModeSetting != undefined) viewMode = viewModeSetting;
+		else viewMode = 'cards';
 
 		await saveSetting('friendsViewMode', viewMode);
 	}
@@ -61,10 +59,10 @@
 		loading = false;
 	}
 
-	function handleSortChange(value: { value: string, label: string } | undefined) {
+	function handleSortChange(value: { value: string; label: string } | undefined) {
 		if (value) {
 			sortMode = value.value;
-			console.log("Sort mode changed");
+			console.log('Sort mode changed');
 		}
 	}
 
@@ -111,7 +109,7 @@
 					: state === 'active'
 						? 'On Website'
 						: instanceData?.world?.name ||
-						(friend.location === 'private' ? 'Private' : 'Loading...');
+							(friend.location === 'private' ? 'Private' : 'Loading...');
 
 			return {
 				...friend,
@@ -120,7 +118,7 @@
 				locationName,
 				locationCount: instanceData?.userCount,
 				locationCapacity: instanceData?.capacity,
-				locationData: instanceData?.world,
+				locationData: instanceData?.world
 			};
 		});
 
@@ -146,13 +144,12 @@
 				'online:ask me': 3,
 				'online:busy': 4,
 				active: 5,
-				offline: 6,
+				offline: 6
 			};
 			const aKey = `${a.state}:${a.status}`.toLowerCase();
 			const bKey = `${b.state}:${b.status}`.toLowerCase();
 			const statusComparison =
-				(stateOrder[aKey] || stateOrder[a.state]) -
-				(stateOrder[bKey] || stateOrder[b.state]);
+				(stateOrder[aKey] || stateOrder[a.state]) - (stateOrder[bKey] || stateOrder[b.state]);
 			if (statusComparison !== 0) return statusComparison;
 			return a.displayName.localeCompare(b.displayName);
 		} else if (sortMode === 'Username') {
@@ -191,7 +188,6 @@
 			console.error('Failed to load friends:', error);
 		}
 	});
-
 </script>
 
 <main class="p-4">
@@ -219,7 +215,7 @@
 						type="single"
 						class="pr-4"
 						value={viewMode}
-						onValueChange={(e) => (setViewMode(e))}
+						onValueChange={(e) => setViewMode(e)}
 					>
 						<ToggleGroup.Item value="cards">
 							<Grid2X2 />

@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "spectre-vrc",
-  "version": "2.0.0",
+  "version": "2.0.0-alpha.0",
   "identifier": "com.angelware.spectre",
   "build": {
     "frontendDist": "../build",
@@ -27,6 +27,7 @@
   "bundle": {
     "active": true,
     "targets": "all",
+    "createUpdaterArtifacts": true,
     "icon": [
       "icons/32x32.png",
       "icons/128x128.png",
@@ -34,5 +35,13 @@
       "icons/icon.icns",
       "icons/icon.ico"
     ]
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQzQUY4OTIzMDVDOTgzMjQKUldRa2c4a0ZJNG12MDBvNHdIa0VRMXhKcVhqbTgyWXVTTVBoUmFGcEowMFd5cjVpbEoxc1hha3AK",
+      "endpoints": [
+        "https://gist.githubusercontent.com/kay-xr/e3f809d00536399341af561836e3b7db/raw/33ffc046bd8749cbc93980f2e327e0a108eada2f/spectre.json"
+      ]
+    }
   }
 }
