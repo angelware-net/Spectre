@@ -38,7 +38,7 @@
   },
   "plugins": {
     "updater": {
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQzQUY4OTIzMDVDOTgzMjQKUldRa2c4a0ZJNG12MDBvNHdIa0VRMXhKcVhqbTgyWXVTTVBoUmFGcEowMFd5cjVpbEoxc1hha3AK",
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDc4Q0I0NTA5RjdCQkZEMzQKUldRMC9idjNDVVhMZUFBdFM3Q21CcDR2b1BsVXNIaUhQd2xReEE0NlgxUldjZGo5bk5aQTh5aFgK",
       "endpoints": [
         "https://gist.githubusercontent.com/kay-xr/e3f809d00536399341af561836e3b7db/raw/33ffc046bd8749cbc93980f2e327e0a108eada2f/spectre.json"
       ]
