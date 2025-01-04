@@ -8,6 +8,8 @@
 	import { goto } from '$app/navigation';
 	import { Toaster } from '$lib/components/ui/sonner';
 	import Websocket from '$lib/components/Websocket.svelte';
+	import { updateApp } from '$lib/utils/updater';
+	import { platform } from '@tauri-apps/plugin-os';
 
 	import Header from '$lib/components/Header.svelte';
 
@@ -23,6 +25,11 @@
 	onMount(async () => {
 		// Set loading state
 		loadingStore.set(true);
+
+		const currentPlatform = platform();
+
+		if (currentPlatform == 'linux' || currentPlatform == 'windows' || currentPlatform == 'macos')
+			await updateApp();
 
 		await loadSettings();
 
