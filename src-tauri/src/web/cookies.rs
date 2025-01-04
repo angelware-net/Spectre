@@ -1,5 +1,6 @@
 use serde_json::{json, Value};
 use std::path::PathBuf;
+use tauri::Manager;
 use tauri_plugin_store::StoreExt;
 
 // Cookies manager for login and otp
@@ -14,25 +15,7 @@ use tauri_plugin_store::StoreExt;
 
 #[tauri::command]
 pub fn load_login_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<Option<String>> {
-    // let app_clone = app.clone();
     let store_path = PathBuf::from(".cookies.dat");
-
-    // Get the store state, return an error if the store is not found
-    // let stores = app_clone
-    //     .try_state::<StoreCollection<Wry>>()
-    //     .ok_or(tauri_plugin_store::Error::NotFound(store_path.clone()))?;
-    //
-    // with_store(app_clone.clone(), stores, store_path, |store| {
-    //     // Parse the cookie string from JSON
-    //     if let Some(cookie_data) = store.get("cookies") {
-    //         if let Ok(parsed_json) = serde_json::from_str::<Value>(&cookie_data.to_string()) {
-    //             if let Some(cookie_str) = parsed_json.get("value").and_then(|v| v.as_str()) {
-    //                 return Ok(Some(cookie_str.to_string()));
-    //             }
-    //         }
-    //     }
-    //     Ok(None) // Return None if the cookie isn't found or if JSON parsing fails
-    // })
 
     let store = app.store(store_path)?;
     let cookies_string = match store.get("cookies") {
@@ -42,9 +25,6 @@ pub fn load_login_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<O
             return Ok(None);
         }
     };
-
-    // store.close_resource();
-    // println!("{}", cookies_string);
 
     if let Ok(parsed_json) = serde_json::from_str::<Value>(&cookies_string.to_string()) {
         if let Some(cookie_str) = parsed_json.get("value").and_then(|v| v.as_str()) {
@@ -61,21 +41,6 @@ pub fn save_login_cookies(
 ) -> tauri_plugin_store::Result<String> {
     let store_path = PathBuf::from(".cookies.dat");
 
-    // let stores = app
-    //     .try_state::<StoreCollection<Wry>>()
-    //     .ok_or(tauri_plugin_store::Error::NotFound(store_path.clone()))?;
-    //
-    // with_store(app.clone(), stores, store_path, |store| {
-    //     store.insert(
-    //         "cookies".to_string(),
-    //         json!({"value": format!("{}", cookies)}),
-    //     )?;
-    //
-    //     store.save()?;
-    //
-    //     Ok("Okay".to_string())
-    // })
-
     let store = app.store(store_path)?;
 
     store.set(
@@ -83,8 +48,6 @@ pub fn save_login_cookies(
         json!({"value": format!("{}", cookies)}),
     );
 
-    // println!("Saved login cookie");
-    // store.close_resource();
     Ok("Okay".to_string())
 }
 
@@ -92,19 +55,8 @@ pub fn save_login_cookies(
 pub fn clear_login_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<String> {
     let store_path = PathBuf::from(".cookies.dat");
 
-    // let stores = app
-    //     .try_state::<StoreCollection<Wry>>()
-    //     .ok_or(tauri_plugin_store::Error::NotFound(store_path.clone()))?;
-    //
-    // with_store(app.clone(), stores, store_path, |store| {
-    //     store.delete("cookies")?;
-    //     store.save()?;
-    //     Ok("Okay".to_string())
-    // })
-
     let store = app.store(store_path)?;
     store.delete("cookies");
-    // store.close_resource();
     Ok("Okay".to_string())
 }
 
@@ -114,20 +66,6 @@ pub fn save_otp_cookies(
     cookies: String,
 ) -> tauri_plugin_store::Result<String> {
     let store_path = PathBuf::from(".cookies.dat");
-    // let stores = app
-    //     .try_state::<StoreCollection<Wry>>()
-    //     .ok_or(tauri_plugin_store::Error::NotFound(store_path.clone()))?;
-    //
-    // with_store(app.clone(), stores, store_path, |store| {
-    //     store.insert(
-    //         "otp_cookies".to_string(),
-    //         json!({"value": format!("{}", cookies)}),
-    //     )?;
-    //
-    //     store.save()?;
-    //
-    //     Ok("Okay".to_string())
-    // })
 
     let store = app.store(store_path)?;
 
@@ -135,28 +73,12 @@ pub fn save_otp_cookies(
         "otp_cookies".to_string(),
         json!({"otp": format!("{}", cookies)}),
     );
-
-    // store.close_resource();
     Ok("Okay".to_string())
 }
 
 #[tauri::command]
 pub fn load_otp_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<Option<String>> {
-    // let app_clone = app.clone();
     let store_path = PathBuf::from(".cookies.dat");
-
-    // Get the store state, return an error if the store is not found
-    // let stores = app_clone
-    //     .try_state::<StoreCollection<Wry>>()
-    //     .ok_or(tauri_plugin_store::Error::NotFound(store_path.clone()))?;
-    //
-    // with_store(app_clone.clone(), stores, store_path, |store| {
-    //     // If the `otp_cookie` is not found, return `Ok(None)`
-    //     match store.get("otp_cookie") {
-    //         Some(cookies) => Ok(Some(cookies.to_string())),
-    //         None => Ok(None), // No panic, return None
-    //     }
-    // })
 
     let store = app.store(store_path)?;
     let cookies_string = match store.get("otp_cookies") {
@@ -166,8 +88,6 @@ pub fn load_otp_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<Opt
             return Ok(None);
         }
     };
-
-    // store.close_resource();
 
     if let Ok(parsed_json) = serde_json::from_str::<Value>(&cookies_string.to_string()) {
         if let Some(cookie_str) = parsed_json.get("otp").and_then(|v| v.as_str()) {

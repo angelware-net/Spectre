@@ -2,7 +2,7 @@
 
 # Spectre
 
-A lightweight friends list manager for VRChat. Built on Sveltekit + Tauri. Thanks to Tauri, Spectre is cross-platform by default, with mobile support planned for the near future.
+A lightweight friends list manager for VRChat. Built on Sveltekit + Tauri. Thanks to Tauri, Spectre is cross-platform by default, with mobile support planned for the (very) near future.
 
 ## Warnings
 
@@ -35,13 +35,6 @@ tauri build
 - Friends List: See who's online and their status.
 - Notifications: Get system-level notifications for invites, requests, friend requests, and more.
 
-## WIP
-
-- User / World Cards: Show data on users and worlds.
-- Friends List Filters: Adjust how your friends list is organized.
-- Feed: A websocket feed with customizable filters for events.
-- Settings: A more customizable experience.
-
 ## Credits
 
 - [Community-driven VRCAPI Docs](https://vrchatapi.github.io/docs/api/)
@@ -53,4 +46,3 @@ tauri build
 ![img_1.png](assets/img_1.png)
 ![img.png](assets/img.png)
 ![fl.png](assets/fl.png)
-![worlds.png](assets/worlds.png)

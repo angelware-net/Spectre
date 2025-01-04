@@ -5,7 +5,8 @@ mod web;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let mut builder = tauri::Builder::default()
+    let builder = tauri::Builder::default()
+        .plugin(tauri_plugin_os::init())
         .plugin(tauri_plugin_shell::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_websocket::init())
@@ -29,7 +30,8 @@ pub fn run() {
                         .set_focus();
                 }));
             #[cfg(desktop)]
-            app.handle().plugin(tauri_plugin_updater::Builder::new().build());
+            app.handle()
+                .plugin(tauri_plugin_updater::Builder::new().build());
             Ok(())
         })
         .invoke_handler(tauri::generate_handler![
