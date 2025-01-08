@@ -10,6 +10,6 @@
 		<div class="flex text-2xl">Get out there and explore!</div>
 	</Card.Content>
 	<Card.Footer class="flex items-center justify-center">
-		<Button href="/worlds">Discover Worlds</Button>
+		<Button href="/instances">View Instances</Button>
 	</Card.Footer>
 </Card.Root>

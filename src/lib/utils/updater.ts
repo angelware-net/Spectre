@@ -5,9 +5,7 @@ import { toast } from 'svelte-sonner';
 export async function updateApp() {
 	const update = await check();
 	if (update) {
-		console.log(
-			`found update ${update.version} from ${update.date} with notes ${update.body}`
-		);
+		console.log(`found update ${update.version} from ${update.date} with notes ${update.body}`);
 
 		toast('Downloading Update...');
 
@@ -35,6 +33,6 @@ export async function updateApp() {
 		console.log('update installed');
 		await relaunch();
 	} else {
-		console.log('No update needed.')
+		console.log('No update needed.');
 	}
 }

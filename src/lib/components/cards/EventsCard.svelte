@@ -9,17 +9,17 @@
 	import { open } from '@tauri-apps/plugin-shell';
 
 	const openTl = () => {
-		open('https://vrc.tl');
+		open('https://vrchat.com/home/group/grp_e6233081-9aca-489a-8610-31af2b6cd438');
 	};
 </script>
 
 <Card.Root class="flex h-64 flex-col justify-between">
 	<Card.Header>
-		<Card.Title>Explore Events</Card.Title>
-		<Card.Description>Explore events around VRChat!</Card.Description>
+		<Card.Title>Join the Group</Card.Title>
+		<Card.Description>Find other players using Spectre!</Card.Description>
 	</Card.Header>
 	<Card.Content class="flex items-center justify-center">
-		<Button on:click={openTl}>vrc.tl&nbsp;<ArrowUpRight class="h-4 w-4" /></Button>
+		<Button on:click={openTl}>Join&nbsp;<ArrowUpRight class="h-4 w-4" /></Button>
 	</Card.Content>
 	<Card.Footer class="flex items-center justify-center"></Card.Footer>
 </Card.Root>

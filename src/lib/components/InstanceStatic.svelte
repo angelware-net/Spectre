@@ -31,10 +31,10 @@
 	let instanceOwnerImage: string;
 	let instanceGroupOwnerImage: string;
 
-	function openUrl (link: string) {
+	function openUrl(link: string) {
 		open(link);
 		toast('Opening instance in browser...');
-	};
+	}
 
 	const joinUrl = (link: string) => {
 		open(link);
