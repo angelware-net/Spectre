@@ -12,8 +12,10 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
+	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
 
 	import Link from 'lucide-svelte/icons/link';
+	import ArrowUpRight from 'lucide-svelte/icons/square-arrow-up-right';
 	import Twitter from 'lucide-svelte/icons/twitter';
 	import Twitch from 'lucide-svelte/icons/twitch';
 	import YouTube from 'lucide-svelte/icons/youtube';
@@ -88,9 +90,14 @@
 		return Link;
 	}
 
-	const openUrl = (link: string) => {
+	function openUrl(link: string) {
 		open(link);
-	};
+		return null;
+	}
+
+	function openUserProfile() {
+		open(`https://vrchat.com/home/user/${userId}`);
+	}
 
 	onMount(() => {
 		const userMap = get(externalUserDataStore);
@@ -111,9 +118,25 @@
 				</p>
 				<p class="text-sm text-muted-foreground">{user?.statusDescription || user?.status}</p>
 			</div>
-			<Button disabled class="ml-auto" variant="outline" size="icon">...</Button>
+			<div class="ml-auto">
+				<DropdownMenu.Root>
+					<DropdownMenu.Trigger>
+						<Button disabled class="ml-auto" variant="outline" size="icon">...</Button>
+					</DropdownMenu.Trigger>
+					<DropdownMenu.Content class="w-36">
+						<DropdownMenu.Group>
+							<DropdownMenu.Label>
+								User Actions
+							</DropdownMenu.Label>
+							<DropdownMenu.Separator />
+							<DropdownMenu.Item on:click={openUserProfile} class="flex justify-between"><div>View on Web&nbsp;&nbsp;</div><ArrowUpRight class="h-4 w-4" /></DropdownMenu.Item>
+
+						</DropdownMenu.Group>
+					</DropdownMenu.Content>
+				</DropdownMenu.Root>
+			</div>
 		</div>
-		<p>
+		<div class="flex gap-2">
 			{#each getFilteredTags(user?.tags) as tag}
 				{#if tagToBadgeMap[tag]}
 					<Badge variant="outline" style="border-color: {tagToColorMap[tag]}; color: white;">
@@ -121,7 +144,7 @@
 					</Badge>
 				{/if}
 			{/each}
-		</p>
+		</div>
 		<Separator class="" />
 		<div class="flex flex-col space-y-2">
 			<h1>Bio:</h1>
