@@ -226,9 +226,9 @@
 					</ToggleGroup.Root>
 					<Button variant="outline" on:click={handleRefresh} size="icon">
 						{#if loading}
-							<LucideRefreshCw class="rotating h-[1.2rem] w-[1.2rem] transition-all" />
+							<LucideRefreshCw class="h-[1.2rem] w-[1.2rem] animate-spin transition-all" />
 						{:else}
-							<LucideRefreshCw class="rotating h-[1.2rem] w-[1.2rem] transition-all" />
+							<LucideRefreshCw class="h-[1.2rem] w-[1.2rem] transition-all" />
 						{/if}
 					</Button>
 				</div>
