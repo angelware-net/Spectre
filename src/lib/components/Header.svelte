@@ -180,7 +180,7 @@
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item on:click={logout}>Logout</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item disabled>v2.0.1-ALPHA</DropdownMenu.Item>
+				<DropdownMenu.Item disabled>v2.0.2-ALPHA</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</div>

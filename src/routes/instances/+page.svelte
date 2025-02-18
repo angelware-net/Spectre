@@ -94,29 +94,58 @@
 	}
 
 	// wacky sorting, i had to get help with this one cuz its a bit complex
+	// const groupedFriendsStore = derived(
+	// 	[friendsStore, instanceDataStore, externalUserDataStore],
+	// 	([$friendsStore, $instanceDataStore, $externalUserDataStore]) => {
+	// 		const grouped = new Map<
+	// 			InstanceData | null,
+	// 			Array<{ friend: Friend; externalData: ExternalUserData | null }>
+	// 		>();
+	//
+	// 		// attach instance and external data
+	// 		for (const [key, friend] of $friendsStore.entries()) {
+	// 			const instance = $instanceDataStore.get(friend.id) || null;
+	// 			const externalData = $externalUserDataStore.get(key) || null;
+	//
+	// 			if (!grouped.has(instance)) {
+	// 				grouped.set(instance, []);
+	// 			}
+	//
+	// 			grouped.get(instance)!.push({ friend, externalData });
+	// 		}
+	//
+	// 		return grouped;
+	// 	}
+	// );
+
 	const groupedFriendsStore = derived(
 		[friendsStore, instanceDataStore, externalUserDataStore],
 		([$friendsStore, $instanceDataStore, $externalUserDataStore]) => {
 			const grouped = new Map<
-				InstanceData | null,
-				Array<{ friend: Friend; externalData: ExternalUserData | null }>
+				string,
+				{
+					instance: InstanceData | null;
+					friends: Array<{ friend: Friend; externalData: ExternalUserData | null }>;
+				}
 			>();
 
-			// attach instance and external data
 			for (const [key, friend] of $friendsStore.entries()) {
 				const instance = $instanceDataStore.get(friend.id) || null;
 				const externalData = $externalUserDataStore.get(key) || null;
 
-				if (!grouped.has(instance)) {
-					grouped.set(instance, []);
+				const instanceId = instance?.id || 'null';
+
+				if (!grouped.has(instanceId)) {
+					grouped.set(instanceId, { instance, friends: [] });
 				}
 
-				grouped.get(instance)!.push({ friend, externalData });
+				grouped.get(instanceId)!.friends.push({ friend, externalData });
 			}
 
 			return grouped;
 		}
 	);
+
 </script>
 
 <main class="p-4">
@@ -133,8 +162,8 @@
 				</Button>
 			</div>
 		</div>
-		{#each Array.from($groupedFriendsStore.entries()) as [instance, friends]}
-			{#if instance}
+		{#each Array.from($groupedFriendsStore.values()) as { instance, friends }}
+		{#if instance}
 				<div class="pt-2">
 					<Card.Root>
 						<div class="flex flex-row p-4">
@@ -180,7 +209,7 @@
 											<Dialog.Root>
 												<Dialog.Trigger>
 													<Card.Root
-														class="h-16 w-64 transform overflow-hidden text-ellipsis transition-transform duration-200 hover:scale-105"
+														class="h-16 w-64 transform overflow-hidden text-ellipsis transition-transform duration-200 hover:scale-105 m-1"
 													>
 														<div class="flex flex-row">
 															<div class="flex w-24 items-center justify-center">

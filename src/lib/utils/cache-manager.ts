@@ -3,6 +3,7 @@
  * to half the size of the initial value based on recency. I know this is really hacky, I will implement a real solution soon:tm:
  */
 
+// TODO: We need to check for the folder before trying to access it, it causes a startup error for some clients.
 import { BaseDirectory, exists, mkdir, readDir, remove, stat } from '@tauri-apps/plugin-fs';
 import { getNumericSetting } from '$lib/store';
 
@@ -12,29 +13,31 @@ let maxSize: number | null; // maximum size in mb
 export async function manageCacheSize() {
 	try {
 		maxSize = await getNumericSetting('maximumCacheSize');
-		const files = await readDir(cacheDir, { baseDir: BaseDirectory.AppCache });
+		if (await exists(cacheDir, { baseDir: BaseDirectory.AppCache })) {
+			const files = await readDir(cacheDir, { baseDir: BaseDirectory.AppCache });
 
-		const fileSizes: { path: string; size: number; modified: Date }[] = [];
+			const fileSizes: { path: string; size: number; modified: Date }[] = [];
 
-		for (const file of files) {
-			if (file.isFile) {
-				const fileMeta = await stat(`${cacheDir}/${file.name}`, {
-					baseDir: BaseDirectory.AppCache
-				});
-				fileSizes.push({
-					path: `${cacheDir}/${file.name}`,
-					size: fileMeta.size || 0,
-					modified: new Date(fileMeta.mtime || 0)
-				});
+			for (const file of files) {
+				if (file.isFile) {
+					const fileMeta = await stat(`${cacheDir}/${file.name}`, {
+						baseDir: BaseDirectory.AppCache
+					});
+					fileSizes.push({
+						path: `${cacheDir}/${file.name}`,
+						size: fileMeta.size || 0,
+						modified: new Date(fileMeta.mtime || 0)
+					});
+				}
 			}
-		}
 
-		const totalSizeMB = fileSizes.reduce((sum, file) => sum + file.size, 0) / (1024 * 1024);
+			const totalSizeMB = fileSizes.reduce((sum, file) => sum + file.size, 0) / (1024 * 1024);
 
-		if (maxSize != null) {
-			const clearSize = maxSize / 2;
-			if (totalSizeMB > maxSize) {
-				await clearOldestFiles(fileSizes, totalSizeMB - clearSize);
+			if (maxSize != null) {
+				const clearSize = maxSize / 2;
+				if (totalSizeMB > maxSize) {
+					await clearOldestFiles(fileSizes, totalSizeMB - clearSize);
+				}
 			}
 		}
 	} catch (error) {
