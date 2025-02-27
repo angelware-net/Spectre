@@ -15,6 +15,12 @@
         notifications = JSON.parse(notifs);
         console.log(notifications);
     });
+
+    async function seeNotification(notificationId: string) {
+        await invoke<string>('put_vrc_see_notification', {
+            notificationId: notificationId
+        });
+    }
 </script>
 
 <main>
@@ -40,9 +46,12 @@
                             </div>
                         </div>
                     </div>
-
                 </Card.Title>
             </Card.Root>
         {/each}
+    {:else}
+        <div>
+            You're all caught up!
+        </div>
     {/if}
 </main>

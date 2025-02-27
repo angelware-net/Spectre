@@ -158,7 +158,7 @@
 		<Popover.Root>
 			<Popover.Trigger>
 				<Button variant="outline" size="icon">
-					<Bell />
+					<Bell class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
 				</Button>
 			</Popover.Trigger>
 			<Popover.Content class="w-96">
