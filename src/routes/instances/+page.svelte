@@ -167,7 +167,7 @@
 				<div class="pt-2">
 					<Card.Root>
 						<div class="flex flex-row p-4">
-							<div class="mr-4 flex max-w-64 items-center justify-center overflow-hidden rounded">
+							<div class="mr-4 flex max-w-64 items-start justify-center overflow-hidden rounded">
 								{#await loadImage(instance.world.imageUrl)}
 									Loading Image...
 								{:then imageBlob}
@@ -185,8 +185,8 @@
 									</Dialog.Root>
 								{/await}
 							</div>
-							<div>
-								<div class="flex flex-row">
+							<div class="flex flex-col w-full">
+								<div class="flex flex-row w-full">
 									<h2 class="text-xl">{instance ? instance.world.name : 'Unknown Instance'}</h2>
 									<h2 class="pl-1 text-xl text-muted-foreground">
 										- {instance ? instance.userCount : '0'} / {instance
@@ -203,13 +203,13 @@
 										{instanceOwner}
 									</div>
 								{/await}
-								<ul>
+<!--								<ul>-->
+									<div class="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2 w-full">
 									{#each friends as { friend, externalData }}
-										<div class="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))]">
 											<Dialog.Root>
 												<Dialog.Trigger>
 													<Card.Root
-														class="h-16 w-64 transform overflow-hidden text-ellipsis transition-transform duration-200 hover:scale-105 m-1"
+														class="flex h-16 w-full transform overflow-hidden text-ellipsis transition-transform duration-200 hover:scale-105"
 													>
 														<div class="flex flex-row">
 															<div class="flex w-24 items-center justify-center">
@@ -232,9 +232,9 @@
 													<UserInfo userId={friend.id} />
 												</Dialog.Content>
 											</Dialog.Root>
-										</div>
 									{/each}
-								</ul>
+									</div>
+<!--								</ul>-->
 							</div>
 						</div>
 					</Card.Root>
