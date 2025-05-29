@@ -1,6 +1,7 @@
 <script lang="ts">
 	import '../app.css';
 
+    import { page } from '$app/state';
 	import { ModeWatcher } from 'mode-watcher';
 	import { loadSettings } from '$lib/utils/theme-switcher';
 	import { onMount } from 'svelte';
@@ -21,6 +22,7 @@
 	} from '$lib/svelte-stores';
 	import type { UserData } from '$lib/types/user';
 	import { manageCacheSize } from '$lib/utils/cache-manager';
+    import LoginHeader from "$lib/components/LoginHeader.svelte";
 
 	onMount(async () => {
 		// Set loading state
@@ -91,7 +93,11 @@
 	});
 </script>
 
+{#if page.url.pathname !== '/' && page.url.pathname !== '/login'}
 <Header />
+{:else}
+<LoginHeader />
+{/if}
 <ModeWatcher />
 <Toaster />
 <Websocket />
