@@ -145,7 +145,6 @@
 			return grouped;
 		}
 	);
-
 </script>
 
 <main class="p-4">
@@ -163,7 +162,7 @@
 			</div>
 		</div>
 		{#each Array.from($groupedFriendsStore.values()) as { instance, friends }}
-		{#if instance}
+			{#if instance}
 				<div class="pt-2">
 					<Card.Root>
 						<div class="flex flex-row p-4">
@@ -185,8 +184,8 @@
 									</Dialog.Root>
 								{/await}
 							</div>
-							<div class="flex flex-col w-full">
-								<div class="flex flex-row w-full">
+							<div class="flex w-full flex-col">
+								<div class="flex w-full flex-row">
 									<h2 class="text-xl">{instance ? instance.world.name : 'Unknown Instance'}</h2>
 									<h2 class="pl-1 text-xl text-muted-foreground">
 										- {instance ? instance.userCount : '0'} / {instance
@@ -203,38 +202,38 @@
 										{instanceOwner}
 									</div>
 								{/await}
-<!--								<ul>-->
-									<div class="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2 w-full">
+								<!--								<ul>-->
+								<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2">
 									{#each friends as { friend, externalData }}
-											<Dialog.Root>
-												<Dialog.Trigger>
-													<Card.Root
-														class="flex h-16 w-full transform overflow-hidden text-ellipsis transition-transform duration-200 hover:scale-105"
-													>
-														<div class="flex flex-row">
-															<div class="flex w-24 items-center justify-center">
-																{#await getFriendImage(friend)}
-																	Loading Image...
-																{:then imageBlob}
-																	<img src={imageBlob} alt="Friend Thumbnail" />
-																{/await}
-															</div>
-															<div class="flex flex-col p-2">
-																<div class="text-left text-lg">{friend.displayName}</div>
-																<div class="text-left text-xs">
-																	{friend.statusDescription || getStatusType(friend.status)}
-																</div>
+										<Dialog.Root>
+											<Dialog.Trigger>
+												<Card.Root
+													class="flex h-16 w-full transform overflow-hidden text-ellipsis transition-transform duration-200 hover:scale-105"
+												>
+													<div class="flex flex-row">
+														<div class="flex w-24 items-center justify-center">
+															{#await getFriendImage(friend)}
+																Loading Image...
+															{:then imageBlob}
+																<img src={imageBlob} alt="Friend Thumbnail" />
+															{/await}
+														</div>
+														<div class="flex flex-col p-2">
+															<div class="text-left text-lg">{friend.displayName}</div>
+															<div class="text-left text-xs">
+																{friend.statusDescription || getStatusType(friend.status)}
 															</div>
 														</div>
-													</Card.Root>
-												</Dialog.Trigger>
-												<Dialog.Content>
-													<UserInfo userId={friend.id} />
-												</Dialog.Content>
-											</Dialog.Root>
+													</div>
+												</Card.Root>
+											</Dialog.Trigger>
+											<Dialog.Content>
+												<UserInfo userId={friend.id} />
+											</Dialog.Content>
+										</Dialog.Root>
 									{/each}
-									</div>
-<!--								</ul>-->
+								</div>
+								<!--								</ul>-->
 							</div>
 						</div>
 					</Card.Root>

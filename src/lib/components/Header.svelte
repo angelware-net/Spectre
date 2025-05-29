@@ -9,7 +9,7 @@
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
-	import * as Popover from "$lib/components/ui/popover";
+	import * as Popover from '$lib/components/ui/popover';
 
 	import Sun from 'lucide-svelte/icons/sun';
 	import Moon from 'lucide-svelte/icons/moon';
@@ -21,8 +21,8 @@
 	import { loadImage } from '$lib/utils/load-image';
 	import { onDestroy } from 'svelte';
 	import disconnectSocket from '$lib/components/Websocket.svelte';
-	import Bell from "lucide-svelte/icons/bell";
-	import NotificationPopover from "$lib/components/notifications/NotificationPopover.svelte";
+	import Bell from 'lucide-svelte/icons/bell';
+	import NotificationPopover from '$lib/components/notifications/NotificationPopover.svelte';
 
 	let currentUser: UserData | null;
 	let avatarImageUrl: string | null = null;
@@ -95,14 +95,14 @@
 		>
 			Friends
 		</a>
-<!--		<a-->
-<!--			href="/notifications"-->
-<!--			class:text-foreground={$page.url.pathname === '/feed'}-->
-<!--			class:text-muted-foreground={$page.url.pathname !== '/notifications'}-->
-<!--			class="hover:text-foreground"-->
-<!--		>-->
-<!--			Feed-->
-<!--		</a>-->
+		<!--		<a-->
+		<!--			href="/notifications"-->
+		<!--			class:text-foreground={$page.url.pathname === '/feed'}-->
+		<!--			class:text-muted-foreground={$page.url.pathname !== '/notifications'}-->
+		<!--			class="hover:text-foreground"-->
+		<!--		>-->
+		<!--			Feed-->
+		<!--		</a>-->
 		<a
 			href="/instances"
 			class:text-foreground={$page.url.pathname === '/instances'}

@@ -12,7 +12,7 @@
 	import * as Avatar from '$lib/components/ui/avatar';
 	import { Badge } from '$lib/components/ui/badge/index.js';
 	import * as Tooltip from '$lib/components/ui/tooltip/index.js';
-	import * as DropdownMenu from "$lib/components/ui/dropdown-menu";
+	import * as DropdownMenu from '$lib/components/ui/dropdown-menu';
 
 	import Link from 'lucide-svelte/icons/link';
 	import ArrowUpRight from 'lucide-svelte/icons/square-arrow-up-right';
@@ -125,12 +125,12 @@
 					</DropdownMenu.Trigger>
 					<DropdownMenu.Content class="w-36">
 						<DropdownMenu.Group>
-							<DropdownMenu.Label>
-								User Actions
-							</DropdownMenu.Label>
+							<DropdownMenu.Label>User Actions</DropdownMenu.Label>
 							<DropdownMenu.Separator />
-							<DropdownMenu.Item on:click={openUserProfile} class="flex justify-between"><div>View on Web&nbsp;&nbsp;</div><ArrowUpRight class="h-4 w-4" /></DropdownMenu.Item>
-
+							<DropdownMenu.Item on:click={openUserProfile} class="flex justify-between"
+								><div>View on Web&nbsp;&nbsp;</div>
+								<ArrowUpRight class="h-4 w-4" /></DropdownMenu.Item
+							>
 						</DropdownMenu.Group>
 					</DropdownMenu.Content>
 				</DropdownMenu.Root>
