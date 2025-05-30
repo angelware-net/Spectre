@@ -19,12 +19,9 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@tailwindcss/typography": "^0.5.14",
 		"@tauri-apps/cli": "^2.1.0",
-		"@types/eslint": "^9.6.0",
+		"@types/node": "^22.15.26",
 		"autoprefixer": "^10.4.20",
-		"bits-ui": "^0.21.16",
-		"eslint": "^9.0.0",
-		"eslint-config-prettier": "^9.1.0",
-		"eslint-plugin-svelte": "^2.36.0",
+		"bits-ui": "^0.22.0",
 		"globals": "^15.0.0",
 		"lucide-svelte": "^0.469.0",
 		"prettier": "^3.1.1",
@@ -34,7 +31,6 @@
 		"svelte-check": "^4.0.0",
 		"tailwindcss": "^3.4.9",
 		"typescript": "^5.0.0",
-		"typescript-eslint": "^8.0.0",
 		"vite": "^5.0.3"
 	},
 	"type": "module",
@@ -55,6 +51,7 @@
 		"mode-watcher": "^0.4.1",
 		"svelte-sonner": "^0.3.28",
 		"tailwind-merge": "^2.5.2",
-		"tailwind-variants": "^0.2.1"
+		"tailwind-variants": "^0.2.1",
+		"tailwindcss-motion": "^1.1.0"
 	}
 }

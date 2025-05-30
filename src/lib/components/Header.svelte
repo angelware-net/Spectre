@@ -9,6 +9,7 @@
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
 	import { Button } from '$lib/components/ui/button/index.js';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
+	import * as Popover from '$lib/components/ui/popover';
 
 	import Sun from 'lucide-svelte/icons/sun';
 	import Moon from 'lucide-svelte/icons/moon';
@@ -19,7 +20,9 @@
 	import Favicon from '$lib/components/Favicon.svelte';
 	import { loadImage } from '$lib/utils/load-image';
 	import { onDestroy } from 'svelte';
-	import disconnectSocket from '$lib/components/Websocket.svelte';
+	// import { disconnectSocket } from '$lib/components/Websocket.svelte';
+	import Bell from 'lucide-svelte/icons/bell';
+	import NotificationPopover from '$lib/components/notifications/NotificationPopover.svelte';
 
 	let currentUser: UserData | null;
 	let avatarImageUrl: string | null = null;
@@ -48,8 +51,9 @@
 	async function logout() {
 		try {
 			await invoke('get_logout');
-			await disconnectSocket();
+			// await disconnectSocket();
 			await goto('/login');
+			goto('/login');
 		} catch (error) {
 			console.error(error);
 		}
@@ -92,7 +96,12 @@
 		>
 			Friends
 		</a>
-		<!--		<a href="/feed" class:text-foreground={$page.url.pathname === '/feed'} class:text-muted-foreground={$page.url.pathname !== '/feed'} class="hover:text-foreground">-->
+		<!--		<a-->
+		<!--			href="/notifications"-->
+		<!--			class:text-foreground={$page.url.pathname === '/feed'}-->
+		<!--			class:text-muted-foreground={$page.url.pathname !== '/notifications'}-->
+		<!--			class="hover:text-foreground"-->
+		<!--		>-->
 		<!--			Feed-->
 		<!--		</a>-->
 		<a
@@ -147,6 +156,16 @@
 	</Sheet.Root>
 	<div class="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
 		<div class="ml-auto flex-1 sm:flex-initial" />
+		<Popover.Root>
+			<Popover.Trigger>
+				<Button variant="outline" size="icon">
+					<Bell class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all" />
+				</Button>
+			</Popover.Trigger>
+			<Popover.Content class="w-96">
+				<NotificationPopover />
+			</Popover.Content>
+		</Popover.Root>
 		<Button on:click={toggleMode} variant="outline" size="icon">
 			<Sun
 				class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
@@ -180,7 +199,7 @@
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item on:click={logout}>Logout</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item disabled>v2.0.1-ALPHA</DropdownMenu.Item>
+				<DropdownMenu.Item disabled>v2.0.2-ALPHA</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</div>

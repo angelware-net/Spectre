@@ -94,24 +94,52 @@
 	}
 
 	// wacky sorting, i had to get help with this one cuz its a bit complex
+	// const groupedFriendsStore = derived(
+	// 	[friendsStore, instanceDataStore, externalUserDataStore],
+	// 	([$friendsStore, $instanceDataStore, $externalUserDataStore]) => {
+	// 		const grouped = new Map<
+	// 			InstanceData | null,
+	// 			Array<{ friend: Friend; externalData: ExternalUserData | null }>
+	// 		>();
+	//
+	// 		// attach instance and external data
+	// 		for (const [key, friend] of $friendsStore.entries()) {
+	// 			const instance = $instanceDataStore.get(friend.id) || null;
+	// 			const externalData = $externalUserDataStore.get(key) || null;
+	//
+	// 			if (!grouped.has(instance)) {
+	// 				grouped.set(instance, []);
+	// 			}
+	//
+	// 			grouped.get(instance)!.push({ friend, externalData });
+	// 		}
+	//
+	// 		return grouped;
+	// 	}
+	// );
+
 	const groupedFriendsStore = derived(
 		[friendsStore, instanceDataStore, externalUserDataStore],
 		([$friendsStore, $instanceDataStore, $externalUserDataStore]) => {
 			const grouped = new Map<
-				InstanceData | null,
-				Array<{ friend: Friend; externalData: ExternalUserData | null }>
+				string,
+				{
+					instance: InstanceData | null;
+					friends: Array<{ friend: Friend; externalData: ExternalUserData | null }>;
+				}
 			>();
 
-			// attach instance and external data
 			for (const [key, friend] of $friendsStore.entries()) {
 				const instance = $instanceDataStore.get(friend.id) || null;
 				const externalData = $externalUserDataStore.get(key) || null;
 
-				if (!grouped.has(instance)) {
-					grouped.set(instance, []);
+				const instanceId = instance?.id || 'null';
+
+				if (!grouped.has(instanceId)) {
+					grouped.set(instanceId, { instance, friends: [] });
 				}
 
-				grouped.get(instance)!.push({ friend, externalData });
+				grouped.get(instanceId)!.friends.push({ friend, externalData });
 			}
 
 			return grouped;
@@ -133,12 +161,12 @@
 				</Button>
 			</div>
 		</div>
-		{#each Array.from($groupedFriendsStore.entries()) as [instance, friends]}
+		{#each Array.from($groupedFriendsStore.values()) as { instance, friends }}
 			{#if instance}
 				<div class="pt-2">
 					<Card.Root>
 						<div class="flex flex-row p-4">
-							<div class="mr-4 flex max-w-64 items-center justify-center overflow-hidden rounded">
+							<div class="mr-4 flex max-w-64 items-start justify-center overflow-hidden rounded">
 								{#await loadImage(instance.world.imageUrl)}
 									Loading Image...
 								{:then imageBlob}
@@ -156,8 +184,8 @@
 									</Dialog.Root>
 								{/await}
 							</div>
-							<div>
-								<div class="flex flex-row">
+							<div class="flex w-full flex-col">
+								<div class="flex w-full flex-row">
 									<h2 class="text-xl">{instance ? instance.world.name : 'Unknown Instance'}</h2>
 									<h2 class="pl-1 text-xl text-muted-foreground">
 										- {instance ? instance.userCount : '0'} / {instance
@@ -174,38 +202,38 @@
 										{instanceOwner}
 									</div>
 								{/await}
-								<ul>
+								<!--								<ul>-->
+								<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2">
 									{#each friends as { friend, externalData }}
-										<div class="grid grid-cols-[repeat(auto-fill,minmax(16rem,1fr))]">
-											<Dialog.Root>
-												<Dialog.Trigger>
-													<Card.Root
-														class="h-16 w-64 transform overflow-hidden text-ellipsis transition-transform duration-200 hover:scale-105"
-													>
-														<div class="flex flex-row">
-															<div class="flex w-24 items-center justify-center">
-																{#await getFriendImage(friend)}
-																	Loading Image...
-																{:then imageBlob}
-																	<img src={imageBlob} alt="Friend Thumbnail" />
-																{/await}
-															</div>
-															<div class="flex flex-col p-2">
-																<div class="text-left text-lg">{friend.displayName}</div>
-																<div class="text-left text-xs">
-																	{friend.statusDescription || getStatusType(friend.status)}
-																</div>
+										<Dialog.Root>
+											<Dialog.Trigger>
+												<Card.Root
+													class="flex h-16 w-full transform overflow-hidden text-ellipsis transition-transform duration-200 hover:scale-105"
+												>
+													<div class="flex flex-row">
+														<div class="flex w-24 items-center justify-center">
+															{#await getFriendImage(friend)}
+																Loading Image...
+															{:then imageBlob}
+																<img src={imageBlob} alt="Friend Thumbnail" />
+															{/await}
+														</div>
+														<div class="flex flex-col p-2">
+															<div class="text-left text-lg">{friend.displayName}</div>
+															<div class="text-left text-xs">
+																{friend.statusDescription || getStatusType(friend.status)}
 															</div>
 														</div>
-													</Card.Root>
-												</Dialog.Trigger>
-												<Dialog.Content>
-													<UserInfo userId={friend.id} />
-												</Dialog.Content>
-											</Dialog.Root>
-										</div>
+													</div>
+												</Card.Root>
+											</Dialog.Trigger>
+											<Dialog.Content>
+												<UserInfo userId={friend.id} />
+											</Dialog.Content>
+										</Dialog.Root>
 									{/each}
-								</ul>
+								</div>
+								<!--								</ul>-->
 							</div>
 						</div>
 					</Card.Root>

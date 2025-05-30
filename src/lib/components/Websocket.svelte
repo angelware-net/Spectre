@@ -6,6 +6,8 @@
 	import type { WebsocketMessage } from '$lib/types/websocket-msg';
 	import { type InviteNotification, type Notification } from '$lib/types/notification';
 
+	// TODO: Move this into a separate ts module and bring the onMount into its own component.
+
 	import {
 		isPermissionGranted,
 		requestPermission,
