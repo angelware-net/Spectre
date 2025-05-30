@@ -19,6 +19,7 @@
 		"@sveltejs/vite-plugin-svelte": "^3.0.0",
 		"@tailwindcss/typography": "^0.5.14",
 		"@tauri-apps/cli": "^2.1.0",
+		"@types/node": "^22.15.26",
 		"autoprefixer": "^10.4.20",
 		"bits-ui": "^0.22.0",
 		"globals": "^15.0.0",
@@ -50,6 +51,7 @@
 		"mode-watcher": "^0.4.1",
 		"svelte-sonner": "^0.3.28",
 		"tailwind-merge": "^2.5.2",
-		"tailwind-variants": "^0.2.1"
+		"tailwind-variants": "^0.2.1",
+		"tailwindcss-motion": "^1.1.0"
 	}
 }

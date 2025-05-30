@@ -30,7 +30,7 @@
 				<Card.Title>
 					<div class="flex flex-row">
 						<div class="flex h-20 w-20 flex-row p-4">
-							<img src={notification.imageUrl} />
+							<img src={notification.imageUrl} alt="" />
 						</div>
 						<div>
 							<div class="flex w-64 flex-row p-4 text-sm">

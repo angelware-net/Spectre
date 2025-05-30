@@ -29,7 +29,7 @@
 <main>
 	<div class="flex h-96 flex-col items-center justify-center">
 		{#if isLoading}
-			<LoaderCircle class="h-7 animate-spin" />
+			<LoaderCircle class="h-7 motion-rotate-loop-[1turn]/reset" />
 			<h2>Loading...</h2>
 			{#if onlineUsersCount === 0}
 				<p>Checking VRChat status...</p>
