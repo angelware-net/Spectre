@@ -11,9 +11,9 @@
 	loadingStore.subscribe((value) => {
 		isLoading = value;
 
-		if (!isLoading) {
-			goto('/dash');
-		}
+		// if (!isLoading) {
+		// 	goto('/dash');
+		// }
 	});
 
 	// Online users count (verifies vrc is online)

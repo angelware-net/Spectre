@@ -1,12 +1,11 @@
-use std::fmt::format;
 use crate::web::cookies;
 use crate::web::cookies::clear_login_cookies;
 use base64::{engine::general_purpose, Engine as _};
 use std::sync::Arc;
 use tauri::AppHandle;
 use tauri::http::header::CONTENT_TYPE;
-use tauri_plugin_http::reqwest::cookie::{CookieStore, Jar};
-use tauri_plugin_http::reqwest::header::{AUTHORIZATION, COOKIE, SET_COOKIE, USER_AGENT};
+use tauri_plugin_http::reqwest::cookie::{Jar};
+use tauri_plugin_http::reqwest::header::{AUTHORIZATION, SET_COOKIE, USER_AGENT};
 use tauri_plugin_http::reqwest::{Client, Url};
 
 // Authentication handlers
@@ -22,7 +21,7 @@ pub async fn get_login(
     let cookie_store = Arc::new(Jar::default());
 
     if let Ok(Some(cookies)) = cookies::load_login_cookies(app.clone()) {
-        println!("Loading Cookies");
+        // println!("Loading Cookies");
         cookie_store.add_cookie_str(cookies.trim(), &url.parse().unwrap());
     }
 
@@ -76,7 +75,7 @@ pub async fn get_login(
                     Ok(text) => {
                         if !auth_cookie.is_empty() {
                             // Save the auth cookie if it exists
-                            println!("Saved cookie");
+                            // println!("Saved cookie");
                             // println!("{}", text);
                             cookies::save_login_cookies(app.clone(), auth_cookie.clone()).unwrap();
                             // println!("{}", auth_cookie);
@@ -84,7 +83,7 @@ pub async fn get_login(
 
                         if !totp_cookie.is_empty() {
                             // Save the auth cookie if it exists
-                            println!("Saved totp cookie");
+                            // println!("Saved totp cookie");
                             // println!("{}", text);
                             cookies::save_otp_cookies(app.clone(), totp_cookie.clone()).unwrap();
                             // println!("{}", auth_cookie);
@@ -108,20 +107,22 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
     let cookie_store = Arc::new(Jar::default());
 
     if let Ok(Some(cookies)) = cookies::load_login_cookies(app.clone()) {
-        println!("Loading Cookies: {}", cookies); // Log the raw cookies
+        // println!("Loading Cookies: {}", cookies); // Log the raw cookies
         cookie_store.add_cookie_str(cookies.trim(), &url.parse().unwrap());
 
-        let parsed_url = Url::parse(url).unwrap();
+        let _parsed_url = Url::parse(url).unwrap();
+        /*
         if let Some(cookie_header) = cookie_store.cookies(&parsed_url) {
             println!("Jar thinks these cookies belong on {}:\n→ {:?}", parsed_url, cookie_header);
         } else {
             println!("Jar has no cookies for {}", parsed_url);
         }
+         */
     }
     
     let body = serde_json::json!({ "code": totp });
     let body_text = serde_json::to_string_pretty(&body).unwrap();
-    println!("JSON body will be: {}", body_text);
+    // println!("JSON body will be: {}", body_text);
     
 
     let client = Client::builder()
@@ -139,6 +140,7 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
         .build()
         .map_err(|e| format!("Failed to build request: {}", e))?;
 
+    /*
     println!("===== OUTGOING REQUEST =====");
     println!("{:#?}", request);
     if let Some(cookie_hdr) = request.headers().get(COOKIE) {
@@ -146,11 +148,12 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
     }
     println!("→ Body: {}", body_text);
     println!("=============================");
+     */
     
     match client.execute(request).await {
         Ok(res) => {
                         
-            if (res.status().is_success()) {
+            if res.status().is_success() {
                 let cookie = res
                     .headers()
                     .get_all(SET_COOKIE)
@@ -178,7 +181,7 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
 
                         if !totp_cookie.is_empty() {
                             // Save the auth cookie if it exists
-                            println!("Saved totp cookie");
+                            // println!("Saved totp cookie");
                             // println!("{}", text);
                             cookies::save_otp_cookies(app.clone(), totp_cookie.clone()).unwrap();
                             // println!("{}", auth_cookie);

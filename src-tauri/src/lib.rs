@@ -1,11 +1,11 @@
-use tauri::{AppHandle, Manager};
+use tauri::{Manager};
 
 mod types;
 mod web;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
-    let builder = tauri::Builder::default()
+    let _builder = tauri::Builder::default()
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_os::init())
@@ -24,15 +24,15 @@ pub fn run() {
                 )?;
             }
             #[cfg(desktop)]
-            app.handle()
-                .plugin(tauri_plugin_single_instance::init(|app, args, cwd| {
+            let _ = app.handle()
+                .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
                     let _ = app
                         .get_webview_window("main")
                         .expect("no main window")
                         .set_focus();
                 }));
             #[cfg(desktop)]
-            app.handle()
+            let _ = app.handle()
                 .plugin(tauri_plugin_updater::Builder::new().build());
             Ok(())
         })
