@@ -102,6 +102,7 @@
 		</div>
 	</Card.Content>
 	<Card.Footer class="w-full p-4 pt-0">
+		{#if friend.locationData !== undefined}
 		<Dialog.Root>
 			<Dialog.Trigger class="w-full">
 				<Button class="w-full">Details</Button>
@@ -110,6 +111,9 @@
 				<Instance userId={friend.id} />
 			</Dialog.Content>
 		</Dialog.Root>
+		{:else}
+			<Button class="w-full" disabled variant="outline">Details</Button>
+		{/if}
 	</Card.Footer>
 </Card.Root>
 
