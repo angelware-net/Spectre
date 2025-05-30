@@ -94,7 +94,7 @@
 </script>
 
 <!--{#if page.url.pathname !== '/' && page.url.pathname !== '/login'}-->
-<Header />
+<!--<Header />-->
 <!--{:else}-->
 <!--	<LoginHeader />-->
 <!--{/if}-->
