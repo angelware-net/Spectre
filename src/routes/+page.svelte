@@ -4,11 +4,16 @@
 	import { LoaderCircle } from 'lucide-svelte';
 
 	import { loadingStore, onlineUsersStore } from '$lib/svelte-stores';
+	import { goto } from '$app/navigation';
 
 	// Loading boolean
-	let isLoading = false;
+	let isLoading = true;
 	loadingStore.subscribe((value) => {
 		isLoading = value;
+
+		if (!isLoading) {
+			goto('/dash');
+		}
 	});
 
 	// Online users count (verifies vrc is online)

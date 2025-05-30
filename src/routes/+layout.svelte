@@ -93,11 +93,11 @@
 	});
 </script>
 
-{#if page.url.pathname !== '/' && page.url.pathname !== '/login'}
-	<Header />
-{:else}
-	<LoginHeader />
-{/if}
+<!--{#if page.url.pathname !== '/' && page.url.pathname !== '/login'}-->
+<Header />
+<!--{:else}-->
+<!--	<LoginHeader />-->
+<!--{/if}-->
 <ModeWatcher />
 <Toaster />
 <Websocket />

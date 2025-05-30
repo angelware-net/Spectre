@@ -1,11 +1,13 @@
+use std::fmt::format;
 use crate::web::cookies;
 use crate::web::cookies::clear_login_cookies;
 use base64::{engine::general_purpose, Engine as _};
 use std::sync::Arc;
 use tauri::AppHandle;
-use tauri_plugin_http::reqwest::cookie::Jar;
-use tauri_plugin_http::reqwest::header::{AUTHORIZATION, SET_COOKIE, USER_AGENT};
-use tauri_plugin_http::reqwest::Client;
+use tauri::http::header::CONTENT_TYPE;
+use tauri_plugin_http::reqwest::cookie::{CookieStore, Jar};
+use tauri_plugin_http::reqwest::header::{AUTHORIZATION, COOKIE, SET_COOKIE, USER_AGENT};
+use tauri_plugin_http::reqwest::{Client, Url};
 
 // Authentication handlers
 
@@ -105,38 +107,50 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
     let url = "https://api.vrchat.cloud/api/1/auth/twofactorauth/totp/verify";
     let cookie_store = Arc::new(Jar::default());
 
-    // Load cookies (if they exist) and parse the JSON to extract the cookie value
-    // if let Ok(cookies) = cookies::load_login_cookies(app.clone()) {
-    //     // Parse the JSON string to extract the actual cookie value
-    //     if let Ok(parsed) = serde_json::from_str::<Value>(&cookies) {
-    //         if let Some(cookie_str) = parsed.get("value") {
-    //             if let Some(cookie_str) = cookie_str.as_str() {
-    //                 // Add the extracted cookie string to the cookie store
-    //                 cookie_store.add_cookie_str(cookie_str.trim(), &url.parse().unwrap());
-    //                 println!("Cookies: {}", cookie_str);  // Log the actual cookie string
-    //             }
-    //         }
-    //     }
-    // }
-
     if let Ok(Some(cookies)) = cookies::load_login_cookies(app.clone()) {
-        // println!("Loading Cookies: {}", cookies); // Log the raw cookies
+        println!("Loading Cookies: {}", cookies); // Log the raw cookies
         cookie_store.add_cookie_str(cookies.trim(), &url.parse().unwrap());
+
+        let parsed_url = Url::parse(url).unwrap();
+        if let Some(cookie_header) = cookie_store.cookies(&parsed_url) {
+            println!("Jar thinks these cookies belong on {}:\n→ {:?}", parsed_url, cookie_header);
+        } else {
+            println!("Jar has no cookies for {}", parsed_url);
+        }
     }
+    
+    let body = serde_json::json!({ "code": totp });
+    let body_text = serde_json::to_string_pretty(&body).unwrap();
+    println!("JSON body will be: {}", body_text);
+    
 
     let client = Client::builder()
         .cookie_provider(cookie_store.clone())
         .build()
         .map_err(|e| format!("Failed to build client: {}", e))?;
 
-    let req = client
+    let builder = client
         .post(url)
         .header(USER_AGENT, "Spectre/2.0")
-        .json(&serde_json::json!({ "code": totp }));
+        .header(CONTENT_TYPE, "application/json")
+        .body(body_text.clone());
 
-    match req.send().await {
+    let request = builder
+        .build()
+        .map_err(|e| format!("Failed to build request: {}", e))?;
+
+    println!("===== OUTGOING REQUEST =====");
+    println!("{:#?}", request);
+    if let Some(cookie_hdr) = request.headers().get(COOKIE) {
+        println!("→ Cookie header: {}", cookie_hdr.to_str().unwrap_or("<invalid utf8>"));
+    }
+    println!("→ Body: {}", body_text);
+    println!("=============================");
+    
+    match client.execute(request).await {
         Ok(res) => {
-            if res.status().is_success() {
+                        
+            if (res.status().is_success()) {
                 let cookie = res
                     .headers()
                     .get_all(SET_COOKIE)
@@ -172,13 +186,13 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
 
                         Ok(text)
                     }
-                    Err(e) => Err(format!("Failed to get login: {}", e)),
-                }
+                    Err(e) => Err(format!("Failed to get login: {}", e))
+                    }
             } else {
-                Err(format!("Request failed with status: {}", res.status()))
+                Err(format!("Request failed with status: {:?}", res.text().await))
             }
         }
-        Err(e) => Err(format!("Request failed: {}", e)),
+        Err(e) => Err(format!("Request failed: {}", e))
     }
 }
 

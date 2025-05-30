@@ -20,7 +20,7 @@
 	import Favicon from '$lib/components/Favicon.svelte';
 	import { loadImage } from '$lib/utils/load-image';
 	import { onDestroy } from 'svelte';
-	import disconnectSocket from '$lib/components/Websocket.svelte';
+	// import { disconnectSocket } from '$lib/components/Websocket.svelte';
 	import Bell from 'lucide-svelte/icons/bell';
 	import NotificationPopover from '$lib/components/notifications/NotificationPopover.svelte';
 
@@ -51,8 +51,9 @@
 	async function logout() {
 		try {
 			await invoke('get_logout');
-			await disconnectSocket();
+			// await disconnectSocket();
 			await goto('/login');
+			goto('/login');
 		} catch (error) {
 			console.error(error);
 		}
