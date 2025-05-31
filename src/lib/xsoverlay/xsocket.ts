@@ -53,6 +53,6 @@ export async function sendXsNotification(msg: string) {
 		await xsocket.send(JSON.stringify(xsObj));
 	} catch (e) {
 		console.error('Could not send notification to XSOverlay!');
-		toast.error('Could not send notification to XSOverlay, please double check your settings.');
+		// toast.error('Could not send notification to XSOverlay, please double check your settings.');
 	}
 }

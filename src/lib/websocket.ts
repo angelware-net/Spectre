@@ -3,10 +3,16 @@ import { invoke } from '@tauri-apps/api/core';
 import WebSocket from '@tauri-apps/plugin-websocket';
 import type { WebsocketMessage } from '$lib/types/websocket-msg';
 import { type InviteNotification, type Notification } from '$lib/types/notification';
-import { isPermissionGranted, requestPermission, sendNotification } from '@tauri-apps/plugin-notification';
+import {
+	isPermissionGranted,
+	requestPermission,
+	sendNotification
+} from '@tauri-apps/plugin-notification';
 import type { ExternalUserData } from '$lib/types/external-user';
 import { getSetting } from '$lib/store';
 import { sendXsNotification } from '$lib/xsoverlay/xsocket';
+import { currentInstanceStore } from '$lib/svelte-stores';
+import { get } from 'svelte/store';
 
 let ws: WebSocket | null = null;
 let permissionGranted: boolean = false;
@@ -26,11 +32,11 @@ export async function connectSocket() {
 		ws.addListener(async (msg) => {
 			// Handle message based on type
 			if (typeof msg.data === 'string') {
-				console.log('Raw WebSocket message (string):', msg.data);
+				// console.log('Raw WebSocket message (string):', msg.data);
 				try {
 					let msgObject: WebsocketMessage = JSON.parse(msg.data);
 					await handleWebSocketMessage(msgObject);
-					console.log(msgObject)
+					console.log(msgObject, JSON.parse(msgObject.content));
 				} catch (e) {
 					console.error('Failed to parse WebSocket message:', e, 'Message:', msg.data);
 				}
@@ -49,7 +55,7 @@ export async function connectSocket() {
 	}
 }
 
-export async function checkNotificationPermission(){
+export async function checkNotificationPermission() {
 	return await isPermissionGranted();
 }
 
@@ -59,7 +65,7 @@ async function checkXsoEnabled() {
 		xsEnabled = xsEnabledSetting.toLowerCase() === 'true';
 		return xsEnabled;
 	} else {
-		return xsEnabled = true;
+		return (xsEnabled = true);
 	}
 }
 
@@ -93,7 +99,7 @@ async function getUsernameById(id: string) {
 	return userObject.displayName;
 }
 
-async function handleWebSocketMessage(msgObject: WebsocketMessage){
+async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 	if (msgObject.type === 'notification') {
 		await checkNotificationPermission();
 		await checkXsoEnabled();
@@ -108,7 +114,7 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage){
 					let detailsObject: InviteNotification = JSON.parse(detailsString);
 					let username = await getUsernameById(msg.senderUserId);
 
-					let title = `${username} send you an invite to ${detailsObject.worldName}`
+					let title = `${username} send you an invite to ${detailsObject.worldName}`;
 
 					await sendNotif(title, msg.message);
 				}
@@ -158,7 +164,26 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage){
 				break;
 			}
 		}
-	} else if (msgObject.type !== undefined) {
+	} else if (msgObject.type === 'user-location') {
+		let msg = JSON.parse(msgObject.content);
+		let location: string = msg.location;
+		if (!location.startsWith('travel')) {
+			currentInstanceStore.set(location);
+			console.log(`Current user\'s location has changed ${location}`);
+		}
+	} else if (msgObject.type === 'friend-location') {
+		let msg = JSON.parse(msgObject.content);
+		if (msg.travelingToLocation !== "") {
+			let currentLocation = get(currentInstanceStore);
+			if (currentLocation !== null || currentLocation !== "") {
+				if (currentLocation === msg.travelingToLocation){
+					let username = await getUsernameById(msg.userId);
+					let title = `${username} is heading to your current location!`;
+					await sendNotif(title, title);
+				}
+			}
+		}
+  } else if (msgObject.type !== undefined) {
 		console.log(`WebSocket message type is ${msgObject.type}`);
 	} else {
 		console.log('WebSocket ping received! Connection is alive!');
@@ -166,8 +191,18 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage){
 }
 
 export async function disconnectSocket() {
-	if (ws != null){
+	if (ws != null) {
 		await ws.disconnect();
 		console.log('Websocket Disconnected');
+	}
+}
+
+async function getWorldInfo(location: string): Promise<string> {
+	try {
+		let world = await invoke<string>('get_vrc_instance', { instanceId: location });
+		return world;
+	} catch (e) {
+		console.error(`Error getting world ${e}`);
+		return 'not found';
 	}
 }
