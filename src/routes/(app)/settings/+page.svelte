@@ -9,8 +9,9 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { Input } from '$lib/components/ui/input';
 	import { onMount } from 'svelte';
-	import { saveNumericSetting, getNumericSetting } from '$lib/store';
+	import { saveNumericSetting, getNumericSetting, getSetting } from '$lib/store';
 	import { clearCache } from '$lib/utils/cache-manager';
+	import { Checkbox } from "$lib/components/ui/checkbox/index.js";
 
 	const themes = [
 		{ value: 'default', label: 'Default' },
@@ -22,10 +23,18 @@
 	];
 
 	let cacheSize: number = 500;
+	let xsPort: number = 42070;
+	let xsEnabled: boolean = true;
 
 	onMount(async () => {
 		let maxSize = await getNumericSetting('maximumCacheSize');
 		if (maxSize != null) cacheSize = maxSize;
+
+		let xsEnabledSetting = await getSetting('xsOverlayEnabled');
+		if (xsEnabledSetting != null) xsEnabled = xsEnabledSetting.toLowerCase() === 'true';
+
+		let xsPortSetting = await getNumericSetting('xsOverlayPort');
+		if (xsPortSetting != null) xsPort = xsPortSetting;
 	});
 
 	function handleThemeChange(value: { value: string; label: string } | undefined) {
@@ -41,6 +50,10 @@
 
 	async function handleCacheSizeChange() {
 		await saveNumericSetting('maximumCacheSize', cacheSize);
+	}
+
+	async function handleXsPortChange() {
+		await saveNumericSetting('xsOverlayPort', xsPort);
 	}
 </script>
 
@@ -99,6 +112,31 @@
 					<Table.Cell>
 						<div>
 							<Button variant="destructive" on:click={clearCacheManager}>Clear</Button>
+						</div>
+					</Table.Cell>
+				</Table.Row>
+				<Table.Row class="flex flex-row justify-between items-center content-center">
+					<Table.Cell>
+						<h2 class="pt-2 pb-2">Enable XSOverlay Integration</h2>
+					</Table.Cell>
+					<Table.Cell>
+						<div class="pr-6">
+							<Checkbox id="xsEnabled" bind:checked={xsEnabled} />
+						</div>
+					</Table.Cell>
+				</Table.Row>
+				<Table.Row class="flex flex-row justify-between">
+					<Table.Cell>
+						<h2 class="pt-2">XSOverlay Port</h2>
+					</Table.Cell>
+					<Table.Cell>
+						<div>
+							<Input
+								type="number"
+								placeholder="42070"
+								on:change={handleXsPortChange}
+								bind:value={xsPort}
+							/>
 						</div>
 					</Table.Cell>
 				</Table.Row>

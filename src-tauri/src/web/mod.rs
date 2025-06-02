@@ -12,3 +12,4 @@ pub(crate) mod vrc_request;
 pub(crate) mod vrc_user;
 pub(crate) mod vrc_users;
 pub(crate) mod vrc_notifications;
+pub(crate) mod vrc_world;
