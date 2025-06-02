@@ -9,6 +9,16 @@
     "main"
   ],
   "permissions": [
-    "updater:default"
+    "updater:default",
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "sidecar/spectre-sidecar",
+          "sidecar": true
+        }
+      ]
+    },
+    "shell:allow-open"
   ]
 }
