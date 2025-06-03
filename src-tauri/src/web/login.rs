@@ -2,9 +2,9 @@ use crate::web::cookies;
 use crate::web::cookies::clear_login_cookies;
 use base64::{engine::general_purpose, Engine as _};
 use std::sync::Arc;
-use tauri::AppHandle;
 use tauri::http::header::CONTENT_TYPE;
-use tauri_plugin_http::reqwest::cookie::{Jar};
+use tauri::AppHandle;
+use tauri_plugin_http::reqwest::cookie::Jar;
 use tauri_plugin_http::reqwest::header::{AUTHORIZATION, SET_COOKIE, USER_AGENT};
 use tauri_plugin_http::reqwest::{Client, Url};
 
@@ -119,11 +119,10 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
         }
          */
     }
-    
+
     let body = serde_json::json!({ "code": totp });
     let body_text = serde_json::to_string_pretty(&body).unwrap();
     // println!("JSON body will be: {}", body_text);
-    
 
     let client = Client::builder()
         .cookie_provider(cookie_store.clone())
@@ -149,10 +148,9 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
     println!("→ Body: {}", body_text);
     println!("=============================");
      */
-    
+
     match client.execute(request).await {
         Ok(res) => {
-                        
             if res.status().is_success() {
                 let cookie = res
                     .headers()
@@ -189,13 +187,16 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
 
                         Ok(text)
                     }
-                    Err(e) => Err(format!("Failed to get login: {}", e))
-                    }
+                    Err(e) => Err(format!("Failed to get login: {}", e)),
+                }
             } else {
-                Err(format!("Request failed with status: {:?}", res.text().await))
+                Err(format!(
+                    "Request failed with status: {:?}",
+                    res.text().await
+                ))
             }
         }
-        Err(e) => Err(format!("Request failed: {}", e))
+        Err(e) => Err(format!("Request failed: {}", e)),
     }
 }
 

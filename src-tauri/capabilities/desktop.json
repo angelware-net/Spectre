@@ -19,6 +19,9 @@
         }
       ]
     },
-    "shell:allow-open"
+    "shell:allow-open",
+    "shell:allow-kill",
+    "sql:default",
+    "sql:allow-execute"
   ]
 }

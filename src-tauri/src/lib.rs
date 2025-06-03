@@ -1,11 +1,25 @@
-use tauri::{Manager};
+use tauri::Manager;
+use tauri_plugin_sql::{Builder, Migration, MigrationKind};
 
 mod types;
 mod web;
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
+    let migrations = vec![
+        // Define your migrations here
+        Migration {
+            version: 1,
+            description: "create_initial_tables",
+            sql: "CREATE TABLE log (id INTEGER PRIMARY KEY, time DATETIME, type TEXT, message TEXT);",
+            kind: MigrationKind::Up,
+        }
+    ];
+
     let _builder = tauri::Builder::default()
+        .plugin(tauri_plugin_sql::Builder::new()
+            .add_migrations("sqlite:spectre.db", migrations)
+            .build())
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_os::init())
@@ -24,7 +38,8 @@ pub fn run() {
                 )?;
             }
             #[cfg(desktop)]
-            let _ = app.handle()
+            let _ = app
+                .handle()
                 .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
                     let _ = app
                         .get_webview_window("main")
@@ -32,7 +47,8 @@ pub fn run() {
                         .set_focus();
                 }));
             #[cfg(desktop)]
-            let _ = app.handle()
+            let _ = app
+                .handle()
                 .plugin(tauri_plugin_updater::Builder::new().build());
             Ok(())
         })

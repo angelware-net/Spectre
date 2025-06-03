@@ -45,6 +45,9 @@
       "endpoints": [
         "https://update.svrc.app/latest.json"
       ]
+    },
+    "sql": {
+      "preload": ["sqlite:spectre.db"]
     }
   }
 }
