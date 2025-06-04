@@ -2,11 +2,11 @@
 
 # Spectre
 
-A lightweight friends list manager for VRChat. Built on Sveltekit + Tauri. Thanks to Tauri, Spectre is cross-platform by default, with mobile support planned for the (very) near future.
+A friends list manager for VRChat. Built on Sveltekit + Tauri. Thanks to Tauri, Spectre is cross-platform by default, with mobile support planned for the (very) near future.
 
 ## Warnings
 
-This project is largely under development, things may be broken or imperfect! I built this project to learn Typescript and Tauri, so go easy on me!
+This project is largely under development, things may be broken or imperfect! 
 
 > [!CAUTION]
 > VRC's official stance on using their API is to use it non-maliciously, Spectre performs no malicious functions, but makes a large number of API calls. I am not responsible for your account getting rate-limited or locked.
@@ -20,26 +20,26 @@ The goal of Spectre is to provide a minimal, fast, and easy way to view your VRC
 For development:
 
 ```shell
-tauri dev
+npm run tauri dev
 ```
 
 For production:
 
 ```shell
-tauri build
+npm run tauri build
 ```
 
 ## Current Features
 
 - Dashboard: Get a quick overview of your friends online and the current VRChat player count.
 - Friends List: See who's online and their status.
+- Instances: See active instances and which friends are in them.
 - Notifications: Get system-level notifications for invites, requests, friend requests, and more.
+- XSOverlay Integration: Get real-time notifications in your headset.
 
 ## Credits
 
 - [Community-driven VRCAPI Docs](https://vrchatapi.github.io/docs/api/)
-- [shadcn-svelte](https://www.shadcn-svelte.com/)
-- @Auros for help learning
 
 ## Screenshots
 
