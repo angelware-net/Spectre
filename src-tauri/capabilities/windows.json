@@ -1,0 +1,25 @@
+{
+  "identifier": "windows",
+  "platforms": [
+    "windows"
+  ],
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "updater:default",
+    {
+      "identifier": "shell:allow-spawn",
+      "allow": [
+        {
+          "name": "sidecar/spectre-sidecar",
+          "sidecar": true
+        }
+      ]
+    },
+    "shell:allow-open",
+    "shell:allow-kill",
+    "sql:default",
+    "sql:allow-execute"
+  ]
+}
