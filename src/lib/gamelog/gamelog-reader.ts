@@ -1,6 +1,7 @@
 import { Child, Command } from '@tauri-apps/plugin-shell';
 import { type Platform, platform } from '@tauri-apps/plugin-os';
 import WebSocket from '@tauri-apps/plugin-websocket';
+import { addLog } from '$lib/gamelog/gamelog-sql';
 
 let process: Child | null = null;
 let ws: WebSocket | null = null;
@@ -41,6 +42,7 @@ async function startWebsocket() {
 
 		ws.addListener(async (msg) => {
 			console.log(`SIDECAR LOGGER: ${msg.data}`);
+			await addLog(msg.data);
 		});
 	} catch (e) {
 		console.error(`SIDECAR: An error occurred when trying to connect to sidecar websocket: ${e}`);
