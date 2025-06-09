@@ -1,7 +1,11 @@
 import Database from '@tauri-apps/plugin-sql';
 import { gamelogStore } from '$lib/gamelog/gamelog-store';
 
-const db: Database = await Database.load('sqlite:spectre.db');
+let db: Database;
+
+export async function loadDb() {
+	db = await Database.load('sqlite:spectre.db');
+}
 
 export async function getLogsByDate(minDate: Date, maxDate: Date) {
 	const minString = minDate.toISOString().replace('T', ' ').slice(0, 19);
