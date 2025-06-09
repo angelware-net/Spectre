@@ -11,7 +11,7 @@ pub fn run() {
         Migration {
             version: 1,
             description: "create_initial_tables",
-            sql: "CREATE TABLE log (id INTEGER PRIMARY KEY, time DATETIME, type TEXT, message TEXT);",
+            sql: "CREATE TABLE log (id INTEGER PRIMARY KEY, time DATETIME, type TEXT, message TEXT, user TEXT, location TEXT);",
             kind: MigrationKind::Up,
         }
     ];

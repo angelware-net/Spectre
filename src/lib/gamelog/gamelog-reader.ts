@@ -42,7 +42,7 @@ async function startWebsocket() {
 
 		ws.addListener(async (msg) => {
 			console.log(`SIDECAR LOGGER: ${msg.data}`);
-			await addLog(msg.data);
+			await addLog(<string>msg.data);
 		});
 	} catch (e) {
 		console.error(`SIDECAR: An error occurred when trying to connect to sidecar websocket: ${e}`);
