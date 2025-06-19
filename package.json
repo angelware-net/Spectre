@@ -13,6 +13,7 @@
 		"tauri": "tauri"
 	},
 	"devDependencies": {
+		"@lucide/svelte": "^0.482.0",
 		"@sveltejs/adapter-auto": "^3.3.1",
 		"@sveltejs/adapter-static": "^3.0.8",
 		"@sveltejs/kit": "^2.21.5",
@@ -21,16 +22,20 @@
 		"@tauri-apps/cli": "^2.5.0",
 		"@types/node": "^22.15.26",
 		"autoprefixer": "^10.4.20",
-		"bits-ui": "^0.22.0",
+		"bits-ui": "^1.8.0",
 		"globals": "^15.0.0",
 		"lucide-svelte": "^0.469.0",
+		"mode-watcher": "^1.0.8",
+		"paneforge": "^1.0.0-next.6",
 		"prettier": "^3.1.1",
 		"prettier-plugin-svelte": "^3.2.6",
 		"prettier-plugin-tailwindcss": "^0.6.5",
 		"svelte": "^5.0.0",
 		"svelte-check": "^4.0.0",
+		"svelte-sonner": "^0.3.28",
 		"tailwindcss": "^3.4.9",
 		"typescript": "^5.5.0",
+		"vaul-svelte": "^1.0.0-next.7",
 		"vite": "^5.4.4"
 	},
 	"type": "module",
@@ -49,10 +54,9 @@
 		"@tauri-apps/plugin-updater": "^2.8.1",
 		"@tauri-apps/plugin-websocket": "^2.3.1",
 		"clsx": "^2.1.1",
-		"mode-watcher": "^0.4.1",
-		"svelte-sonner": "^0.3.28",
 		"tailwind-merge": "^2.5.2",
 		"tailwind-variants": "^0.2.1",
+		"tailwindcss-animate": "^1.0.7",
 		"tailwindcss-motion": "^1.1.0"
 	}
 }

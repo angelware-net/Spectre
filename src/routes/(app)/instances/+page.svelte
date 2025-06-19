@@ -152,7 +152,7 @@
 		<div class="grid grid-cols-2 pb-6">
 			<div class="text-3xl">Instances</div>
 			<div class="flex flex-row justify-end">
-				<Button variant="outline" on:click={handleRefresh} size="icon">
+				<Button variant="outline" onclick={() => handleRefresh()} size="icon">
 					{#if loading}
 						<LucideRefreshCw class="h-[1.2rem] w-[1.2rem] animate-spin transition-all" />
 					{:else}

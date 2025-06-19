@@ -75,9 +75,16 @@ export async function handleModeChange(isDarkMode: boolean) {
 	await saveSetting('darkMode', isDarkMode ? 'dark' : 'light');
 }
 
-mode.subscribe(async (value) => {
-	await handleModeChange(value === 'dark');
-});
+// mode.subscribe(async (value) => {
+// 	await handleModeChange(value === 'dark');
+// });
+
+// $effect(() => {
+// 	const m = mode.current;
+// 	if (m) {
+// 		void handleModeChange(m === 'dark');
+// 	}
+// });
 
 export async function loadSettings() {
 	const savedTheme = await getSetting('theme');
@@ -93,4 +100,8 @@ export async function loadSettings() {
 	} else {
 		document.documentElement.classList.remove('dark');
 	}
+}
+
+export async function getCurrentTheme() {
+	return await getSetting('theme');
 }

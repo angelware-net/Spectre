@@ -1,19 +1,16 @@
 <script lang="ts">
-	import { DropdownMenu as DropdownMenuPrimitive } from 'bits-ui';
-	import { cn } from '$lib/utils.js';
+	import { DropdownMenu as DropdownMenuPrimitive } from "bits-ui";
+	import { cn } from "$lib/utils.js";
 
-	type $$Props = DropdownMenuPrimitive.SeparatorProps;
-
-	interface Props {
-		class?: $$Props['class'];
-		[key: string]: any
-	}
-
-	let { class: className = undefined, ...rest }: Props = $props();
-	
+	let {
+		ref = $bindable(null),
+		class: className,
+		...restProps
+	}: DropdownMenuPrimitive.SeparatorProps = $props();
 </script>
 
 <DropdownMenuPrimitive.Separator
-	class={cn('-mx-1 my-1 h-px bg-muted', className)}
-	{...rest}
+	bind:ref
+	class={cn("bg-muted -mx-1 my-1 h-px", className)}
+	{...restProps}
 />

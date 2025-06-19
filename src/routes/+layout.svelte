@@ -23,6 +23,7 @@
 	import type { UserData } from '$lib/types/user';
 	import { manageCacheSize } from '$lib/utils/cache-manager';
 	import LoginHeader from '$lib/components/LoginHeader.svelte';
+	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
 	interface Props {
 		children?: import('svelte').Snippet;
 	}
@@ -103,6 +104,7 @@
 <!--{:else}-->
 <!--	<LoginHeader />-->
 <!--{/if}-->
+<ThemeSwitcher />
 <ModeWatcher />
 <Toaster />
 <Websocket />

@@ -39,6 +39,24 @@
 	let sortMode: string = $state('Status');
 	let friendsWithImages: Array<ExtendedFriend & { avatarUrl: string }> = $state([]);
 
+	// Sorting mode change
+	let value = $state("");
+
+	const sortingModes = [
+		{ value: "Status", label: "Status" },
+		{ value: "Username", label: "Username" },
+		{ value: "Location", label: "Location" }
+	]
+
+	const triggerContent = $derived(
+		sortingModes.find((m) => m.value === value)?.label ?? "Sort"
+	);
+
+	$effect(() => {
+		const selectedMode = sortingModes.find((t) => t.value === value);
+		handleSortChange(selectedMode);
+	});
+
 	async function getViewMode() {
 		let viewModeSetting = await getSetting('friendsViewMode');
 
@@ -200,18 +218,18 @@
 			<div class="text-3xl">Friends</div>
 			<div class="flex flex-row items-end justify-end text-end">
 				<div class="flex flex-row justify-end pr-4">
-					<Select.Root onSelectedChange={handleSortChange}>
+					<Select.Root type="single" name="sort" bind:value>
 						<Select.Trigger class="w-[180px]">
-							<Select.Value placeholder="Sort" />
+							{triggerContent}
 						</Select.Trigger>
 						<Select.Content>
 							<Select.Group>
-								<Select.Item value="Status" label="Status">Status</Select.Item>
-								<Select.Item value="Username" label="Username">Username</Select.Item>
-								<Select.Item value="Location" label="Location">Location</Select.Item>
+								{#each sortingModes as mode}
+									<Select.Item value={mode.value} label={mode.label}>{mode.label}</Select.Item>
+								{/each}
 							</Select.Group>
 						</Select.Content>
-						<Select.Input name="themeSelector" />
+<!--						<Select.Input name="themeSelector" />-->
 					</Select.Root>
 				</div>
 				<div class="flex flex-row justify-end">
@@ -228,7 +246,7 @@
 							<List />
 						</ToggleGroup.Item>
 					</ToggleGroup.Root>
-					<Button variant="outline" on:click={handleRefresh} size="icon">
+					<Button variant="outline" onclick={() => handleRefresh()} size="icon">
 						{#if loading}
 							<LucideRefreshCw class="h-[1.2rem] w-[1.2rem] animate-spin transition-all" />
 						{:else}
@@ -281,16 +299,18 @@
 						{#each sortedFriends as friend, i (i)}
 							<Table.Row class="">
 								<!--Status-->
-								<Tooltip.Root>
-									<Tooltip.Trigger class="flex h-full items-center justify-center p-4">
-										<Table.Cell class="">
-											<span class={getStatusClass(friend.state, friend.status)}></span>
-										</Table.Cell>
-									</Tooltip.Trigger>
-									<Tooltip.Content>
-										<p>{friend.status}</p>
-									</Tooltip.Content>
-								</Tooltip.Root>
+								<Tooltip.Provider>
+									<Tooltip.Root>
+										<Tooltip.Trigger class="flex h-full items-center justify-center p-4">
+											<Table.Cell class="">
+												<span class={getStatusClass(friend.state, friend.status)}></span>
+											</Table.Cell>
+										</Tooltip.Trigger>
+										<Tooltip.Content>
+											<p>{friend.status}</p>
+										</Tooltip.Content>
+									</Tooltip.Root>
+								</Tooltip.Provider>
 
 								<!--Name-->
 								<Table.Cell>

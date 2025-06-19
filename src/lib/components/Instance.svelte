@@ -127,17 +127,17 @@
 							<DropdownMenu.Label>Options</DropdownMenu.Label>
 							<DropdownMenu.Separator />
 							<DropdownMenu.Item
-								on:click={joinUrl(
+								onclick={() => joinUrl(
 									`vrchat://launch?ref=vrchat.com&id=${instance?.worldId}:${instance?.instanceId}`
 								)}
 							>
 								Join Instance
 							</DropdownMenu.Item>
-							<DropdownMenu.Item on:click={inviteMyself(instance?.worldId, instance?.instanceId)}
+							<DropdownMenu.Item onclick={() => inviteMyself(instance?.worldId, instance?.instanceId)}
 								>Invite Me
 							</DropdownMenu.Item>
 							<DropdownMenu.Item
-								on:click={openUrl(
+								onclick={() => openUrl(
 									`https://vrchat.com/home/launch?worldId=${instance?.worldId}&instanceId=${instance?.instanceId}`
 								)}
 							>

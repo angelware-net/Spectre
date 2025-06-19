@@ -210,7 +210,7 @@
 											{/snippet}
 						</DropdownMenu.Trigger>
 			<DropdownMenu.Content align="end">
-				<DropdownMenu.Item href="/me">
+				<DropdownMenu.Item onclick={() => goto('/me')}>
 					{#if currentUser !== null && currentUser.displayName !== null}
 						{currentUser.displayName}
 					{:else}
@@ -218,7 +218,7 @@
 					{/if}
 				</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item href="/settings">Settings</DropdownMenu.Item>
+				<DropdownMenu.Item onclick={() => goto('/settings')}>Settings</DropdownMenu.Item>
 				<DropdownMenu.Item onclick={openGithub}>Github</DropdownMenu.Item>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item onclick={logout}>Logout</DropdownMenu.Item>
