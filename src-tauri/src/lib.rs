@@ -1,5 +1,5 @@
 use tauri::Manager;
-use tauri_plugin_sql::{Builder, Migration, MigrationKind};
+use tauri_plugin_sql::{Migration, MigrationKind};
 
 mod types;
 mod web;
@@ -17,6 +17,29 @@ pub fn run() {
     ];
 
     let _builder = tauri::Builder::default()
+        .setup(|app| {
+            #[cfg(desktop)]
+            let _ = app
+                .handle()
+                .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
+                    let _ = app
+                        .get_webview_window("main")
+                        .expect("no main window")
+                        .set_focus();
+                }));
+            if cfg!(debug_assertions) {
+                app.handle().plugin(
+                    tauri_plugin_log::Builder::default()
+                        .level(log::LevelFilter::Info)
+                        .build(),
+                )?;
+            }
+            #[cfg(desktop)]
+            let _ = app
+                .handle()
+                .plugin(tauri_plugin_updater::Builder::new().build());
+            Ok(())
+        })
         .plugin(tauri_plugin_sql::Builder::new()
             .add_migrations("sqlite:spectre.db", migrations)
             .build())
@@ -29,29 +52,6 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_notification::init())
-        .setup(|app| {
-            if cfg!(debug_assertions) {
-                app.handle().plugin(
-                    tauri_plugin_log::Builder::default()
-                        .level(log::LevelFilter::Info)
-                        .build(),
-                )?;
-            }
-            #[cfg(desktop)]
-            let _ = app
-                .handle()
-                .plugin(tauri_plugin_single_instance::init(|app, _args, _cwd| {
-                    let _ = app
-                        .get_webview_window("main")
-                        .expect("no main window")
-                        .set_focus();
-                }));
-            #[cfg(desktop)]
-            let _ = app
-                .handle()
-                .plugin(tauri_plugin_updater::Builder::new().build());
-            Ok(())
-        })
         .invoke_handler(tauri::generate_handler![
             // Web functions
             web::vrc_users::get_vrc_users,
