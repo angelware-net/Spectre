@@ -13,6 +13,8 @@ import { getSetting } from '$lib/store';
 import { sendXsNotification } from '$lib/xsoverlay/xsocket';
 import { currentInstanceStore } from '$lib/svelte-stores';
 import { get } from 'svelte/store';
+import { addManualLog } from '$lib/gamelog/gamelog-sql';
+import type { InstanceData } from '$lib/types/instance';
 
 let ws: WebSocket | null = null;
 let permissionGranted: boolean = false;
@@ -117,7 +119,10 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 					let title = `${username} send you an invite to ${detailsObject.worldName}`;
 
 					await sendNotif(title, msg.message);
+
+					await addManualLog('Invite', title, msg.senderUserId);
 				}
+				break;
 			}
 			case 'requestInvite': {
 				if (msg.senderUserId !== null) {
@@ -126,6 +131,8 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 					let title = `${username} is requesting an invite!`;
 
 					await sendNotif(title, msg.message);
+
+					await addManualLog('Invite Request', title, msg.senderUserId);
 				}
 				break;
 			}
@@ -136,6 +143,8 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 					let title = `${username} sent you a friend request!`;
 
 					await sendNotif(title, msg.message);
+
+					await addManualLog('Friend Request', title, msg.senderUserId);
 				}
 				break;
 			}
@@ -146,6 +155,8 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 					let title = `${username} sent you a message!`;
 
 					await sendNotif(title, msg.message);
+
+					await addManualLog('Message', title, msg.senderUserId);
 				}
 				break;
 			}
@@ -156,6 +167,8 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 					let title = `${username} responded to your invite request!`;
 
 					await sendNotif(title, msg.message);
+
+					await addManualLog('Invite Response', title, msg.senderUserId);
 				}
 				break;
 			}
@@ -170,6 +183,14 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 		if (!location.startsWith('travel')) {
 			currentInstanceStore.set(location);
 			console.log(`Current user\'s location has changed ${location}`);
+
+			if (!location.includes('offline')) {
+				const instanceString = await invoke<string>('get_vrc_instance', {
+					instanceId: location
+				});
+				const instanceData: InstanceData = JSON.parse(instanceString);
+				await addManualLog('User Location', `${instanceData.world.name}`, undefined, `${instanceData.worldId}`);
+			}
 		}
 	} else if (msgObject.type === 'friend-location') {
 		let msg = JSON.parse(msgObject.content);

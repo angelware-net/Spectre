@@ -4,6 +4,7 @@
 	import { invoke } from '@tauri-apps/api/core';
 	import { goto } from '$app/navigation';
 	import { currentUserStore } from '$lib/svelte-stores';
+	import { type OsType, type } from '@tauri-apps/plugin-os';
 
 	import * as DropdownMenu from '$lib/components/ui/dropdown-menu/index.js';
 	import * as Sheet from '$lib/components/ui/sheet/index.js';
@@ -15,17 +16,16 @@
 	import Moon from 'lucide-svelte/icons/moon';
 	import CircleUser from 'lucide-svelte/icons/circle-user';
 	import Menu from 'lucide-svelte/icons/menu';
-	import Globe from 'lucide-svelte/icons/globe';
 	import type { UserData } from '$lib/types/user';
 	import Favicon from '$lib/components/Favicon.svelte';
 	import { loadImage } from '$lib/utils/load-image';
 	import { onDestroy } from 'svelte';
-	// import { disconnectSocket } from '$lib/components/Websocket.svelte';
 	import Bell from 'lucide-svelte/icons/bell';
 	import NotificationPopover from '$lib/components/notifications/NotificationPopover.svelte';
 
 	let currentUser: UserData | null;
 	let avatarImageUrl: string | null = null;
+	const platform: OsType = type();
 
 	currentUserStore.subscribe(async (userData: UserData | null) => {
 		if (userData) {
@@ -112,6 +112,16 @@
 		>
 			Instances
 		</a>
+		{#if platform !== 'ios' && platform !== 'android'}
+			<a
+				href="/log"
+				class:text-foreground={$page.url.pathname === '/log'}
+				class:text-muted-foreground={$page.url.pathname !== '/log'}
+				class="hover:text-foreground"
+			>
+				Log
+			</a>
+		{/if}
 	</nav>
 	<Sheet.Root>
 		<Sheet.Trigger asChild let:builder>
@@ -151,6 +161,16 @@
 				>
 					Instances
 				</a>
+				{#if platform !== 'ios' && platform !== 'android'}
+					<a
+						href="/log"
+						class:text-foreground={$page.url.pathname === '/log'}
+						class:text-muted-foreground={$page.url.pathname !== '/log'}
+						class="hover:text-foreground"
+					>
+						Log
+					</a>
+				{/if}
 			</nav>
 		</Sheet.Content>
 	</Sheet.Root>
@@ -199,7 +219,7 @@
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item on:click={logout}>Logout</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item disabled>v2.0.4-ALPHA</DropdownMenu.Item>
+				<DropdownMenu.Item disabled>v2.0.5-ALPHA</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</div>

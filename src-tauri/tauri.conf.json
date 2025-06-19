@@ -1,7 +1,7 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
   "productName": "SpectreVRC",
-  "version": "2.0.4",
+  "version": "2.0.5",
   "identifier": "com.angelware.spectre",
   "build": {
     "frontendDist": "../build",
@@ -42,6 +42,9 @@
       "endpoints": [
         "https://update.svrc.app/latest.json"
       ]
+    },
+    "sql": {
+      "preload": ["sqlite:spectre.db"]
     }
   }
 }
