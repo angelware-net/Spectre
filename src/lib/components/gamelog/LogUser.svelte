@@ -26,8 +26,12 @@
 
 	// TODO: Add user moderation functions
 
-	export let logData: GameLogMessage;
-	let user: ExternalUserData | undefined;
+	interface Props {
+		logData: GameLogMessage;
+	}
+
+	let { logData }: Props = $props();
+	let user: ExternalUserData | undefined = $state();
 
 	const tagToBadgeMap: { [key: string]: string } = {
 		system_supporter: 'VRC+',
@@ -162,7 +166,8 @@
 					<Button variant="ghost" size="icon" on:click={openUrl(link)}>
 						<Tooltip.Root>
 							<Tooltip.Trigger>
-								<svelte:component this={getIconForLink(link)} />
+								{@const SvelteComponent = getIconForLink(link)}
+								<SvelteComponent />
 							</Tooltip.Trigger>
 							<Tooltip.Content>
 								{link}

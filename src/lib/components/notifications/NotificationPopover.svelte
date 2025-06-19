@@ -7,7 +7,7 @@
 	import { CheckCheck, EyeOff } from 'lucide-svelte';
 
 	let notifs: string;
-	let notifications: Notification[] = [];
+	let notifications: Notification[] = $state([]);
 
 	onMount(async () => {
 		notifs = await invoke<string>('get_vrc_notifications');

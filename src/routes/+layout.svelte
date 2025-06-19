@@ -23,6 +23,11 @@
 	import type { UserData } from '$lib/types/user';
 	import { manageCacheSize } from '$lib/utils/cache-manager';
 	import LoginHeader from '$lib/components/LoginHeader.svelte';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	onMount(async () => {
 		// Set loading state
@@ -102,4 +107,4 @@
 <Toaster />
 <Websocket />
 
-<slot></slot>
+{@render children?.()}

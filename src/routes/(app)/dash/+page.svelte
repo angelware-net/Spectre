@@ -14,9 +14,9 @@
 	import { get } from 'svelte/store';
 	import { instanceDataStore, friendsStore, externalUserDataStore } from '$lib/svelte-stores';
 
-	let onlineFriendsCount = 0;
-	let joinableUsersCount = 0;
-	let onlineUsers = 0;
+	let onlineFriendsCount = $state(0);
+	let joinableUsersCount = $state(0);
+	let onlineUsers = $state(0);
 
 	onMount(async () => {
 		await reloadData(false);

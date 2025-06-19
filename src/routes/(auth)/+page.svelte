@@ -7,7 +7,7 @@
 	import { goto } from '$app/navigation';
 
 	// Loading boolean
-	let isLoading = true;
+	let isLoading = $state(true);
 	loadingStore.subscribe((value) => {
 		isLoading = value;
 
@@ -17,7 +17,7 @@
 	});
 
 	// Online users count (verifies vrc is online)
-	let onlineUsersCount: number = 0;
+	let onlineUsersCount: number = $state(0);
 	onlineUsersStore.subscribe((value) => {
 		onlineUsersCount = value;
 	});

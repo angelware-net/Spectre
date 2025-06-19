@@ -12,7 +12,11 @@
 	import Facebook from 'lucide-svelte/icons/facebook';
 	import Instagram from 'lucide-svelte/icons/instagram';
 
-	export let currentUser: UserData | null;
+	interface Props {
+		currentUser: UserData | null;
+	}
+
+	let { currentUser }: Props = $props();
 
 	const linkIconMap: { [key: string]: any } = {
 		'twitter.com': Twitter,
@@ -50,7 +54,8 @@
 			<Button variant="ghost" size="icon" on:click={openUrl(link)}>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
-						<svelte:component this={getIconForLink(link)} />
+						{@const SvelteComponent = getIconForLink(link)}
+						<SvelteComponent />
 					</Tooltip.Trigger>
 					<Tooltip.Content>
 						{link}

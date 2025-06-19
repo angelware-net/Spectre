@@ -7,10 +7,10 @@
 	import { getGlobalUserCount } from '$lib/utils/get-global-count';
 	import { reloadData } from '$lib/load-data';
 
-	let onlineFriendsCount = 0;
-	let onlineUsers = 0;
+	let onlineFriendsCount = $state(0);
+	let onlineUsers = $state(0);
 	let dateTime: string = '';
-	let currentTime: string = 'Loading...';
+	let currentTime: string = $state('Loading...');
 	let currentlyOnline: boolean = false;
 
 	function cleanDateTimeString(dateTime: string): string {
@@ -62,7 +62,7 @@
 		}
 	});
 
-	$: tickerClass = currentlyOnline ? 'bg-green' : 'bg-background';
+	let tickerClass = $derived(currentlyOnline ? 'bg-green' : 'bg-background');
 </script>
 
 <footer class="flex h-10 w-screen items-center justify-center border-t bg-background">
@@ -70,7 +70,7 @@
 		<div class="ticker-wrapper font-mono">
 			<div class="hwrap">
 				<div class="hmove">
-					<a class="hitem" on:click={openAw} href="/">Made with ❤️ by ANGELWARE</a>
+					<a class="hitem" onclick={openAw} href="/">Made with ❤️ by ANGELWARE</a>
 					<div class="hitem">Online Friends: {onlineFriendsCount}</div>
 					<div class="hitem">Online Users: {onlineUsers}</div>
 					<div class="hitem">VRChat Time: {currentTime}</div>

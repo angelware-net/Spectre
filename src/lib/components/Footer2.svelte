@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { onDestroy, onMount } from 'svelte';
 	import { onlineUsersStore } from '$lib/svelte-stores';
 	import { invoke } from '@tauri-apps/api/core';
@@ -6,25 +8,27 @@
 	import { getGlobalUserCount } from '$lib/utils/get-global-count';
 	import { reloadData } from '$lib/load-data';
 
-	let onlineFriendsCount = 0;
-	let onlineUsers = 0;
+	let onlineFriendsCount = $state(0);
+	let onlineUsers = $state(0);
 	let dateTime: string = '';
-	let currentTime: string = 'Loading...';
+	let currentTime: string = $state('Loading...');
 
-	let tickerItems: string[] = ['Made with ❤️ by ANGELWARE'];
+	let tickerItems: string[] = $state(['Made with ❤️ by ANGELWARE']);
 
-	$: tickerItems = [
-		'Made with ❤️ by ANGELWARE',
-		`Online Friends: ${onlineFriendsCount}`,
-		`Online Users: ${onlineUsers}`,
-		`VRChat Time: ${currentTime}`
-	];
+	$effect(() => {
+		tickerItems = [
+			'Made with ❤️ by ANGELWARE',
+			`Online Friends: ${onlineFriendsCount}`,
+			`Online Users: ${onlineUsers}`,
+			`VRChat Time: ${currentTime}`
+		];
+	});
 
 	let currentTickerIndex = 0;
-	let tickerText: string = tickerItems[currentTickerIndex];
+	let tickerText: string = $state(tickerItems[currentTickerIndex]);
 	let tickerInterval: ReturnType<typeof setInterval>;
 	let timeInterval: ReturnType<typeof setInterval>;
-	let tickerElement: HTMLDivElement | null = null;
+	let tickerElement: HTMLDivElement | null = $state(null);
 
 	const totalCycleDuration = 5000;
 	const fadeDuration = 500;

@@ -10,8 +10,12 @@
 	import { loadImage } from '$lib/utils/load-image';
 	import Instance from '$lib/components/Instance.svelte';
 
-	export let friend: ExtendedFriend;
-	export let avatarUrl: string;
+	interface Props {
+		friend: ExtendedFriend;
+		avatarUrl: string;
+	}
+
+	let { friend, avatarUrl }: Props = $props();
 	let avatarImage: string;
 
 	onMount(async () => {

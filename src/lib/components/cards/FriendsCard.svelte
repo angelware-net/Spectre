@@ -2,7 +2,11 @@
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
 
-	export let friendsOnline: number = 0;
+	interface Props {
+		friendsOnline?: number;
+	}
+
+	let { friendsOnline = 0 }: Props = $props();
 </script>
 
 <Card.Root class="flex h-64 flex-col justify-between">

@@ -9,10 +9,10 @@
 	import type { UserData } from '$lib/types/user';
 	import { currentUserStore } from '$lib/svelte-stores';
 
-	let email = '';
-	let password = '';
-	let twoFactorCode = '';
-	let requiresTwoFactorAuth = false;
+	let email = $state('');
+	let password = $state('');
+	let twoFactorCode = $state('');
+	let requiresTwoFactorAuth = $state(false);
 
 	async function verifyTwoFactor() {
 		try {

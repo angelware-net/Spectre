@@ -2,7 +2,11 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area/index.js';
 	import type { UserData } from '$lib/types/user.js';
 
-	export let currentUser: UserData | null;
+	interface Props {
+		currentUser: UserData | null;
+	}
+
+	let { currentUser }: Props = $props();
 
 	function formatUserData(userData: UserData | null): string {
 		return JSON.stringify(userData, null, 2);

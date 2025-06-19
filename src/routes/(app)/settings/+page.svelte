@@ -22,9 +22,9 @@
 		{ value: 'violet', label: 'Violet' }
 	];
 
-	let cacheSize: number = 500;
-	let xsPort: number = 42070;
-	let xsEnabled: boolean = true;
+	let cacheSize: number = $state(500);
+	let xsPort: number = $state(42070);
+	let xsEnabled: boolean = $state(true);
 
 	onMount(async () => {
 		let maxSize = await getNumericSetting('maximumCacheSize');

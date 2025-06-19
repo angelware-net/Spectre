@@ -9,7 +9,7 @@
 	import { goto } from '$app/navigation';
 	import Footer2 from '$lib/components/Footer2.svelte';
 
-	let onlineFriendsCount = 0;
+	let onlineFriendsCount = $state(0);
 
 	// Subscribe to the user store and get the online friends count
 	currentUserStore.subscribe((userData: UserData | null) => {

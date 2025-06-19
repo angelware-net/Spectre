@@ -16,7 +16,7 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import OwnAvatar from '$lib/components/me/OwnAvatar.svelte';
 
-	let currentUser: UserData | null;
+	let currentUser: UserData | null = $state();
 
 	onMount(() => {
 		currentUser = get(currentUserStore);

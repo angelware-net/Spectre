@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { onMount } from 'svelte';
 	import { loadData, reloadData } from '$lib/load-data';
 	import { getFriendImage } from '$lib/utils/get-friend-image';
@@ -32,10 +34,10 @@
 	import UserInfo from '$lib/components/friends/UserInfo.svelte';
 	import Instance from '$lib/components/Instance.svelte';
 
-	let loading: boolean = true;
-	let viewMode: string = 'cards';
-	let sortMode: string = 'Status';
-	let friendsWithImages: Array<ExtendedFriend & { avatarUrl: string }> = [];
+	let loading: boolean = $state(true);
+	let viewMode: string = $state('cards');
+	let sortMode: string = $state('Status');
+	let friendsWithImages: Array<ExtendedFriend & { avatarUrl: string }> = $state([]);
 
 	async function getViewMode() {
 		let viewModeSetting = await getSetting('friendsViewMode');
@@ -90,7 +92,7 @@
 		}
 	};
 
-	let sortedFriends: Array<ExtendedFriend & { avatarUrl: string }> = [];
+	let sortedFriends: Array<ExtendedFriend & { avatarUrl: string }> = $state([]);
 
 	async function loadFriendsWithImages() {
 		const friends = Array.from($friendsStore.values()).map((friend) => {
@@ -130,38 +132,40 @@
 		);
 	}
 
-	$: sortedFriends = [...friendsWithImages].sort((a, b) => {
-		const locationOrder = (location) => {
-			if (location === 'On Website') return 1;
-			if (location === 'Offline') return 2;
-			return 0;
-		};
-
-		if (sortMode === 'Status') {
-			const stateOrder = {
-				'online:join me': 1,
-				'online:active': 2,
-				'online:ask me': 3,
-				'online:busy': 4,
-				active: 5,
-				offline: 6
+	run(() => {
+		sortedFriends = [...friendsWithImages].sort((a, b) => {
+			const locationOrder = (location) => {
+				if (location === 'On Website') return 1;
+				if (location === 'Offline') return 2;
+				return 0;
 			};
-			const aKey = `${a.state}:${a.status}`.toLowerCase();
-			const bKey = `${b.state}:${b.status}`.toLowerCase();
-			const statusComparison =
-				(stateOrder[aKey] || stateOrder[a.state]) - (stateOrder[bKey] || stateOrder[b.state]);
-			if (statusComparison !== 0) return statusComparison;
-			return a.displayName.localeCompare(b.displayName);
-		} else if (sortMode === 'Username') {
-			const locationComparison = locationOrder(a.locationName) - locationOrder(b.locationName);
-			if (locationComparison !== 0) return locationComparison;
-			return a.displayName.localeCompare(b.displayName);
-		} else if (sortMode === 'Location') {
-			const locationComparison = locationOrder(a.locationName) - locationOrder(b.locationName);
-			if (locationComparison !== 0) return locationComparison;
-			return a.locationName.localeCompare(b.locationName);
-		}
-		return 0;
+
+			if (sortMode === 'Status') {
+				const stateOrder = {
+					'online:join me': 1,
+					'online:active': 2,
+					'online:ask me': 3,
+					'online:busy': 4,
+					active: 5,
+					offline: 6
+				};
+				const aKey = `${a.state}:${a.status}`.toLowerCase();
+				const bKey = `${b.state}:${b.status}`.toLowerCase();
+				const statusComparison =
+					(stateOrder[aKey] || stateOrder[a.state]) - (stateOrder[bKey] || stateOrder[b.state]);
+				if (statusComparison !== 0) return statusComparison;
+				return a.displayName.localeCompare(b.displayName);
+			} else if (sortMode === 'Username') {
+				const locationComparison = locationOrder(a.locationName) - locationOrder(b.locationName);
+				if (locationComparison !== 0) return locationComparison;
+				return a.displayName.localeCompare(b.displayName);
+			} else if (sortMode === 'Location') {
+				const locationComparison = locationOrder(a.locationName) - locationOrder(b.locationName);
+				if (locationComparison !== 0) return locationComparison;
+				return a.locationName.localeCompare(b.locationName);
+			}
+			return 0;
+		});
 	});
 
 	onMount(async () => {

@@ -22,7 +22,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import InstanceStatic from '$lib/components/InstanceStatic.svelte';
 
-	let loading: boolean = false;
+	let loading: boolean = $state(false);
 
 	async function handleRefresh() {
 		loading = true;

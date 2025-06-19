@@ -4,7 +4,11 @@
 
 	import { onMount } from 'svelte';
 
-	export let totalOnline: number = 0; // Define the prop
+	interface Props {
+		totalOnline?: number;
+	}
+
+	let { totalOnline = 0 }: Props = $props();
 </script>
 
 <Card.Root class="flex h-64 flex-col justify-between">
