@@ -13,10 +13,40 @@
 	let password = $state('');
 	let twoFactorCode = $state('');
 	let requiresTwoFactorAuth = $state(false);
+	let requiresEmailOtp = $state(false);
 
 	async function verifyTwoFactor() {
 		try {
 			let twofa = await invoke('get_totp', {
+				totp: twoFactorCode
+			});
+
+			console.log(twofa);
+
+			// This is so stupid, for some reason, when we get login totp we do not ever get the user data from the endpoint,
+			// therefore we have to run the login AGAIN to get the user's data.
+			const login = await invoke('get_login', {
+				username: '',
+				password: ''
+			});
+
+			const response = typeof login === 'string' ? JSON.parse(login) : login;
+
+			const userData = response as UserData;
+			currentUserStore.set(userData);
+			console.log(userData.displayName + ' has logged in!');
+
+			toast('Login Success!');
+
+			await goto('/home');
+		} catch (e) {
+			console.error('Error verifying 2fa: ', e);
+		}
+	}
+
+	async function verifyEmailTwoFactor() {
+		try {
+			let twofa = await invoke('get_otp', {
 				totp: twoFactorCode
 			});
 
@@ -101,10 +131,18 @@
 				<Input id="twoFactorCode" type="text" bind:value={twoFactorCode} required />
 			</div>
 		{/if}
+		{#if requiresEmailOtp}
+			<div class="grid gap-2">
+				<Label for="twoFactorCode">Email 2FA Code</Label>
+				<Input id="twoFactorCode" type="text" bind:value={twoFactorCode} required />
+			</div>
+		{/if}
 	</Card.Content>
 	<Card.Footer>
 		{#if requiresTwoFactorAuth}
 			<Button class="w-full" onclick={verifyTwoFactor}>Verify 2FA</Button>
+		{:else if requiresEmailOtp}
+				<Button class="w-full" onclick={verifyEmailTwoFactor}>Verify 2FA</Button>
 		{:else}
 			<Button class="w-full" onclick={login}>Sign in</Button>
 		{/if}
