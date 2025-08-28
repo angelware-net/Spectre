@@ -37,6 +37,17 @@ export async function getLogsLast24Hours() {
 	gamelogStore.set(rows);
 }
 
+/** Get the last 24 hours of logs from the database **/
+export async function getLogsLast1000() {
+	const rows = await db.select<GameLogMessage[]>(
+		`SELECT *
+     FROM log
+     ORDER BY time DESC
+     LIMIT 1000`
+	);
+	gamelogStore.set(rows);
+}
+
 /** Manually adds a log to the database, along with pushing it to the current log store **/
 export async function addManualLog(type: string, message: string, user?: string, location?: string) {
 	const u = user ?? null;
