@@ -75,6 +75,7 @@ pub fn run() {
             web::api_time::get_vrc_time,
             web::login::get_login,
             web::login::get_totp,
+            web::login::get_otp,
             web::login::get_logout,
             // VRC Web Functions
             web::vrc_request::vrc_get_request,
