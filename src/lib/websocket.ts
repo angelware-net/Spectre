@@ -38,12 +38,12 @@ export async function connectSocket() {
 				try {
 					let msgObject: WebsocketMessage = JSON.parse(msg.data);
 					await handleWebSocketMessage(msgObject);
-					console.log(msgObject, JSON.parse(msgObject.content));
+					console.debug(msgObject, JSON.parse(msgObject.content));
 				} catch (e) {
 					console.error('Failed to parse WebSocket message:', e, 'Message:', msg.data);
 				}
 			} else if (typeof msg.data === 'object') {
-				console.log('Raw WebSocket message (object):', msg.data);
+				console.debug('Raw WebSocket message (object):', msg.data);
 				// await handleWebSocketMessage(webmsg.data as WebsocketMessage);
 			} else {
 				console.warn('Received unsupported WebSocket message type:', msg.data);
@@ -205,7 +205,7 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 			}
 		}
   } else if (msgObject.type !== undefined) {
-		console.log(`WebSocket message type is ${msgObject.type}`);
+		console.debug(`WebSocket message type is ${msgObject.type}`);
 	} else {
 		console.log('WebSocket ping received! Connection is alive!');
 	}

@@ -3,17 +3,14 @@
 
 	import { LoaderCircle } from 'lucide-svelte';
 
-	import { loadingStore, onlineUsersStore } from '$lib/svelte-stores';
+	import { currentUserStore, loadingStore, onlineUsersStore } from '$lib/svelte-stores';
 	import { goto } from '$app/navigation';
+	import { get } from 'svelte/store';
 
 	// Loading boolean
 	let isLoading = $state(true);
 	loadingStore.subscribe((value) => {
 		isLoading = value;
-
-		// if (!isLoading) {
-		// 	goto('/dash');
-		// }
 	});
 
 	// Online users count (verifies vrc is online)
@@ -23,7 +20,14 @@
 	});
 
 	// Mount function
-	onMount(async () => {});
+	onMount(async () => {
+		// if (!isLoading){
+		// 	get(currentUserStore);
+		// 	if (currentUserStore) {
+		// 		await goto('/home');
+		// 	}
+		// }
+	});
 </script>
 
 <main>

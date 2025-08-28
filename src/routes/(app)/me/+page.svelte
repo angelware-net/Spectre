@@ -119,7 +119,7 @@
 					</p>
 				</div>
 			</div>
-			<div class="flex flex-grow items-center justify-end">
+			<div class="flex grow items-center justify-end">
 				<Button on:click={openProfile} class="ml-auto font-medium">View Website</Button>
 			</div>
 			<div class="flex flex-row items-end justify-end text-end"></div>

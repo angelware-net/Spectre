@@ -201,6 +201,105 @@ pub async fn get_totp(app: AppHandle, totp: String) -> Result<String, String> {
 }
 
 #[tauri::command]
+pub async fn get_otp(app: AppHandle, totp: String) -> Result<String, String> {
+    let url = "https://api.vrchat.cloud/api/1/auth/twofactorauth/emailotp/verify";
+    let cookie_store = Arc::new(Jar::default());
+
+    if let Ok(Some(cookies)) = cookies::load_login_cookies(app.clone()) {
+        // println!("Loading Cookies: {}", cookies); // Log the raw cookies
+        cookie_store.add_cookie_str(cookies.trim(), &url.parse().unwrap());
+
+        let _parsed_url = Url::parse(url).unwrap();
+        /*
+        if let Some(cookie_header) = cookie_store.cookies(&parsed_url) {
+            println!("Jar thinks these cookies belong on {}:\n→ {:?}", parsed_url, cookie_header);
+        } else {
+            println!("Jar has no cookies for {}", parsed_url);
+        }
+         */
+    }
+
+    let body = serde_json::json!({ "code": totp });
+    let body_text = serde_json::to_string_pretty(&body).unwrap();
+    // println!("JSON body will be: {}", body_text);
+
+    let client = Client::builder()
+        .cookie_provider(cookie_store.clone())
+        .build()
+        .map_err(|e| format!("Failed to build client: {}", e))?;
+
+    let builder = client
+        .post(url)
+        .header(USER_AGENT, "Spectre/2.0")
+        .header(CONTENT_TYPE, "application/json")
+        .body(body_text.clone());
+
+    let request = builder
+        .build()
+        .map_err(|e| format!("Failed to build request: {}", e))?;
+
+    /*
+    println!("===== OUTGOING REQUEST =====");
+    println!("{:#?}", request);
+    if let Some(cookie_hdr) = request.headers().get(COOKIE) {
+        println!("→ Cookie header: {}", cookie_hdr.to_str().unwrap_or("<invalid utf8>"));
+    }
+    println!("→ Body: {}", body_text);
+    println!("=============================");
+     */
+
+    match client.execute(request).await {
+        Ok(res) => {
+            if res.status().is_success() {
+                let cookie = res
+                    .headers()
+                    .get_all(SET_COOKIE)
+                    .iter()
+                    .filter_map(|header_value| header_value.to_str().ok())
+                    .filter(|cookie| cookie.contains("auth="))
+                    .collect::<Vec<&str>>()
+                    .join("; ");
+
+                let totp_cookie = res
+                    .headers()
+                    .get_all(SET_COOKIE)
+                    .iter()
+                    .filter_map(|header_value| header_value.to_str().ok())
+                    .filter(|cookie| cookie.contains("twoFactorAuth="))
+                    .collect::<Vec<&str>>()
+                    .join("; ");
+
+                match res.text().await {
+                    Ok(text) => {
+                        if !cookie.is_empty() {
+                            // println!("Totp: {}", totp_cookie);
+                            cookies::save_login_cookies(app.clone(), cookie).unwrap();
+                        }
+
+                        if !totp_cookie.is_empty() {
+                            // Save the auth cookie if it exists
+                            // println!("Saved totp cookie");
+                            // println!("{}", text);
+                            cookies::save_otp_cookies(app.clone(), totp_cookie.clone()).unwrap();
+                            // println!("{}", auth_cookie);
+                        }
+
+                        Ok(text)
+                    }
+                    Err(e) => Err(format!("Failed to get login: {}", e)),
+                }
+            } else {
+                Err(format!(
+                    "Request failed with status: {:?}",
+                    res.text().await
+                ))
+            }
+        }
+        Err(e) => Err(format!("Request failed: {}", e)),
+    }
+}
+
+#[tauri::command]
 pub async fn get_logout(app: AppHandle) -> Result<String, String> {
     let url = "https://api.vrchat.cloud/api/1/logout";
     let cookie_store = Arc::new(Jar::default());

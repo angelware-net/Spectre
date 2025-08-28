@@ -4,24 +4,40 @@
 	import { Button } from '$lib/components/ui/button/index.js';
 	import Footer from '$lib/components/Footer.svelte';
 	import { onMount } from 'svelte';
-	import { currentUserStore } from '$lib/svelte-stores';
+	import { currentUserStore, loadingStore } from '$lib/svelte-stores';
 	import type { UserData } from '$lib/types/user';
 	import { goto } from '$app/navigation';
 	import Footer2 from '$lib/components/Footer2.svelte';
+	import { get } from 'svelte/store';
 
 	let onlineFriendsCount = $state(0);
 
-	// Subscribe to the user store and get the online friends count
-	currentUserStore.subscribe((userData: UserData | null) => {
-		if (userData) {
-			onlineFriendsCount = userData.onlineFriends.length;
-		} else {
-			// If userData is null, redirect to home page
-			goto('/');
-		}
-	});
+	export function delay(ms: number): Promise<void> {
+		return new Promise((resolve) => setTimeout(resolve, ms));
+	}
 
-	onMount(async () => {});
+	// Subscribe to the user store and get the online friends count
+	// currentUserStore.subscribe(async (userData: UserData | null) => {
+	// 	await delay(1000);
+	// 	if (userData) {
+	// 		onlineFriendsCount = userData.onlineFriends.length;
+	// 	}
+	// 	else {
+	// 		// If userData is null, redirect to home page
+	// 		goto('/');
+	// 		console.log("Homepage: userData was null, returning to root.")
+	// 	}
+	// });
+
+	onMount(() => {
+		// const userData = get(currentUserStore);
+		// if (!userData) {
+		// 	console.log("Homepage: userData was null on mount, redirecting...");
+		// 	goto('/');
+		// } else {
+		// 	onlineFriendsCount = userData.onlineFriends.length;
+		// }
+	});
 </script>
 
 <div class="content flex h-96 items-center justify-end p-10 text-end">

@@ -4,7 +4,7 @@
 	import { page } from '$app/state';
 	import { ModeWatcher } from 'mode-watcher';
 	import { loadSettings } from '$lib/utils/theme-switcher';
-	import { onMount } from 'svelte';
+	import { onMount, tick } from 'svelte';
 	import { invoke } from '@tauri-apps/api/core';
 	import { goto } from '$app/navigation';
 	import { Toaster } from '$lib/components/ui/sonner';
@@ -24,6 +24,9 @@
 	import { manageCacheSize } from '$lib/utils/cache-manager';
 	import LoginHeader from '$lib/components/LoginHeader.svelte';
 	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
+	import { browser } from '$app/environment';
+	import { redirectConsoleToTauriLog } from '$lib/log-redirect';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 	}
@@ -31,6 +34,10 @@
 	let { children }: Props = $props();
 
 	onMount(async () => {
+		if (browser) {
+			redirectConsoleToTauriLog();
+		}
+
 		// Set loading state
 		loadingStore.set(true);
 
@@ -84,6 +91,7 @@
 
 				loginStatusStore.set(true);
 				loadingStore.set(false);
+				await tick();
 				console.log('Going to homepage...');
 				await goto('/home');
 			}

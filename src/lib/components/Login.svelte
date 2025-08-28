@@ -21,6 +21,20 @@
 			});
 
 			console.log(twofa);
+
+			// This is so stupid, for some reason, when we get login totp we do not ever get the user data from the endpoint,
+			// therefore we have to run the login AGAIN to get the user's data.
+			const login = await invoke('get_login', {
+				username: '',
+				password: ''
+			});
+
+			const response = typeof login === 'string' ? JSON.parse(login) : login;
+
+			const userData = response as UserData;
+			currentUserStore.set(userData);
+			console.log(userData.displayName + ' has logged in!');
+
 			toast('Login Success!');
 
 			await goto('/home');
@@ -70,13 +84,11 @@
 <Card.Root class="w-full max-w-sm">
 	<Card.Header>
 		<Card.Title class="text-2xl">Login</Card.Title>
-		<Card.Description
-			>Enter your email and password below to login to your account.</Card.Description
-		>
+		<Card.Description>Enter your email and password below to login to your account.</Card.Description>
 	</Card.Header>
 	<Card.Content class="grid gap-4">
 		<div class="grid gap-2">
-			<Label for="email">Email</Label>
+			<Label for="email">Email / Username</Label>
 			<Input id="email" type="email" bind:value={email} placeholder="m@example.com" required />
 		</div>
 		<div class="grid gap-2">
@@ -92,9 +104,9 @@
 	</Card.Content>
 	<Card.Footer>
 		{#if requiresTwoFactorAuth}
-			<Button class="w-full" on:click={verifyTwoFactor}>Verify 2FA</Button>
+			<Button class="w-full" onclick={verifyTwoFactor}>Verify 2FA</Button>
 		{:else}
-			<Button class="w-full" on:click={login}>Sign in</Button>
+			<Button class="w-full" onclick={login}>Sign in</Button>
 		{/if}
 	</Card.Footer>
 	<!--	<p>{responseMessage}</p>-->
