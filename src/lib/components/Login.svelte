@@ -94,6 +94,8 @@
 					requiresTwoFactorAuth = true;
 				} else {
 					console.log('otp required');
+
+					requiresEmailOtp = true;
 				}
 			} else {
 				const userData = response as UserData;
