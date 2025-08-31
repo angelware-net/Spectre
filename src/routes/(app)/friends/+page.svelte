@@ -26,7 +26,8 @@
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
+	import { OverlayScrollbarsComponent } from 'overlayscrollbars-svelte';
+	import { Input } from '$lib/components/ui/input';
 
 	// Icons
 	import { Grid2X2, List, LucideRefreshCw } from 'lucide-svelte';
@@ -38,24 +39,42 @@
 	let loading: boolean = $state(true);
 	let viewMode: string = $state('cards');
 	let sortMode: string = $state('Status');
-	let friendsWithImages: Array<ExtendedFriend & { avatarUrl: string }> = $state([]);
+	let friendsWithImages: Array<
+		ExtendedFriend & {
+			avatarUrl: string;
+			searchIndex: string;
+			presenceStatus: string;
+		}
+	> = $state([]);
 
 	// Sorting mode change
-	let value = $state("");
+	let value = $state('');
 
 	const sortingModes = [
-		{ value: "Status", label: "Status" },
-		{ value: "Username", label: "Username" },
-		{ value: "Location", label: "Location" }
-	]
+		{ value: 'Status', label: 'Status' },
+		{ value: 'Username', label: 'Username' },
+		{ value: 'Location', label: 'Location' }
+	];
 
-	const triggerContent = $derived(
-		sortingModes.find((m) => m.value === value)?.label ?? "Sort"
-	);
+	const triggerContent = $derived(sortingModes.find((m) => m.value === value)?.label ?? 'Sort');
 
 	$effect(() => {
 		const selectedMode = sortingModes.find((t) => t.value === value);
 		handleSortChange(selectedMode);
+	});
+
+	let search = $state('');
+	let debouncedSearch = $state('');
+	const normalize = (s: string) =>
+		(s ?? '')
+			.toLowerCase()
+			.normalize('NFKD')
+			.replace(/[\u0300-\u036f]/g, '');
+
+	// debounce
+	$effect(() => {
+		const id = setTimeout(() => (debouncedSearch = search), 150);
+		return () => clearTimeout(id);
 	});
 
 	async function getViewMode() {
@@ -111,19 +130,20 @@
 		}
 	};
 
-	let sortedFriends: Array<ExtendedFriend & { avatarUrl: string }> = $state([]);
-
 	async function loadFriendsWithImages() {
 		const friends = Array.from($friendsStore.values()).map((friend) => {
 			const userData = $externalUserDataStore.get(friend.id);
 			const instanceData = $instanceDataStore.get(friend.id);
+
 			const state = userData?.state || 'offline';
-			const status =
+
+			const presenceStatus =
 				state === 'online'
 					? (userData?.status ?? 'Offline')
 					: state === 'active'
 						? 'On Website'
 						: 'Offline';
+
 			const locationName =
 				state === 'offline'
 					? 'Offline'
@@ -135,7 +155,7 @@
 			return {
 				...friend,
 				state,
-				status,
+				presenceStatus,
 				locationName,
 				locationCount: instanceData?.userCount,
 				locationCapacity: instanceData?.capacity,
@@ -145,22 +165,39 @@
 
 		friendsWithImages = await Promise.all(
 			friends.map(async (friend) => {
-				const avatarUrl = await getFriendImage(friend);
-				return { ...friend, avatarUrl };
+				const avatarUrl = await getFriendImage(friend as ExtendedFriend);
+				const searchIndex = normalize(
+					[
+						friend.displayName,
+						friend.presenceStatus,
+						friend.locationName,
+						friend.bio,
+						friend.statusDescription
+					]
+						.filter(Boolean)
+						.join(' ')
+				);
+				return { ...friend, avatarUrl, searchIndex };
 			})
 		);
 	}
 
-	run(() => {
-		sortedFriends = [...friendsWithImages].sort((a, b) => {
-			const locationOrder = (location) => {
-				if (location === 'On Website') return 1;
-				if (location === 'Offline') return 2;
-				return 0;
-			};
+	const filteredFriends = $derived.by(() => {
+		const q = normalize(search).trim();
+		if (!q) return friendsWithImages;
+		return friendsWithImages.filter((f: any) => f.searchIndex?.includes(q));
+	});
 
+	const sortedFriends = $derived.by(() => {
+		const locationOrder = (location: string) => {
+			if (location === 'On Website') return 1;
+			if (location === 'Offline') return 2;
+			return 0;
+		};
+
+		return [...filteredFriends].sort((a, b) => {
 			if (sortMode === 'Status') {
-				const stateOrder = {
+				const stateOrder: Record<string, number> = {
 					'online:join me': 1,
 					'online:active': 2,
 					'online:ask me': 3,
@@ -168,19 +205,19 @@
 					active: 5,
 					offline: 6
 				};
-				const aKey = `${a.state}:${a.status}`.toLowerCase();
-				const bKey = `${b.state}:${b.status}`.toLowerCase();
-				const statusComparison =
-					(stateOrder[aKey] || stateOrder[a.state]) - (stateOrder[bKey] || stateOrder[b.state]);
-				if (statusComparison !== 0) return statusComparison;
+				const aKey = `${a.state}:${a.presenceStatus}`.toLowerCase();
+				const bKey = `${b.state}:${b.presenceStatus}`.toLowerCase();
+				const cmp =
+					(stateOrder[aKey] ?? stateOrder[a.state]) - (stateOrder[bKey] ?? stateOrder[b.state]);
+				if (cmp !== 0) return cmp;
 				return a.displayName.localeCompare(b.displayName);
 			} else if (sortMode === 'Username') {
-				const locationComparison = locationOrder(a.locationName) - locationOrder(b.locationName);
-				if (locationComparison !== 0) return locationComparison;
+				const lc = locationOrder(a.locationName) - locationOrder(b.locationName);
+				if (lc !== 0) return lc;
 				return a.displayName.localeCompare(b.displayName);
 			} else if (sortMode === 'Location') {
-				const locationComparison = locationOrder(a.locationName) - locationOrder(b.locationName);
-				if (locationComparison !== 0) return locationComparison;
+				const lc = locationOrder(a.locationName) - locationOrder(b.locationName);
+				if (lc !== 0) return lc;
 				return a.locationName.localeCompare(b.locationName);
 			}
 			return 0;
@@ -218,6 +255,7 @@
 		<div class="grid grid-cols-2">
 			<div class="text-3xl">Friends</div>
 			<div class="flex flex-row items-end justify-end text-end">
+				<Input class="mr-4 w-[240px]" bind:value={search} placeholder="Search Friends..." />
 				<div class="flex flex-row justify-end pr-4">
 					<Select.Root type="single" name="sort" bind:value>
 						<Select.Trigger class="w-[180px]">
@@ -230,7 +268,7 @@
 								{/each}
 							</Select.Group>
 						</Select.Content>
-<!--						<Select.Input name="themeSelector" />-->
+						<!--						<Select.Input name="themeSelector" />-->
 					</Select.Root>
 				</div>
 				<div class="flex flex-row justify-end">
@@ -304,11 +342,11 @@
 									<Tooltip.Root>
 										<Tooltip.Trigger class="flex h-full items-center justify-center p-4">
 											<Table.Cell class="">
-												<span class={getStatusClass(friend.state, friend.status)}></span>
+												<span class={getStatusClass(friend.state, friend.presenceStatus)}></span>
 											</Table.Cell>
 										</Tooltip.Trigger>
 										<Tooltip.Content>
-											<p>{friend.status}</p>
+											<p>{friend.presenceStatus}</p>
 										</Tooltip.Content>
 									</Tooltip.Root>
 								</Tooltip.Provider>
@@ -338,13 +376,13 @@
 														</Avatar.Root>
 														<div class="space-y-1">
 															<h4 class="text-sm font-semibold">{friend.displayName}</h4>
-															<p class="whitespace-pre-line text-sm">
+															<p class="text-sm whitespace-pre-line">
 																{friend.statusDescription}
 															</p>
-															<div class="flex items-center pt-2 text-xs text-muted-foreground">
-																{friend.status}
+															<div class="text-muted-foreground flex items-center pt-2 text-xs">
+																{friend.presenceStatus}
 															</div>
-															<div class="flex items-center pt-2 text-xs text-muted-foreground">
+															<div class="text-muted-foreground flex items-center pt-2 text-xs">
 																{friend.bio}
 															</div>
 														</div>
@@ -392,10 +430,10 @@
 															</Avatar.Root>
 															<div class="space-y-1">
 																<h4 class="text-sm font-semibold">{friend?.locationName}</h4>
-																<p class="whitespace-pre-line text-xs">
+																<p class="text-xs whitespace-pre-line">
 																	{friend?.locationData?.description}
 																</p>
-																<div class="flex items-center pt-2 text-xs text-muted-foreground">
+																<div class="text-muted-foreground flex items-center pt-2 text-xs">
 																	{friend?.locationCount} / {friend?.locationData
 																		?.recommendedCapacity} ({friend?.locationCapacity})
 																</div>
