@@ -93,31 +93,6 @@
 		}
 	}
 
-	// wacky sorting, i had to get help with this one cuz its a bit complex
-	// const groupedFriendsStore = derived(
-	// 	[friendsStore, instanceDataStore, externalUserDataStore],
-	// 	([$friendsStore, $instanceDataStore, $externalUserDataStore]) => {
-	// 		const grouped = new Map<
-	// 			InstanceData | null,
-	// 			Array<{ friend: Friend; externalData: ExternalUserData | null }>
-	// 		>();
-	//
-	// 		// attach instance and external data
-	// 		for (const [key, friend] of $friendsStore.entries()) {
-	// 			const instance = $instanceDataStore.get(friend.id) || null;
-	// 			const externalData = $externalUserDataStore.get(key) || null;
-	//
-	// 			if (!grouped.has(instance)) {
-	// 				grouped.set(instance, []);
-	// 			}
-	//
-	// 			grouped.get(instance)!.push({ friend, externalData });
-	// 		}
-	//
-	// 		return grouped;
-	// 	}
-	// );
-
 	const groupedFriendsStore = derived(
 		[friendsStore, instanceDataStore, externalUserDataStore],
 		([$friendsStore, $instanceDataStore, $externalUserDataStore]) => {
@@ -142,7 +117,10 @@
 				grouped.get(instanceId)!.friends.push({ friend, externalData });
 			}
 
-			return grouped;
+			// return grouped;
+			return Array.from(grouped.values()).sort(
+				(a, b) => (b.friends?.length ?? 0) - (a.friends?.length ?? 0)
+			);
 		}
 	);
 </script>
@@ -161,7 +139,7 @@
 				</Button>
 			</div>
 		</div>
-		{#each Array.from($groupedFriendsStore.values()) as { instance, friends }}
+		{#each $groupedFriendsStore as { instance, friends }}
 			{#if instance}
 				<div class="pt-2">
 					<Card.Root>
