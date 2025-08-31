@@ -17,17 +17,17 @@
 	}
 
 	// Subscribe to the user store and get the online friends count
-	// currentUserStore.subscribe(async (userData: UserData | null) => {
-	// 	await delay(1000);
-	// 	if (userData) {
-	// 		onlineFriendsCount = userData.onlineFriends.length;
-	// 	}
-	// 	else {
-	// 		// If userData is null, redirect to home page
-	// 		goto('/');
-	// 		console.log("Homepage: userData was null, returning to root.")
-	// 	}
-	// });
+	currentUserStore.subscribe(async (userData: UserData | null) => {
+		await delay(1000);
+		if (userData) {
+			onlineFriendsCount = userData.onlineFriends.length;
+		}
+		else {
+			// If userData is null, redirect to home page
+			goto('/');
+			console.log("Homepage: userData was null, returning to root.")
+		}
+	});
 
 	onMount(() => {
 		// const userData = get(currentUserStore);
@@ -40,6 +40,7 @@
 	});
 </script>
 
+<div>
 <div class="content flex h-96 items-center justify-end p-10 text-end">
 	<div>
 		<div class="p-4">
@@ -62,6 +63,7 @@
 
 <div class="absolute bottom-0 overflow-hidden">
 	<Footer2 />
+</div>
 </div>
 
 <style>

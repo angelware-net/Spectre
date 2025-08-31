@@ -1,7 +1,15 @@
 @import 'tailwindcss';
-@import "tw-animate-css";
+@import 'tw-animate-css';
+@import 'overlayscrollbars/overlayscrollbars.css';
 
 @custom-variant dark (&:is(.dark *));
+
+html, body {
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+}
+html::-webkit-scrollbar,
+body::-webkit-scrollbar { display: none; }
 
 /*
   The default border color has changed to `currentcolor` in Tailwind CSS v4,
@@ -12,13 +20,13 @@
   color utility to any element that depends on these defaults.
 */
 @layer base {
-  *,
-  ::after,
-  ::before,
-  ::backdrop,
-  ::file-selector-button {
-    border-color: var(--color-gray-200, currentcolor);
-  }
+	*,
+	::after,
+	::before,
+	::backdrop,
+	::file-selector-button {
+		border-color: var(--color-gray-200, currentcolor);
+	}
 }
 
 @layer base {
@@ -43,6 +51,10 @@
 		--input: hsl(240 5.9% 90%);
 		--ring: hsl(240 5.9% 10%);
 		--radius: 0.5rem;
+		--os-handle-bg: hsl(220 10% 50% / .55);
+		--os-handle-bg-hover: hsl(220 10% 60% / .7);
+		--os-handle-bg-active: hsl(220 10% 70% / .9);
+		--os-track-bg: transparent;
 	}
 	.dark {
 		--background: hsl(240 10% 3.9%);
@@ -64,6 +76,10 @@
 		--border: hsl(240 3.7% 15.9%);
 		--input: hsl(240 3.7% 15.9%);
 		--ring: hsl(240 4.9% 83.9%);
+		--os-handle-bg: hsl(0 0% 98% / .35);
+		--os-handle-bg-hover: hsl(0 0% 98% / .55);
+		--os-handle-bg-active: hsl(0 0% 98% / .8);
+		--os-track-bg: transparent;
 	}
 
 	.rose-light {
@@ -332,4 +348,38 @@
 	body {
 		@apply bg-background text-foreground;
 	}
+}
+
+
+
+.os-scrollbar {
+	opacity: 1 !important;
+	--os-handle-border-radius: 9999px;
+	--gap: 2px;
+}
+
+.os-scrollbar.os-scrollbar-vertical {
+	right: var(--gap) !important;
+	top: var(--gap) !important;
+	bottom: var(--gap) !important;
+}
+
+.os-scrollbar.os-scrollbar-horizontal {
+	bottom: var(--gap) !important;
+}
+
+.os-scrollbar-corner {
+	right: var(--gap) !important;
+	bottom: var(--gap) !important;
+}
+
+.os-scrollbar-handle {
+	background: var(--muted) !important;
+	width: 5px !important;
+	transition: width 0.2s ease, background 0.2s ease;
+}
+
+.os-scrollbar:hover .os-scrollbar-handle {
+	background: var(--muted-foreground) !important;
+	width: 6px !important;
 }

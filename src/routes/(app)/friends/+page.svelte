@@ -26,6 +26,7 @@
 	import * as HoverCard from '$lib/components/ui/hover-card/index.js';
 	import * as Avatar from '$lib/components/ui/avatar/index.js';
 	import * as Select from '$lib/components/ui/select/index.js';
+	import { OverlayScrollbarsComponent } from "overlayscrollbars-svelte";
 
 	// Icons
 	import { Grid2X2, List, LucideRefreshCw } from 'lucide-svelte';
