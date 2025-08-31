@@ -87,5 +87,7 @@ export const reloadData = async (forceReload: boolean) => {
 	) {
 		console.log('Reloading data...');
 		await loadData();
+	} else {
+		console.log('Skipping reload, data exists...');
 	}
 };
