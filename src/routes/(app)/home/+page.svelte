@@ -9,6 +9,7 @@
 	import { goto } from '$app/navigation';
 	import Footer2 from '$lib/components/Footer2.svelte';
 	import { get } from 'svelte/store';
+	import { getOnlineUsers } from '$lib/utils/get-online-users';
 
 	let onlineFriendsCount = $state(0);
 
@@ -20,7 +21,7 @@
 	currentUserStore.subscribe(async (userData: UserData | null) => {
 		await delay(1000);
 		if (userData) {
-			onlineFriendsCount = userData.onlineFriends.length;
+			// onlineFriendsCount = await getOnlineUsers();
 		}
 		else {
 			// If userData is null, redirect to home page
@@ -29,14 +30,8 @@
 		}
 	});
 
-	onMount(() => {
-		// const userData = get(currentUserStore);
-		// if (!userData) {
-		// 	console.log("Homepage: userData was null on mount, redirecting...");
-		// 	goto('/');
-		// } else {
-		// 	onlineFriendsCount = userData.onlineFriends.length;
-		// }
+	onMount(async () => {
+		onlineFriendsCount = await getOnlineUsers();
 	});
 </script>
 
