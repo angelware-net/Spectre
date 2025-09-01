@@ -43,31 +43,29 @@
 			externalUserData.size === 0 ||
 			instanceStore.size === 0
 		) {
-			// loading = true;
 			console.log(`Reloading Data: ${forceReload}`);
 			await reloadData(forceReload);
-			// loading = false;
 		}
 	};
 </script>
 
-<div class="xs:grid-cols-1 grid h-1/2 p-4 md:grid-cols-4">
+<div class="xs:grid-cols-1 grid h-full p-4 md:grid-cols-4">
 	<div class="gap-4 p-4">
 		<FriendsCard friendsOnline={onlineFriendsCount} />
 	</div>
-	<div class="h-1/2 gap-4 p-4">
+	<div class="h-full gap-4 p-4">
 		<JoinableCard joinableOnline={joinableUsersCount} />
 	</div>
-	<div class="col-span-2 h-1/2 gap-4 p-4">
+	<div class="col-span-2 h-full gap-4 p-4">
 		<CalloutCard />
 	</div>
-	<div class="col-span-2 h-1/2 gap-4 p-4">
+	<div class="col-span-2 h-full gap-4 p-4">
 		<TotalPlayerCard totalOnline={onlineUsers} />
 	</div>
 	<div class="gap-4 p-4">
 		<BarCard />
 	</div>
-	<div class="h-1/2 gap-4 p-4">
+	<div class="h-full gap-4 p-4">
 		<EventsCard />
 	</div>
 </div>

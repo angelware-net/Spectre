@@ -6,7 +6,6 @@
 	import { getLogsLast1000 } from '$lib/gamelog/gamelog-sql';
 	import { onMount } from 'svelte';
 	import { gamelogStore } from '$lib/gamelog/gamelog-store';
-	import UserInfo from '$lib/components/friends/UserInfo.svelte';
 	import LogUser from '$lib/components/gamelog/LogUser.svelte';
 	import LogWorld from '$lib/components/gamelog/LogWorld.svelte';
 
@@ -20,7 +19,7 @@
 		<div class="grid grid-cols-2">
 			<div class="text-3xl">Game Logs</div>
 		</div>
-		<div class="text-muted-foreground text-sm pt-2 pb-2">Last 1000 - Updated Automagically 🪄</div>
+		<div class="text-muted-foreground pt-2 pb-2 text-sm">Last 1000 - Updated Automagically 🪄</div>
 	</div>
 
 	<div>

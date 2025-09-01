@@ -9,7 +9,7 @@
 	let { friendsOnline = 0 }: Props = $props();
 </script>
 
-<Card.Root class="flex h-64 flex-col justify-between">
+<Card.Root class="flex min-h-64 h-full flex-col justify-between">
 	<Card.Header>
 		<Card.Title>Friends Online</Card.Title>
 		<!--		<Card.Description>Current online friends count</Card.Description>-->

@@ -12,8 +12,6 @@
 	import { updateApp } from '$lib/utils/updater';
 	import { platform } from '@tauri-apps/plugin-os';
 
-	import Header from '$lib/components/Header.svelte';
-
 	import {
 		currentUserStore,
 		loadingStore,
@@ -22,7 +20,6 @@
 	} from '$lib/svelte-stores';
 	import type { UserData } from '$lib/types/user';
 	import { manageCacheSize } from '$lib/utils/cache-manager';
-	import LoginHeader from '$lib/components/LoginHeader.svelte';
 	import ThemeSwitcher from '$lib/components/ThemeSwitcher.svelte';
 	import { browser } from '$app/environment';
 	import { redirectConsoleToTauriLog } from '$lib/log-redirect';
@@ -107,11 +104,6 @@
 	});
 </script>
 
-<!--{#if page.url.pathname !== '/' && page.url.pathname !== '/login'}-->
-<!--<Header />-->
-<!--{:else}-->
-<!--	<LoginHeader />-->
-<!--{/if}-->
 <ThemeSwitcher />
 <ModeWatcher />
 <Toaster />

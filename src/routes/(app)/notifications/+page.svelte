@@ -2,7 +2,7 @@
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/core';
 
-	let notifs: string = $state();
+	let notifs: string = $state("");
 
 	onMount(async () => {
 		notifs = await invoke<string>('get_vrc_notifications');

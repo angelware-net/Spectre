@@ -1,6 +1,5 @@
 <script lang="ts">
 	import * as Select from '$lib/components/ui/select/index.js';
-	import { toggleMode } from 'mode-watcher';
 	import { getCurrentTheme, switchTheme } from '$lib/utils/theme-switcher';
 	import { Button } from '$lib/components/ui/button';
 	import * as Card from '$lib/components/ui/card';
@@ -71,7 +70,7 @@
 <main>
 	<div class="flex w-full flex-col p-6">
 		<h1 class="p-4 pb-1 text-2xl">Settings</h1>
-		<p class="p-4 pt-0 text-muted-foreground">Changes are updated and saved automagically. 🪄</p>
+		<p class="text-muted-foreground p-4 pt-0">Changes are updated and saved automagically. 🪄</p>
 
 		<div class="p-4">
 			<Table.Root>
@@ -108,7 +107,7 @@
 							<Input
 								type="number"
 								placeholder="500"
-								on:change={handleCacheSizeChange}
+								onchange={() => handleCacheSizeChange()}
 								bind:value={cacheSize}
 							/>
 						</div>
@@ -126,7 +125,7 @@
 				</Table.Row>
 				<Table.Row class="flex flex-row content-center items-center justify-between">
 					<Table.Cell>
-						<h2 class="pb-2 pt-2">Enable XSOverlay Integration</h2>
+						<h2 class="pt-2 pb-2">Enable XSOverlay Integration</h2>
 					</Table.Cell>
 					<Table.Cell>
 						<div class="pr-6">

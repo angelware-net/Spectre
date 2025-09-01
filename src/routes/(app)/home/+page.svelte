@@ -2,19 +2,12 @@
 	import '$lib/styles/stars.css';
 	import ArrowUpRight from 'lucide-svelte/icons/square-arrow-up-right';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import Footer from '$lib/components/Footer.svelte';
-	import { onMount } from 'svelte';
 	import { currentUserStore, friendsStore, externalUserDataStore } from '$lib/svelte-stores';
 	import type { UserData } from '$lib/types/user';
 	import { goto } from '$app/navigation';
 	import Footer2 from '$lib/components/Footer2.svelte';
-	import { get } from 'svelte/store';
-	import { getOnlineUsers } from '$lib/utils/get-online-users';
-	import { reloadData } from '$lib/load-data';
 	import type { Friend } from '$lib/types/friend';
 	import type { ExternalUserData } from '$lib/types/external-user';
-
-	// let onlineFriendsCount = $state(0);
 
 	export function delay(ms: number): Promise<void> {
 		return new Promise((resolve) => setTimeout(resolve, ms));
@@ -23,9 +16,7 @@
 	// Subscribe to the user store and get the online friends count
 	currentUserStore.subscribe(async (userData: UserData | null) => {
 		await delay(1000);
-		if (userData) {
-			// onlineFriendsCount = await getOnlineUsers();
-		} else {
+		if (!userData) {
 			// If userData is null, redirect to home page
 			goto('/');
 			console.log('Homepage: userData was null, returning to root.');

@@ -58,7 +58,7 @@
 		system_trust_basic: 1
 	};
 
-	function getFilteredTags(tags) {
+	function getFilteredTags(tags: string[] | undefined) {
 		if (!tags) return [];
 
 		const prioritizedTag = tags.reduce((highest, tag) => {

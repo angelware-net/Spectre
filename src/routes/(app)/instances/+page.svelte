@@ -165,22 +165,21 @@
 							<div class="flex w-full flex-col">
 								<div class="flex w-full flex-row">
 									<h2 class="text-xl">{instance ? instance.world.name : 'Unknown Instance'}</h2>
-									<h2 class="pl-1 text-xl text-muted-foreground">
+									<h2 class="text-muted-foreground pl-1 text-xl">
 										- {instance ? instance.userCount : '0'} / {instance
 											? instance.recommendedCapacity
 											: '0'} [{instance ? instance.capacity : '0'}]
 									</h2>
 								</div>
 								{#await loadInstanceOwner(instance)}
-									<div class="text-ellipsis text-nowrap pb-2 text-xs text-muted-foreground">
+									<div class="text-muted-foreground pb-2 text-xs text-nowrap text-ellipsis">
 										Loading Owner...
 									</div>
 								{:then instanceOwner}
-									<div class="text-ellipsis text-nowrap pb-2 text-xs text-muted-foreground">
+									<div class="text-muted-foreground pb-2 text-xs text-nowrap text-ellipsis">
 										{instanceOwner}
 									</div>
 								{/await}
-								<!--								<ul>-->
 								<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2">
 									{#each friends as { friend, externalData }}
 										<Dialog.Root>
@@ -211,7 +210,6 @@
 										</Dialog.Root>
 									{/each}
 								</div>
-								<!--								</ul>-->
 							</div>
 						</div>
 					</Card.Root>

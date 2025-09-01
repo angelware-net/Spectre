@@ -1,11 +1,6 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-
 	import { LoaderCircle } from 'lucide-svelte';
-
-	import { currentUserStore, loadingStore, onlineUsersStore } from '$lib/svelte-stores';
-	import { goto } from '$app/navigation';
-	import { get } from 'svelte/store';
+	import { loadingStore, onlineUsersStore } from '$lib/svelte-stores';
 
 	// Loading boolean
 	let isLoading = $state(true);
@@ -17,16 +12,6 @@
 	let onlineUsersCount: number = $state(0);
 	onlineUsersStore.subscribe((value) => {
 		onlineUsersCount = value;
-	});
-
-	// Mount function
-	onMount(async () => {
-		// if (!isLoading){
-		// 	get(currentUserStore);
-		// 	if (currentUserStore) {
-		// 		await goto('/home');
-		// 	}
-		// }
 	});
 </script>
 
