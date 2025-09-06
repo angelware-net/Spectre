@@ -6,10 +6,14 @@
 	import { Separator } from '$lib/components/ui/separator';
 	import { loadImage } from '$lib/utils/load-image';
 
-	export let userId: string;
+	interface Props {
+		userId: string;
+	}
 
-	let loading: boolean = true;
-	let ownAvatar: OwnAvatarData;
+	let { userId }: Props = $props();
+
+	let loading: boolean = $state(true);
+	let ownAvatar: OwnAvatarData = $state();
 
 	async function fetchCurrentAvatar() {
 		try {

@@ -23,8 +23,8 @@
 	import Bell from 'lucide-svelte/icons/bell';
 	import NotificationPopover from '$lib/components/notifications/NotificationPopover.svelte';
 
-	let currentUser: UserData | null;
-	let avatarImageUrl: string | null = null;
+	let currentUser: UserData | null = $state();
+	let avatarImageUrl: string | null = $state(null);
 	const platform: OsType = type();
 
 	currentUserStore.subscribe(async (userData: UserData | null) => {
@@ -124,12 +124,14 @@
 		{/if}
 	</nav>
 	<Sheet.Root>
-		<Sheet.Trigger asChild let:builder>
-			<Button variant="outline" size="icon" class="shrink-0 md:hidden" builders={[builder]}>
-				<Menu class="h-5 w-5" />
-				<span class="sr-only">Toggle navigation menu</span>
-			</Button>
-		</Sheet.Trigger>
+		<Sheet.Trigger asChild >
+			{#snippet children({ builder })}
+						<Button variant="outline" size="icon" class="shrink-0 md:hidden" builders={[builder]}>
+					<Menu class="h-5 w-5" />
+					<span class="sr-only">Toggle navigation menu</span>
+				</Button>
+								{/snippet}
+				</Sheet.Trigger>
 		<Sheet.Content side="left">
 			<nav class="grid gap-6 text-lg font-medium">
 				<a href="/home" class="flex items-center gap-2 text-lg font-semibold">
@@ -175,7 +177,7 @@
 		</Sheet.Content>
 	</Sheet.Root>
 	<div class="flex w-full items-center gap-4 md:ml-auto md:gap-2 lg:gap-4">
-		<div class="ml-auto flex-1 sm:flex-initial" />
+		<div class="ml-auto flex-1 sm:flex-initial"></div>
 		<Popover.Root>
 			<Popover.Trigger>
 				<Button variant="outline" size="icon">
@@ -186,7 +188,7 @@
 				<NotificationPopover />
 			</Popover.Content>
 		</Popover.Root>
-		<Button on:click={toggleMode} variant="outline" size="icon">
+		<Button onclick={toggleMode} variant="outline" size="icon">
 			<Sun
 				class="h-[1.2rem] w-[1.2rem] rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0"
 			/>
@@ -196,17 +198,19 @@
 			<span class="sr-only">Toggle theme</span>
 		</Button>
 		<DropdownMenu.Root>
-			<DropdownMenu.Trigger asChild let:builder>
-				<Button builders={[builder]} variant="secondary" size="icon" class="rounded-full">
-					<Avatar.Root class="h-9 w-9">
-						<Avatar.Image src={avatarImageUrl} alt="User Avatar" />
-						<Avatar.Fallback><CircleUser class="h-5 w-5" /></Avatar.Fallback>
-					</Avatar.Root>
-					<span class="sr-only">Toggle user menu</span>
-				</Button>
-			</DropdownMenu.Trigger>
+			<DropdownMenu.Trigger asChild >
+				{#snippet children({ builder })}
+								<Button builders={[builder]} variant="secondary" size="icon" class="rounded-full">
+						<Avatar.Root class="h-9 w-9">
+							<Avatar.Image src={avatarImageUrl} alt="User Avatar" />
+							<Avatar.Fallback><CircleUser class="h-5 w-5" /></Avatar.Fallback>
+						</Avatar.Root>
+						<span class="sr-only">Toggle user menu</span>
+					</Button>
+											{/snippet}
+						</DropdownMenu.Trigger>
 			<DropdownMenu.Content align="end">
-				<DropdownMenu.Item href="/me">
+				<DropdownMenu.Item onclick={() => goto('/me')}>
 					{#if currentUser !== null && currentUser.displayName !== null}
 						{currentUser.displayName}
 					{:else}
@@ -214,12 +218,12 @@
 					{/if}
 				</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item href="/settings">Settings</DropdownMenu.Item>
-				<DropdownMenu.Item on:click={openGithub}>Github</DropdownMenu.Item>
+				<DropdownMenu.Item onclick={() => goto('/settings')}>Settings</DropdownMenu.Item>
+				<DropdownMenu.Item onclick={openGithub}>Github</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item on:click={logout}>Logout</DropdownMenu.Item>
+				<DropdownMenu.Item onclick={logout}>Logout</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item disabled>v2.0.5-ALPHA</DropdownMenu.Item>
+				<DropdownMenu.Item disabled>v2.1.0-ALPHA</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</div>

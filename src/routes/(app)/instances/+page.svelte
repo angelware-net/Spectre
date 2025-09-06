@@ -22,7 +22,7 @@
 	import { Button } from '$lib/components/ui/button';
 	import InstanceStatic from '$lib/components/InstanceStatic.svelte';
 
-	let loading: boolean = false;
+	let loading: boolean = $state(false);
 
 	async function handleRefresh() {
 		loading = true;
@@ -93,31 +93,6 @@
 		}
 	}
 
-	// wacky sorting, i had to get help with this one cuz its a bit complex
-	// const groupedFriendsStore = derived(
-	// 	[friendsStore, instanceDataStore, externalUserDataStore],
-	// 	([$friendsStore, $instanceDataStore, $externalUserDataStore]) => {
-	// 		const grouped = new Map<
-	// 			InstanceData | null,
-	// 			Array<{ friend: Friend; externalData: ExternalUserData | null }>
-	// 		>();
-	//
-	// 		// attach instance and external data
-	// 		for (const [key, friend] of $friendsStore.entries()) {
-	// 			const instance = $instanceDataStore.get(friend.id) || null;
-	// 			const externalData = $externalUserDataStore.get(key) || null;
-	//
-	// 			if (!grouped.has(instance)) {
-	// 				grouped.set(instance, []);
-	// 			}
-	//
-	// 			grouped.get(instance)!.push({ friend, externalData });
-	// 		}
-	//
-	// 		return grouped;
-	// 	}
-	// );
-
 	const groupedFriendsStore = derived(
 		[friendsStore, instanceDataStore, externalUserDataStore],
 		([$friendsStore, $instanceDataStore, $externalUserDataStore]) => {
@@ -142,7 +117,10 @@
 				grouped.get(instanceId)!.friends.push({ friend, externalData });
 			}
 
-			return grouped;
+			// return grouped;
+			return Array.from(grouped.values()).sort(
+				(a, b) => (b.friends?.length ?? 0) - (a.friends?.length ?? 0)
+			);
 		}
 	);
 </script>
@@ -152,7 +130,7 @@
 		<div class="grid grid-cols-2 pb-6">
 			<div class="text-3xl">Instances</div>
 			<div class="flex flex-row justify-end">
-				<Button variant="outline" on:click={handleRefresh} size="icon">
+				<Button variant="outline" onclick={() => handleRefresh()} size="icon">
 					{#if loading}
 						<LucideRefreshCw class="h-[1.2rem] w-[1.2rem] animate-spin transition-all" />
 					{:else}
@@ -161,7 +139,7 @@
 				</Button>
 			</div>
 		</div>
-		{#each Array.from($groupedFriendsStore.values()) as { instance, friends }}
+		{#each $groupedFriendsStore as { instance, friends }}
 			{#if instance}
 				<div class="pt-2">
 					<Card.Root>
@@ -187,22 +165,21 @@
 							<div class="flex w-full flex-col">
 								<div class="flex w-full flex-row">
 									<h2 class="text-xl">{instance ? instance.world.name : 'Unknown Instance'}</h2>
-									<h2 class="pl-1 text-xl text-muted-foreground">
+									<h2 class="text-muted-foreground pl-1 text-xl">
 										- {instance ? instance.userCount : '0'} / {instance
 											? instance.recommendedCapacity
 											: '0'} [{instance ? instance.capacity : '0'}]
 									</h2>
 								</div>
 								{#await loadInstanceOwner(instance)}
-									<div class="text-ellipsis text-nowrap pb-2 text-xs text-muted-foreground">
+									<div class="text-muted-foreground pb-2 text-xs text-nowrap text-ellipsis">
 										Loading Owner...
 									</div>
 								{:then instanceOwner}
-									<div class="text-ellipsis text-nowrap pb-2 text-xs text-muted-foreground">
+									<div class="text-muted-foreground pb-2 text-xs text-nowrap text-ellipsis">
 										{instanceOwner}
 									</div>
 								{/await}
-								<!--								<ul>-->
 								<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2">
 									{#each friends as { friend, externalData }}
 										<Dialog.Root>
@@ -233,7 +210,6 @@
 										</Dialog.Root>
 									{/each}
 								</div>
-								<!--								</ul>-->
 							</div>
 						</div>
 					</Card.Root>

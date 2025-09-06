@@ -19,15 +19,19 @@
 	import { loadImage } from '$lib/utils/load-image';
 	import { getFriendImage } from '$lib/utils/get-friend-image';
 
-	export let userId: string;
-	let instance: InstanceData | undefined;
-	let instanceOwnerUser: ExternalUserData | undefined;
-	let instanceOwnerGroup: GroupData | undefined;
-	let friendsInInstance: Friend[] = [];
+	interface Props {
+		userId: string;
+	}
 
-	let instanceImage: string;
-	let instanceOwnerImage: string;
-	let instanceGroupOwnerImage: string;
+	let { userId }: Props = $props();
+	let instance: InstanceData | undefined = $state();
+	let instanceOwnerUser: ExternalUserData | undefined = $state();
+	let instanceOwnerGroup: GroupData | undefined = $state();
+	let friendsInInstance: Friend[] = $state([]);
+
+	let instanceImage: string = $state();
+	let instanceOwnerImage: string = $state();
+	let instanceGroupOwnerImage: string = $state();
 
 	const openUrl = (link: string) => {
 		open(link);
@@ -123,17 +127,17 @@
 							<DropdownMenu.Label>Options</DropdownMenu.Label>
 							<DropdownMenu.Separator />
 							<DropdownMenu.Item
-								on:click={joinUrl(
+								onclick={() => joinUrl(
 									`vrchat://launch?ref=vrchat.com&id=${instance?.worldId}:${instance?.instanceId}`
 								)}
 							>
 								Join Instance
 							</DropdownMenu.Item>
-							<DropdownMenu.Item on:click={inviteMyself(instance?.worldId, instance?.instanceId)}
+							<DropdownMenu.Item onclick={() => inviteMyself(instance?.worldId, instance?.instanceId)}
 								>Invite Me
 							</DropdownMenu.Item>
 							<DropdownMenu.Item
-								on:click={openUrl(
+								onclick={() => openUrl(
 									`https://vrchat.com/home/launch?worldId=${instance?.worldId}&instanceId=${instance?.instanceId}`
 								)}
 							>

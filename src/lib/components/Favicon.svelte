@@ -9,7 +9,7 @@
 	<defs>
 		<style>
 			.fill {
-				fill: hsl(var(--primary));
+				fill: var(--primary);
 			}
 		</style>
 	</defs>

@@ -17,6 +17,7 @@ pub fn run() {
     ];
 
     let _builder = tauri::Builder::default()
+        .plugin(tauri_plugin_log::Builder::new().build())
         .setup(|app| {
             #[cfg(desktop)]
             let _ = app
@@ -27,22 +28,17 @@ pub fn run() {
                         .expect("no main window")
                         .set_focus();
                 }));
-            if cfg!(debug_assertions) {
-                app.handle().plugin(
-                    tauri_plugin_log::Builder::default()
-                        .level(log::LevelFilter::Info)
-                        .build(),
-                )?;
-            }
             #[cfg(desktop)]
             let _ = app
                 .handle()
                 .plugin(tauri_plugin_updater::Builder::new().build());
             Ok(())
         })
-        .plugin(tauri_plugin_sql::Builder::new()
-            .add_migrations("sqlite:spectre.db", migrations)
-            .build())
+        .plugin(
+            tauri_plugin_sql::Builder::new()
+                .add_migrations("sqlite:spectre.db", migrations)
+                .build(),
+        )
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_process::init())
         .plugin(tauri_plugin_os::init())
@@ -52,12 +48,19 @@ pub fn run() {
         .plugin(tauri_plugin_http::init())
         .plugin(tauri_plugin_store::Builder::default().build())
         .plugin(tauri_plugin_notification::init())
+        .plugin(
+            tauri_plugin_log::Builder::new()
+                .max_file_size(50_000)
+                .level(log::LevelFilter::Info)
+                .build(),
+        )
         .invoke_handler(tauri::generate_handler![
             // Web functions
             web::vrc_users::get_vrc_users,
             web::api_time::get_vrc_time,
             web::login::get_login,
             web::login::get_totp,
+            web::login::get_otp,
             web::login::get_logout,
             // VRC Web Functions
             web::vrc_request::vrc_get_request,

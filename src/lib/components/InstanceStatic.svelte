@@ -22,14 +22,18 @@
 	import { getFriendImage } from '$lib/utils/get-friend-image';
 	import { open } from '@tauri-apps/plugin-shell';
 
-	export let instance: InstanceData;
-	let instanceOwnerUser: ExternalUserData | undefined;
-	let instanceOwnerGroup: GroupData | undefined;
-	let friendsInInstance: Friend[] = [];
+	interface Props {
+		instance: InstanceData;
+	}
 
-	let instanceImage: string;
-	let instanceOwnerImage: string;
-	let instanceGroupOwnerImage: string;
+	let { instance }: Props = $props();
+	let instanceOwnerUser: ExternalUserData | undefined = $state();
+	let instanceOwnerGroup: GroupData | undefined = $state();
+	let friendsInInstance: Friend[] = $state([]);
+
+	let instanceImage: string = $state();
+	let instanceOwnerImage: string = $state();
+	let instanceGroupOwnerImage: string = $state();
 
 	function openUrl(link: string) {
 		open(link);

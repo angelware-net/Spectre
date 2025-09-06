@@ -19,9 +19,13 @@
 
 	// TODO: Add world favorite functions
 
-	export let logData: GameLogMessage;
-	let world: World;
-	let loading: boolean = true;
+	interface Props {
+		logData: GameLogMessage;
+	}
+
+	let { logData }: Props = $props();
+	let world: World = $state();
+	let loading: boolean = $state(true);
 
 	function viewWorldOnWeb() {
 		open(`https://vrchat.com/home/world/${world.id}/info`);
@@ -44,7 +48,7 @@
 			{#await loadImage(world.imageUrl)}
 				<LoaderCircle class="h-7 motion-rotate-loop-[1turn]/reset" />
 			{:then url}
-				<div class="header-background" style="background-image: url({url});" />
+				<div class="header-background" style="background-image: url({url});"></div>
 			{:catch error}
 				<LoaderCircle class="h-7 motion-rotate-loop-[1turn]/reset" />
 			{/await}

@@ -13,13 +13,13 @@
 	};
 </script>
 
-<Card.Root class="flex h-64 flex-col justify-between">
+<Card.Root class="flex min-h-64 h-full flex-col justify-between">
 	<Card.Header>
 		<Card.Title>Join the Group</Card.Title>
 		<Card.Description>Find other players using Spectre!</Card.Description>
 	</Card.Header>
 	<Card.Content class="flex items-center justify-center">
-		<Button on:click={openTl}>Join&nbsp;<ArrowUpRight class="h-4 w-4" /></Button>
+		<Button onclick={() => openTl()}>Join&nbsp;<ArrowUpRight class="h-4 w-4" /></Button>
 	</Card.Content>
 	<Card.Footer class="flex items-center justify-center"></Card.Footer>
 </Card.Root>

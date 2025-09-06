@@ -5,7 +5,7 @@
 	import { onMount } from 'svelte';
 </script>
 
-<Card.Root class="flex h-64 flex-col items-center justify-center">
+<Card.Root class="flex min-h-64 h-full flex-col items-center justify-center">
 	<Card.Content class="flex items-center justify-center">
 		<div class="flex text-2xl">Get out there and explore!</div>
 	</Card.Content>

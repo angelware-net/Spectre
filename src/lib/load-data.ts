@@ -23,7 +23,7 @@ export async function loadData() {
 		const friendsResponse = await invoke<string>('get_vrc_friends');
 		const friendsList: Friend[] = JSON.parse(friendsResponse);
 		friendsStore.set(new Map(friendsList.map((friend) => [friend.id, friend])));
-		console.log(friendsList);
+		// console.log(friendsList);
 
 		// Setup maps
 		const userDataMap = new Map<string, ExternalUserData>();
@@ -87,5 +87,7 @@ export const reloadData = async (forceReload: boolean) => {
 	) {
 		console.log('Reloading data...');
 		await loadData();
+	} else {
+		console.log('Skipping reload, data exists...');
 	}
 };

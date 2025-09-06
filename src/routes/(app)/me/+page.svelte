@@ -16,7 +16,7 @@
 	import { ScrollArea } from '$lib/components/ui/scroll-area';
 	import OwnAvatar from '$lib/components/me/OwnAvatar.svelte';
 
-	let currentUser: UserData | null;
+	let currentUser: UserData | null = $state();
 
 	onMount(() => {
 		currentUser = get(currentUserStore);
@@ -58,7 +58,7 @@
 		system_trust_basic: 1
 	};
 
-	function getFilteredTags(tags) {
+	function getFilteredTags(tags: string[] | undefined) {
 		if (!tags) return [];
 
 		const prioritizedTag = tags.reduce((highest, tag) => {
@@ -119,7 +119,7 @@
 					</p>
 				</div>
 			</div>
-			<div class="flex flex-grow items-center justify-end">
+			<div class="flex grow items-center justify-end">
 				<Button on:click={openProfile} class="ml-auto font-medium">View Website</Button>
 			</div>
 			<div class="flex flex-row items-end justify-end text-end"></div>

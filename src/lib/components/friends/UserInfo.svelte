@@ -23,8 +23,12 @@
 	import Facebook from 'lucide-svelte/icons/facebook';
 	import Instagram from 'lucide-svelte/icons/instagram';
 
-	export let userId: string;
-	let user: ExternalUserData | undefined;
+	interface Props {
+		userId: string;
+	}
+
+	let { userId }: Props = $props();
+	let user: ExternalUserData | undefined = $state();
 
 	const tagToBadgeMap: { [key: string]: string } = {
 		system_supporter: 'VRC+',
@@ -159,7 +163,8 @@
 					<Button variant="ghost" size="icon" on:click={openUrl(link)}>
 						<Tooltip.Root>
 							<Tooltip.Trigger>
-								<svelte:component this={getIconForLink(link)} />
+								{@const SvelteComponent = getIconForLink(link)}
+								<SvelteComponent />
 							</Tooltip.Trigger>
 							<Tooltip.Content>
 								{link}

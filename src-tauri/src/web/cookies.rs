@@ -3,15 +3,6 @@ use std::path::PathBuf;
 use tauri_plugin_store::StoreExt;
 
 // Cookies manager for login and otp
-
-/*
-    Updated 20/12/24 to use the new TauriV2 store, there was a lot of changes in how the store was
-    accessed, etc. I've done my best to update everything and it seems to work, although for some
-    reason we cannot release the store after the operation is complete, it causes the function to
-    hang or exit without returning the proper value to Tauri, which causes things like Login to
-    never complete.
-*/
-
 #[tauri::command]
 pub fn load_login_cookies(app: tauri::AppHandle) -> tauri_plugin_store::Result<Option<String>> {
     let store_path = PathBuf::from(".cookies.dat");
