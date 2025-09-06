@@ -24,3 +24,5 @@ vite.config.ts.timestamp-*
 
 build.ps1
 ./build.ps1
+
+test.css
