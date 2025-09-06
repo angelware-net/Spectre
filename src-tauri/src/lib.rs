@@ -28,13 +28,6 @@ pub fn run() {
                         .expect("no main window")
                         .set_focus();
                 }));
-            // if cfg!(debug_assertions) {
-            //     app.handle().plugin(
-            //         tauri_plugin_log::Builder::default()
-            //             .level(log::LevelFilter::Info)
-            //             .build(),
-            //     )?;
-            // }
             #[cfg(desktop)]
             let _ = app
                 .handle()
@@ -57,14 +50,6 @@ pub fn run() {
         .plugin(tauri_plugin_notification::init())
         .plugin(
             tauri_plugin_log::Builder::new()
-                // .target(tauri_plugin_log::Target::new(
-                //     tauri_plugin_log::TargetKind::LogDir {
-                //         file_name: Some("spectre".to_string()),
-                //     },
-                // ))
-                // .target(tauri_plugin_log::Target::new(
-                //     tauri_plugin_log::TargetKind::Stdout,
-                // ))
                 .max_file_size(50_000)
                 .level(log::LevelFilter::Info)
                 .build(),
