@@ -193,14 +193,17 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 			}
 		}
 	} else if (msgObject.type === 'friend-location') {
-		let msg = JSON.parse(msgObject.content);
-		if (msg.travelingToLocation !== "") {
-			let currentLocation = get(currentInstanceStore);
-			if (currentLocation !== null || currentLocation !== "") {
-				if (currentLocation === msg.travelingToLocation){
-					let username = await getUsernameById(msg.userId);
-					let title = `${username} is heading to your current location!`;
-					await sendNotif(title, title);
+		const setting = await getSetting('friendTravelingNotif');
+		if (setting?.toLowerCase() === 'true') {
+			let msg = JSON.parse(msgObject.content);
+			if (msg.travelingToLocation !== "") {
+				let currentLocation = get(currentInstanceStore);
+				if (currentLocation !== null || currentLocation !== "") {
+					if (currentLocation === msg.travelingToLocation){
+						let username = await getUsernameById(msg.userId);
+						let title = `${username} is heading to your current location!`;
+						await sendNotif(title, title);
+					}
 				}
 			}
 		}
