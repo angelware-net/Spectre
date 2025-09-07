@@ -4,12 +4,15 @@
 
 A friends list manager for VRChat. Built on Sveltekit + Tauri. Thanks to Tauri, Spectre is cross-platform by default, with mobile support planned for the (very) near future.
 
+>[!WARNING]
+> Spectre's backend is currently being reworked to drastically improve performance!
+
 ## Warnings
 
 This project is largely under development, things may be broken or imperfect! 
 
-> [!CAUTION]
-> VRC's official stance on using their API is to use it non-maliciously, Spectre performs no malicious functions, but makes a large number of API calls. I am not responsible for your account getting rate-limited or locked.
+> [!WARNING]
+> VRC's official stance on using their API is to use it non-maliciously, Spectre performs absolutely no malicious functions. I am not responsible for your account getting rate-limited or locked.
 
 ## Philosophy
 
