@@ -3,7 +3,6 @@
  * to half the size of the initial value based on recency. I know this is really hacky, I will implement a real solution soon:tm:
  */
 
-// TODO: We need to check for the folder before trying to access it, it causes a startup error for some clients.
 import { BaseDirectory, exists, mkdir, readDir, remove, stat } from '@tauri-apps/plugin-fs';
 import { getNumericSetting } from '$lib/store';
 
@@ -43,6 +42,8 @@ export async function manageCacheSize() {
 	} catch (error) {
 		console.error('Error managing cache size:', error);
 	}
+
+	console.log('Cache management completed.');
 }
 
 export async function clearCache() {

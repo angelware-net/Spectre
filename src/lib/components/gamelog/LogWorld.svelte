@@ -90,32 +90,32 @@
     .header-background {
         background-size: cover;
         background-position: center;
-        height: 200px; /* Adjust height as needed */
+        height: 200px;
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden; /* Ensure the image is contained within the div */
-        border-top-left-radius: 0.5rem; /* Match the card's border radius */
-        border-top-right-radius: 0.5rem; /* Match the card's border radius */
+        overflow: hidden;
+        border-top-left-radius: 0.5rem;
+        border-top-right-radius: 0.5rem;
     }
 
     .sheet-header {
         background-size: cover;
         background-position: center;
-        height: 200px; /* Adjust height as needed */
+        height: 200px;
         width: 100%;
         display: flex;
         align-items: center;
         justify-content: center;
-        overflow: hidden; /* Ensure the image is contained within the div */
+        overflow: hidden;
     }
 
     .header-text {
-        background-color: rgba(0, 0, 0, 0.5); /* Optional: Add background to make text readable */
-        color: white; /* Text color */
-        padding: 0.5rem; /* Add some padding */
-        border-radius: 0.25rem; /* Optional: Add border radius */
+        background-color: rgba(0, 0, 0, 0.5);
+        color: white;
+        padding: 0.5rem;
+        border-radius: 0.25rem;
         width: 100%;
         height: 100%;
     }

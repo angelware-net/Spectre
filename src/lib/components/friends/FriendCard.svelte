@@ -22,27 +22,39 @@
 		avatarImage = await loadImage(getUrl());
 	});
 
-	const getStatusClass = (state: string, status: string) => {
-		switch (state?.toLowerCase()) {
-			case 'online':
-				switch (status?.toLowerCase()) {
-					case 'join me':
-						return 'status-circle status-join-me';
-					case 'active':
-						return 'status-circle status-active';
-					case 'ask me':
-						return 'status-circle status-ask-me';
-					case 'busy':
-						return 'status-circle status-busy';
-					default:
-						return '';
-				}
-			case 'active':
-				return 'status-circle status-website';
-			case 'offline':
-				return 'status-circle status-offline';
-			default:
-				return '';
+	// const getStatusClass = (state: string, status: string) => {
+	// 	switch (state?.toLowerCase()) {
+	// 		case 'online':
+	// 			switch (status?.toLowerCase()) {
+	// 				case 'join me':
+	// 					return 'status-circle status-join-me';
+	// 				case 'active':
+	// 					return 'status-circle status-active';
+	// 				case 'ask me':
+	// 					return 'status-circle status-ask-me';
+	// 				case 'busy':
+	// 					return 'status-circle status-busy';
+	// 				default:
+	// 					return '';
+	// 			}
+	// 		case 'active':
+	// 			return 'status-circle status-website';
+	// 		case 'offline':
+	// 			return 'status-circle status-offline';
+	// 		default:
+	// 			return '';
+	// 	}
+	// };
+
+	const getStatusClass = (presenceStatus: string) => {
+		switch (presenceStatus?.toLowerCase()) {
+			case 'join me':    return 'status-circle status-join-me';
+			case 'active':     return 'status-circle status-active';
+			case 'ask me':     return 'status-circle status-ask-me';
+			case 'busy':       return 'status-circle status-busy';
+			case 'on website': return 'status-circle status-website';
+			case 'offline':    return 'status-circle status-offline';
+			default:           return '';
 		}
 	};
 
@@ -75,7 +87,7 @@
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger>
-					<span class={getStatusClass(friend.state, friend.status)}></span>
+					<span class={getStatusClass(friend.status)}></span>
 				</Tooltip.Trigger>
 				<Tooltip.Content>
 					<p>{friend.status}</p>
