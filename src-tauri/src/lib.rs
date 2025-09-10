@@ -65,6 +65,7 @@ pub fn run() {
             // VRC Web Functions
             web::vrc_request::vrc_get_request,
             web::vrc_friends::get_vrc_friends,
+            web::vrc_favorites::get_vrc_favorites,
             web::vrc_user::get_vrc_user,
             web::vrc_instance::get_vrc_instance,
             web::vrc_group::get_vrc_group,

@@ -9,8 +9,8 @@
 
 	// Stores
 	import { friendsStore } from '$lib/svelte-stores';
-	import { externalUserDataStore } from '$lib/svelte-stores';
 	import { instanceDataStore } from '$lib/svelte-stores';
+	import { favoriteStore } from '$lib/svelte-stores';
 	import { getSetting, saveSetting } from '$lib/store';
 
 	// UI
@@ -28,7 +28,7 @@
 	import { Input } from '$lib/components/ui/input';
 
 	// Icons
-	import { Grid2X2, List, LucideRefreshCw } from 'lucide-svelte';
+	import { Grid2X2, List, LucideRefreshCw, Star } from 'lucide-svelte';
 	import { get } from 'svelte/store';
 	import FriendCard from '$lib/components/friends/FriendCard.svelte';
 	import UserInfo from '$lib/components/friends/UserInfo.svelte';
@@ -42,13 +42,15 @@
 			avatarUrl: string;
 			searchIndex: string;
 			presenceStatus: string;
+			isFavorite: boolean;
 		}
 	> = $state([]);
 
 	// Sorting mode change
-	let value = $state('');
+	let value = $state('Status');
 
 	const sortingModes = [
+		{ value: 'Favorites', label: 'Favorites' },
 		{ value: 'Status', label: 'Status' },
 		{ value: 'Username', label: 'Username' },
 		{ value: 'Location', label: 'Location' }
@@ -100,64 +102,59 @@
 	function handleSortChange(value: { value: string; label: string } | undefined) {
 		if (value) {
 			sortMode = value.value;
-			console.log('Sort mode changed');
 		}
 	}
 
-	const getStatusClass = (state: string, status: string) => {
-		switch (state?.toLowerCase()) {
-			case 'online':
-				switch (status?.toLowerCase()) {
-					case 'join me':
-						return 'status-circle status-join-me';
-					case 'active':
-						return 'status-circle status-active';
-					case 'ask me':
-						return 'status-circle status-ask-me';
-					case 'busy':
-						return 'status-circle status-busy';
-					default:
-						return '';
-				}
-			case 'active':
-				return 'status-circle status-website';
-			case 'offline':
-				return 'status-circle status-offline';
-			default:
-				return '';
+	const getStatusClass = (presenceStatus: string) => {
+		switch (presenceStatus?.toLowerCase()) {
+			case 'join me':    return 'status-circle status-join-me';
+			case 'active':     return 'status-circle status-active';
+			case 'ask me':     return 'status-circle status-ask-me';
+			case 'busy':       return 'status-circle status-busy';
+			case 'on website': return 'status-circle status-website';
+			case 'offline':    return 'status-circle status-offline';
+			default:           return '';
 		}
 	};
 
 	async function loadFriendsWithImages() {
+		const favRaw = get(favoriteStore) as unknown;
+		const favoriteIds: Set<string> =
+			favRaw instanceof Set
+				? favRaw
+				: favRaw instanceof Map
+					? new Set([...favRaw.entries()].filter(([, v]) => !!v).map(([k]) => k))
+					: new Set<string>();
+
 		const friends = Array.from($friendsStore.values()).map((friend) => {
-			const userData = $externalUserDataStore.get(friend.id);
 			const instanceData = $instanceDataStore.get(friend.id);
 
-			const state = userData?.state || 'offline';
+			const platform = (friend.platform ?? '').toLowerCase().trim();
+			const location = (friend.location ?? '').toLowerCase().trim();
 
 			const presenceStatus =
-				state === 'online'
-					? (userData?.status ?? 'Offline')
-					: state === 'active'
-						? 'On Website'
-						: 'Offline';
+				platform === 'web'
+					? 'On Website'
+					: location === 'offline'
+						? 'Offline'
+						: (friend.status ?? 'Online');
 
 			const locationName =
-				state === 'offline'
-					? 'Offline'
-					: state === 'active'
-						? 'On Website'
-						: instanceData?.world?.name ||
-							(friend.location === 'private' ? 'Private' : 'Loading...');
+				presenceStatus === 'On Website'
+					? 'On Website'
+					: presenceStatus === 'Offline'
+						? 'Offline'
+						: (instanceData?.world?.name ??
+							(location === 'private' ? 'Private' : 'Loading...'));
 
 			return {
 				...friend,
-				state,
 				presenceStatus,
 				locationName,
 				locationCount: instanceData?.userCount,
 				locationCapacity: instanceData?.capacity,
-				locationData: instanceData?.world
+				locationData: instanceData?.world,
+				isFavorite: favoriteIds.has(friend.id),
 			};
 		});
 
@@ -170,7 +167,8 @@
 						friend.presenceStatus,
 						friend.locationName,
 						friend.bio,
-						friend.statusDescription
+						friend.statusDescription,
+						friend.isFavorite ? 'favorite' : ''
 					]
 						.filter(Boolean)
 						.join(' ')
@@ -179,6 +177,7 @@
 			})
 		);
 	}
+
 
 	const filteredFriends = $derived.by(() => {
 		const q = normalize(search).trim();
@@ -195,18 +194,17 @@
 
 		return [...filteredFriends].sort((a, b) => {
 			if (sortMode === 'Status') {
-				const stateOrder: Record<string, number> = {
-					'online:join me': 1,
-					'online:active': 2,
-					'online:ask me': 3,
-					'online:busy': 4,
-					active: 5,
-					offline: 6
+				const presenceOrder: Record<string, number> = {
+					'join me': 1,
+					'active': 2,
+					'ask me': 3,
+					'busy': 4,
+					'on website': 5,
+					'offline': 6,
 				};
-				const aKey = `${a.state}:${a.presenceStatus}`.toLowerCase();
-				const bKey = `${b.state}:${b.presenceStatus}`.toLowerCase();
-				const cmp =
-					(stateOrder[aKey] ?? stateOrder[a.state]) - (stateOrder[bKey] ?? stateOrder[b.state]);
+				const aKey = a.presenceStatus?.toLowerCase() ?? '';
+				const bKey = b.presenceStatus?.toLowerCase() ?? '';
+				const cmp = (presenceOrder[aKey] ?? 999) - (presenceOrder[bKey] ?? 999);
 				if (cmp !== 0) return cmp;
 				return a.displayName.localeCompare(b.displayName);
 			} else if (sortMode === 'Username') {
@@ -217,6 +215,11 @@
 				const lc = locationOrder(a.locationName) - locationOrder(b.locationName);
 				if (lc !== 0) return lc;
 				return a.locationName.localeCompare(b.locationName);
+			} else if (sortMode == 'Favorites') {
+				if (a.isFavorite !== b.isFavorite) {
+					if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1;
+					return a.displayName.localeCompare(b.displayName);
+				}
 			}
 			return 0;
 		});
@@ -228,12 +231,10 @@
 		try {
 			// load friends data, friends user data, and location data
 			const friendsStoreData = get(friendsStore);
-			const externalUserDataStoreData = get(externalUserDataStore);
 			const instanceStoreData = get(instanceDataStore);
 
 			if (
 				friendsStoreData.size === 0 ||
-				externalUserDataStoreData.size === 0 ||
 				instanceStoreData.size === 0
 			) {
 				await loadData();
@@ -266,7 +267,6 @@
 								{/each}
 							</Select.Group>
 						</Select.Content>
-						<!--						<Select.Input name="themeSelector" />-->
 					</Select.Root>
 				</div>
 				<div class="flex flex-row justify-end">
@@ -339,8 +339,13 @@
 								<Tooltip.Provider>
 									<Tooltip.Root>
 										<Tooltip.Trigger class="flex h-full items-center justify-center p-4">
-											<Table.Cell class="">
-												<span class={getStatusClass(friend.state, friend.presenceStatus)}></span>
+											<Table.Cell class="flex-row">
+												<div class="flex flex-row items-center content-center space-x-2">
+													<span class={getStatusClass(friend.presenceStatus)}></span>
+													{#if friend.isFavorite}
+														<Star class="mr-1 h-3 w-3 text-yellow-400 fill-yellow-400" />
+													{/if}
+												</div>
 											</Table.Cell>
 										</Tooltip.Trigger>
 										<Tooltip.Content>
@@ -355,7 +360,9 @@
 										<Dialog.Trigger>
 											<HoverCard.Root>
 												<HoverCard.Trigger>
-													{friend.displayName}
+													<div class="flex flex-row items-center justify-center">
+														{friend.displayName}
+													</div>
 												</HoverCard.Trigger>
 												<HoverCard.Content class="w-80">
 													<div class="flex space-x-4">

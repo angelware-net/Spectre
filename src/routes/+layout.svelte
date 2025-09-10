@@ -48,7 +48,7 @@
 		console.log('Welcome to Spectre!');
 
 		// Check and manage cache size
-		await manageCacheSize();
+		manageCacheSize().catch(console.error);
 
 		// Check api status by getting users online
 		try {

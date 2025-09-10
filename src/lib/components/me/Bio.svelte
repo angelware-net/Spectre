@@ -51,7 +51,7 @@
 	<h1>Links:</h1>
 	<div class="flex gap-4">
 		{#each currentUser?.bioLinks ?? [] as link}
-			<Button variant="ghost" size="icon" on:click={openUrl(link)}>
+			<Button variant="ghost" size="icon" onclick={() => openUrl(link)}>
 				<Tooltip.Root>
 					<Tooltip.Trigger>
 						{@const SvelteComponent = getIconForLink(link)}

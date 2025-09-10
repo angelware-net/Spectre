@@ -2,7 +2,6 @@
 	import { invoke } from '@tauri-apps/api/core';
 
 	import { friendsStore } from '$lib/svelte-stores';
-	import { externalUserDataStore } from '$lib/svelte-stores';
 	import { instanceDataStore } from '$lib/svelte-stores';
 
 	import { getFriendImage } from '$lib/utils/get-friend-image';
@@ -94,27 +93,23 @@
 	}
 
 	const groupedFriendsStore = derived(
-		[friendsStore, instanceDataStore, externalUserDataStore],
-		([$friendsStore, $instanceDataStore, $externalUserDataStore]) => {
+		[friendsStore, instanceDataStore],
+		([$friendsStore, $instanceDataStore]) => {
 			const grouped = new Map<
 				string,
 				{
 					instance: InstanceData | null;
-					friends: Array<{ friend: Friend; externalData: ExternalUserData | null }>;
+					friends: Array<{ friend: Friend }>;
 				}
 			>();
 
 			for (const [key, friend] of $friendsStore.entries()) {
 				const instance = $instanceDataStore.get(friend.id) || null;
-				const externalData = $externalUserDataStore.get(key) || null;
-
 				const instanceId = instance?.id || 'null';
-
 				if (!grouped.has(instanceId)) {
 					grouped.set(instanceId, { instance, friends: [] });
 				}
-
-				grouped.get(instanceId)!.friends.push({ friend, externalData });
+				grouped.get(instanceId)!.friends.push({ friend });
 			}
 
 			// return grouped;
@@ -181,7 +176,7 @@
 									</div>
 								{/await}
 								<div class="grid w-full grid-cols-[repeat(auto-fill,minmax(16rem,1fr))] gap-2">
-									{#each friends as { friend, externalData }}
+									{#each friends as { friend }}
 										<Dialog.Root>
 											<Dialog.Trigger>
 												<Card.Root

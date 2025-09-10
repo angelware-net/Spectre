@@ -12,7 +12,7 @@
 	import { getJoinableUsers } from '$lib/utils/get-joinable-users';
 	import { getGlobalUserCount } from '$lib/utils/get-global-count';
 	import { get } from 'svelte/store';
-	import { instanceDataStore, friendsStore, externalUserDataStore } from '$lib/svelte-stores';
+	import { instanceDataStore, friendsStore } from '$lib/svelte-stores';
 
 	let onlineFriendsCount = $state(0);
 	let joinableUsersCount = $state(0);
@@ -34,13 +34,11 @@
 
 	const initializeData = async (forceReload = false) => {
 		const friends = get(friendsStore);
-		const externalUserData = get(externalUserDataStore);
 		const instanceStore = get(instanceDataStore);
 
 		if (
 			forceReload ||
 			friends.size === 0 ||
-			externalUserData.size === 0 ||
 			instanceStore.size === 0
 		) {
 			console.log(`Reloading Data: ${forceReload}`);

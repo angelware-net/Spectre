@@ -3,6 +3,7 @@ import type { UserData } from '$lib/types/user';
 import type { Friend } from '$lib/types/friend';
 import type { ExternalUserData } from '$lib/types/external-user';
 import type { InstanceData } from '$lib/types/instance';
+import type { Favorite } from '$lib/types/favorite';
 
 export const loadingStore = writable<boolean>(false);
 
@@ -16,3 +17,4 @@ export const instanceDataStore = writable<Map<string, InstanceData>>(new Map());
 export const loginStatusStore = writable<boolean>(false);
 
 export const currentInstanceStore = writable<string | null>(null);
+export const favoriteStore = writable<Map<string, Favorite>>(new Map());

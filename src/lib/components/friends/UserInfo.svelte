@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { externalUserDataStore } from '$lib/svelte-stores';
+	import { friendsStore } from '$lib/svelte-stores';
 	import { get } from 'svelte/store';
 	import { onMount } from 'svelte';
-	import type { ExternalUserData } from '$lib/types/external-user';
 	import { open } from '@tauri-apps/plugin-shell';
 
 	import { Button } from '$lib/components/ui/button';
@@ -22,13 +21,14 @@
 	import Github from 'lucide-svelte/icons/github';
 	import Facebook from 'lucide-svelte/icons/facebook';
 	import Instagram from 'lucide-svelte/icons/instagram';
+	import type { Friend } from '$lib/types/friend';
 
 	interface Props {
 		userId: string;
 	}
 
 	let { userId }: Props = $props();
-	let user: ExternalUserData | undefined = $state();
+	let user: Friend | undefined = $state();
 
 	const tagToBadgeMap: { [key: string]: string } = {
 		system_supporter: 'VRC+',
@@ -63,15 +63,16 @@
 	};
 
 	const linkIconMap: { [key: string]: any } = {
+		'x.com': Twitter,
 		'twitter.com': Twitter,
-		'twitch.com': Twitch,
+		'twitch.tv': Twitch,
 		'youtube.com': YouTube,
 		'github.com': Github,
 		'facebook.com': Facebook,
 		'instagram.com': Instagram
 	};
 
-	function getFilteredTags(tags) {
+	function getFilteredTags(tags: string[] | undefined) {
 		if (!tags) return [];
 
 		const prioritizedTag = tags.reduce((highest, tag) => {
@@ -104,7 +105,7 @@
 	}
 
 	onMount(() => {
-		const userMap = get(externalUserDataStore);
+		const userMap = get(friendsStore);
 		user = userMap.get(userId);
 	});
 </script>
@@ -131,7 +132,7 @@
 						<DropdownMenu.Group>
 							<DropdownMenu.Label>User Actions</DropdownMenu.Label>
 							<DropdownMenu.Separator />
-							<DropdownMenu.Item on:click={openUserProfile} class="flex justify-between"
+							<DropdownMenu.Item onclick={() => openUserProfile()} class="flex justify-between"
 								><div>View on Web&nbsp;&nbsp;</div>
 								<ArrowUpRight class="h-4 w-4" /></DropdownMenu.Item
 							>
@@ -160,16 +161,18 @@
 			<h1>Links:</h1>
 			<div class="flex gap-4">
 				{#each user?.bioLinks ?? [] as link}
-					<Button variant="ghost" size="icon" on:click={openUrl(link)}>
-						<Tooltip.Root>
-							<Tooltip.Trigger>
-								{@const SvelteComponent = getIconForLink(link)}
-								<SvelteComponent />
-							</Tooltip.Trigger>
-							<Tooltip.Content>
-								{link}
-							</Tooltip.Content>
-						</Tooltip.Root>
+					{@const Icon = getIconForLink(link)}
+					<Button variant="ghost" size="icon" onclick={() => openUrl(link)}>
+						<Tooltip.Provider>
+							<Tooltip.Root>
+								<Tooltip.Trigger>
+									<Icon class="h-4 w-4" />
+								</Tooltip.Trigger>
+								<Tooltip.Content>
+									{link}
+								</Tooltip.Content>
+							</Tooltip.Root>
+						</Tooltip.Provider>
 					</Button>
 				{/each}
 			</div>

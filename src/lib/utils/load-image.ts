@@ -15,7 +15,6 @@ const blobUrlMap = new Map<string, string>();
 export async function loadImage(url: string): Promise<string> {
 	try {
 		if (blobUrlMap.has(url)) {
-			console.log('loading from blob map');
 			return blobUrlMap.get(url)!;
 		}
 

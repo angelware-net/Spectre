@@ -2,12 +2,11 @@
 	import '$lib/styles/stars.css';
 	import ArrowUpRight from 'lucide-svelte/icons/square-arrow-up-right';
 	import { Button } from '$lib/components/ui/button/index.js';
-	import { currentUserStore, friendsStore, externalUserDataStore } from '$lib/svelte-stores';
+	import { currentUserStore, friendsStore } from '$lib/svelte-stores';
 	import type { UserData } from '$lib/types/user';
 	import { goto } from '$app/navigation';
 	import Footer2 from '$lib/components/Footer2.svelte';
 	import type { Friend } from '$lib/types/friend';
-	import type { ExternalUserData } from '$lib/types/external-user';
 
 	export function delay(ms: number): Promise<void> {
 		return new Promise((resolve) => setTimeout(resolve, ms));
@@ -23,21 +22,14 @@
 		}
 	});
 
-	const isJoinable = (friend: Friend, user: ExternalUserData | undefined) =>
-		user &&
-		user.location !== 'offline' &&
-		user.location !== '' &&
-		user.status !== 'offline' &&
-		user.state !== 'active';
+	const isJoinable = (friend: Friend) => friend.platform != 'web' && friend.location != 'offline';
 
 	let onlineFriendsCount = $derived.by(() => {
 		const friends = $friendsStore;
-		const users = $externalUserDataStore;
 
 		let count = 0;
 		for (const friend of friends.values()) {
-			const user = users.get(friend.id);
-			if (isJoinable(friend, user)) count++;
+			if (isJoinable(friend)) count++;
 		}
 		return count;
 	});
