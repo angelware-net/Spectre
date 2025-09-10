@@ -13,7 +13,7 @@ file system access. We also only have these functions available on windows. Side
 **/
 export async function spawnProcess() {
 	const currentPlatform: Platform = platform();
-	if (currentPlatform !== 'windows') return;
+	if (currentPlatform !== 'windows' && currentPlatform !== 'linux') return;
 
 	const command = Command.sidecar('sidecar/spectre-sidecar');
 	process = await command.spawn();
