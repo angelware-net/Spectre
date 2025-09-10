@@ -9,8 +9,9 @@ import type { ExternalUserData } from '$lib/types/external-user';
 import type { InstanceData } from '$lib/types/instance';
 
 // Stores
-import { friendsStore, instanceDataStore } from '$lib/svelte-stores';
+import { friendsStore, instanceDataStore, favoriteStore } from '$lib/svelte-stores';
 import { get } from 'svelte/store';
+import type { Favorite } from '$lib/types/favorite';
 
 // Delay util function
 function delay(ms: number) {
@@ -23,6 +24,11 @@ export async function loadData() {
 		const friendsResponse = await invoke<string>('get_vrc_friends');
 		const friendsList: Friend[] = JSON.parse(friendsResponse);
 		friendsStore.set(new Map(friendsList.map((friend) => [friend.id, friend])));
+
+		// Load favorites list
+		const favoritesResponse = await invoke<string>('get_vrc_favorites');
+		const favoritesList: Favorite[] = JSON.parse(favoritesResponse);
+		favoriteStore.set(new Map(favoritesList.map((favorite) => [favorite.favoriteId, favorite])));
 
 		// Setup maps
 		const instanceDataMap = new Map<string, InstanceData>();

@@ -13,3 +13,4 @@ pub(crate) mod vrc_request;
 pub(crate) mod vrc_user;
 pub(crate) mod vrc_users;
 pub(crate) mod vrc_world;
+pub(crate) mod vrc_favorites;

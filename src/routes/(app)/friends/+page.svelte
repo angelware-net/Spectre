@@ -10,6 +10,7 @@
 	// Stores
 	import { friendsStore } from '$lib/svelte-stores';
 	import { instanceDataStore } from '$lib/svelte-stores';
+	import { favoriteStore } from '$lib/svelte-stores';
 	import { getSetting, saveSetting } from '$lib/store';
 
 	// UI
@@ -27,7 +28,7 @@
 	import { Input } from '$lib/components/ui/input';
 
 	// Icons
-	import { Grid2X2, List, LucideRefreshCw } from 'lucide-svelte';
+	import { Grid2X2, List, LucideRefreshCw, Star } from 'lucide-svelte';
 	import { get } from 'svelte/store';
 	import FriendCard from '$lib/components/friends/FriendCard.svelte';
 	import UserInfo from '$lib/components/friends/UserInfo.svelte';
@@ -41,13 +42,15 @@
 			avatarUrl: string;
 			searchIndex: string;
 			presenceStatus: string;
+			isFavorite: boolean;
 		}
 	> = $state([]);
 
 	// Sorting mode change
-	let value = $state('');
+	let value = $state('Status');
 
 	const sortingModes = [
+		{ value: 'Favorites', label: 'Favorites' },
 		{ value: 'Status', label: 'Status' },
 		{ value: 'Username', label: 'Username' },
 		{ value: 'Location', label: 'Location' }
@@ -99,7 +102,6 @@
 	function handleSortChange(value: { value: string; label: string } | undefined) {
 		if (value) {
 			sortMode = value.value;
-			console.log('Sort mode changed');
 		}
 	}
 
@@ -116,6 +118,14 @@
 	};
 
 	async function loadFriendsWithImages() {
+		const favRaw = get(favoriteStore) as unknown;
+		const favoriteIds: Set<string> =
+			favRaw instanceof Set
+				? favRaw
+				: favRaw instanceof Map
+					? new Set([...favRaw.entries()].filter(([, v]) => !!v).map(([k]) => k))
+					: new Set<string>();
+
 		const friends = Array.from($friendsStore.values()).map((friend) => {
 			const instanceData = $instanceDataStore.get(friend.id);
 
@@ -144,6 +154,7 @@
 				locationCount: instanceData?.userCount,
 				locationCapacity: instanceData?.capacity,
 				locationData: instanceData?.world,
+				isFavorite: favoriteIds.has(friend.id),
 			};
 		});
 
@@ -157,6 +168,7 @@
 						friend.locationName,
 						friend.bio,
 						friend.statusDescription,
+						friend.isFavorite ? 'favorite' : ''
 					]
 						.filter(Boolean)
 						.join(' ')
@@ -203,6 +215,11 @@
 				const lc = locationOrder(a.locationName) - locationOrder(b.locationName);
 				if (lc !== 0) return lc;
 				return a.locationName.localeCompare(b.locationName);
+			} else if (sortMode == 'Favorites') {
+				if (a.isFavorite !== b.isFavorite) {
+					if (a.isFavorite !== b.isFavorite) return a.isFavorite ? -1 : 1;
+					return a.displayName.localeCompare(b.displayName);
+				}
 			}
 			return 0;
 		});
@@ -322,8 +339,13 @@
 								<Tooltip.Provider>
 									<Tooltip.Root>
 										<Tooltip.Trigger class="flex h-full items-center justify-center p-4">
-											<Table.Cell class="">
-												<span class={getStatusClass(friend.presenceStatus)}></span>
+											<Table.Cell class="flex-row">
+												<div class="flex flex-row items-center content-center space-x-2">
+													<span class={getStatusClass(friend.presenceStatus)}></span>
+													{#if friend.isFavorite}
+														<Star class="mr-1 h-3 w-3 text-yellow-400 fill-yellow-400" />
+													{/if}
+												</div>
 											</Table.Cell>
 										</Tooltip.Trigger>
 										<Tooltip.Content>
@@ -338,7 +360,9 @@
 										<Dialog.Trigger>
 											<HoverCard.Root>
 												<HoverCard.Trigger>
-													{friend.displayName}
+													<div class="flex flex-row items-center justify-center">
+														{friend.displayName}
+													</div>
 												</HoverCard.Trigger>
 												<HoverCard.Content class="w-80">
 													<div class="flex space-x-4">
