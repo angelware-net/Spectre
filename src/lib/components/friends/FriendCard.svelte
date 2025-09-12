@@ -12,10 +12,11 @@
 
 	interface Props {
 		friend: ExtendedFriend;
+		presenceStatus: string;
 		avatarUrl: string;
 	}
 
-	let { friend, avatarUrl }: Props = $props();
+	let { friend, presenceStatus, avatarUrl }: Props = $props();
 	let avatarImage: string;
 
 	onMount(async () => {
@@ -87,10 +88,10 @@
 		<Tooltip.Provider>
 			<Tooltip.Root>
 				<Tooltip.Trigger>
-					<span class={getStatusClass(friend.status)}></span>
+					<span class={getStatusClass(presenceStatus)}></span>
 				</Tooltip.Trigger>
 				<Tooltip.Content>
-					<p>{friend.status}</p>
+					<p>{presenceStatus}</p>
 				</Tooltip.Content>
 			</Tooltip.Root>
 		</Tooltip.Provider>
@@ -108,7 +109,7 @@
 			{#if friend.statusDescription !== ''}
 				{friend.statusDescription}
 			{:else}
-				{friend.status}
+				{presenceStatus}
 			{/if}
 		</div>
 		<div class="truncate">

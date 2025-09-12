@@ -45,6 +45,8 @@
 			isFavorite: boolean;
 		}
 	> = $state([]);
+	let recomputeTimer: ReturnType<typeof setTimeout> | undefined;
+	let refreshToken = 0;
 
 	// Sorting mode change
 	let value = $state('Status');
@@ -118,7 +120,7 @@
 	};
 
 	async function loadFriendsWithImages() {
-		const favRaw = get(favoriteStore) as unknown;
+		const favRaw = $favoriteStore as unknown;
 		const favoriteIds: Set<string> =
 			favRaw instanceof Set
 				? favRaw
@@ -158,7 +160,7 @@
 			};
 		});
 
-		friendsWithImages = await Promise.all(
+		return Promise.all(
 			friends.map(async (friend) => {
 				const avatarUrl = await getFriendImage(friend as ExtendedFriend);
 				const searchIndex = normalize(
@@ -169,14 +171,26 @@
 						friend.bio,
 						friend.statusDescription,
 						friend.isFavorite ? 'favorite' : ''
-					]
-						.filter(Boolean)
-						.join(' ')
+					].filter(Boolean).join(' ')
 				);
 				return { ...friend, avatarUrl, searchIndex };
 			})
 		);
 	}
+
+	// this should be good enough for live updates when stores change
+	$effect(() => {
+		const _a = $friendsStore;
+		const _b = $instanceDataStore;
+		const _c = $favoriteStore;
+
+		clearTimeout(recomputeTimer);
+		recomputeTimer = setTimeout(async () => {
+			const token = ++refreshToken;
+			const list = await loadFriendsWithImages();
+			if (token === refreshToken) friendsWithImages = list;
+		}, 50);
+	});
 
 
 	const filteredFriends = $derived.by(() => {
@@ -299,7 +313,7 @@
 		<div class="xs:grid-cols-1 grid sm:grid-cols-2 md:grid-cols-3">
 			{#each sortedFriends as friend}
 				<div class="p-2">
-					<FriendCard {friend} avatarUrl={friend.avatarUrl} />
+					<FriendCard {friend} presenceStatus={friend.presenceStatus} avatarUrl={friend.avatarUrl} />
 				</div>
 			{/each}
 		</div>

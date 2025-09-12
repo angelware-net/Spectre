@@ -3,7 +3,7 @@
 	import { loginStatusStore } from '$lib/svelte-stores';
 	import { invoke } from '@tauri-apps/api/core';
 	import WebSocket from '@tauri-apps/plugin-websocket';
-	import type { WebsocketMessage } from '$lib/types/websocket-msg';
+	import type { WebsocketMessage } from '$lib/types/websocket/websocket-msg';
 	import { type InviteNotification, type Notification } from '$lib/types/notification';
 
 	import {

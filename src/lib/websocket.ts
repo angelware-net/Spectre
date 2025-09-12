@@ -1,7 +1,7 @@
 import { loginStatusStore } from '$lib/svelte-stores';
 import { invoke } from '@tauri-apps/api/core';
 import WebSocket from '@tauri-apps/plugin-websocket';
-import type { WebsocketMessage } from '$lib/types/websocket-msg';
+import type { WebsocketMessage } from '$lib/types/websocket/websocket-msg';
 import { type InviteNotification, type Notification } from '$lib/types/notification';
 import {
 	isPermissionGranted,
@@ -15,12 +15,87 @@ import { currentInstanceStore } from '$lib/svelte-stores';
 import { get } from 'svelte/store';
 import { addManualLog } from '$lib/gamelog/gamelog-sql';
 import type { InstanceData } from '$lib/types/instance';
+import {
+	updateFriendActive,
+	updateFriendLocation,
+	updateFriendOffline,
+	updateFriendOnline
+} from '$lib/update-friends';
+import type { WebsocketFriendLocation } from '$lib/types/websocket/websocket-friend-location';
+import type { WebsocketFriendOffline } from '$lib/types/websocket/websocket-friend-offline';
+import type { WebsocketFriendOnline } from '$lib/types/websocket/websocket-friend-online';
+import type { WebsocketFriendActive } from '$lib/types/websocket/websocket-friend-active';
+import { loadData } from '$lib/load-data';
 
 let ws: WebSocket | null = null;
 let permissionGranted: boolean = false;
 let xsEnabled: boolean = true;
 
-export async function connectSocket() {
+// heartbeat stuff, sometimes vrc seems to disconnect the socket, so this is like a watchdog for that
+let reconnecting = false;
+let attempts = 0;
+const MAX_DELAY_MS = 60_000;
+let lastMessageAt = 0;
+let heartbeatTimer: ReturnType<typeof setInterval> | null = null;
+
+const now = () => Date.now();
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+const backoff = (n: number) =>
+	Math.min(1000 * 2 ** n, MAX_DELAY_MS) + Math.floor(Math.random() * 300);
+
+async function startHeartbeat() {
+	stopHeartbeat();
+	lastMessageAt = now();
+	heartbeatTimer = setInterval(async () => {
+		if (now() - lastMessageAt > 30_000) {
+			await loadData(); // we reload the data here because it might be out of sync...
+			void safeReconnect('heartbeat-timeout');
+			return;
+		}
+		try {
+			await ws?.send('{"type":"ping"}');
+		} catch {
+			void safeReconnect('send-failed');
+		}
+	}, 10_000);
+}
+
+function stopHeartbeat() {
+	if (heartbeatTimer) {
+		clearInterval(heartbeatTimer);
+		heartbeatTimer = null;
+	}
+}
+
+async function safeReconnect(reason: string) {
+	if (reconnecting) return;
+	reconnecting = true;
+	stopHeartbeat();
+
+	try {
+		await ws?.disconnect();
+	} catch {
+		// if theres an error we can just ignore it cuz thats the goal anyways right
+	}
+	ws = null;
+
+	while (true) {
+		const wait = backoff(attempts++);
+		console.warn(`[ws] reconnecting in ${wait}ms (${reason})`);
+		await sleep(wait);
+		try {
+			await connectSocket();
+			attempts = 0;
+			reconnecting = false;
+			console.info('[ws] reconnected');
+			return;
+		} catch (e) {
+			console.error('[ws] reconnect attempt failed:', e);
+		}
+	}
+}
+
+async function connectSocketInternal() {
 	if (ws) return; // Prevent a second websocket from connecting at the same time, should never happen.
 
 	let cookie: string = await invoke('load_login_cookies');
@@ -32,6 +107,7 @@ export async function connectSocket() {
 		});
 
 		ws.addListener(async (msg) => {
+			lastMessageAt = now();
 			// Handle message based on type
 			if (typeof msg.data === 'string') {
 				// console.log('Raw WebSocket message (string):', msg.data);
@@ -49,12 +125,21 @@ export async function connectSocket() {
 				console.warn('Received unsupported WebSocket message type:', msg.data);
 			}
 		});
+		startHeartbeat();
 		console.log('Websocket connected...');
 	} else {
 		console.error(
 			'Websocket could not be created because the authentication cookie was null or invalid.'
 		);
 	}
+}
+
+export async function connectSocket() {
+	if (ws) return;
+	await connectSocketInternal().catch((e) => {
+		console.error('[ws] initial connect failed:', e);
+		void safeReconnect('initial-connect');
+	});
 }
 
 export async function checkNotificationPermission() {
@@ -189,17 +274,22 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 					instanceId: location
 				});
 				const instanceData: InstanceData = JSON.parse(instanceString);
-				await addManualLog('User Location', `${instanceData.world.name}`, undefined, `${instanceData.worldId}`);
+				await addManualLog(
+					'User Location',
+					`${instanceData.world.name}`,
+					undefined,
+					`${instanceData.worldId}`
+				);
 			}
 		}
 	} else if (msgObject.type === 'friend-location') {
 		const setting = await getSetting('friendTravelingNotif');
+		let msg: WebsocketFriendLocation = JSON.parse(msgObject.content);
 		if (setting?.toLowerCase() === 'true') {
-			let msg = JSON.parse(msgObject.content);
-			if (msg.travelingToLocation !== "") {
+			if (msg.travelingToLocation !== '') {
 				let currentLocation = get(currentInstanceStore);
-				if (currentLocation !== null || currentLocation !== "") {
-					if (currentLocation === msg.travelingToLocation){
+				if (currentLocation !== null || currentLocation !== '') {
+					if (currentLocation === msg.travelingToLocation) {
 						let username = await getUsernameById(msg.userId);
 						let title = `${username} is heading to your current location!`;
 						await sendNotif(title, title);
@@ -207,7 +297,23 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 				}
 			}
 		}
-  } else if (msgObject.type !== undefined) {
+		if (msg.location != '' && msg.location != 'traveling') {
+			console.log(`friend-location ${msg.user.displayName}`);
+			await updateFriendLocation(msg);
+		}
+	} else if (msgObject.type === 'friend-offline') {
+		let msg: WebsocketFriendOffline = JSON.parse(msgObject.content);
+		console.log(`friend-offline ${msg.userId}`);
+		await updateFriendOffline(msg);
+	} else if (msgObject.type === 'friend-online') {
+		let msg: WebsocketFriendOnline = JSON.parse(msgObject.content);
+		console.log(`friend-online ${msg.user.displayName}`);
+		await updateFriendOnline(msg);
+	} else if (msgObject.type === 'friend-active') {
+		let msg: WebsocketFriendActive = JSON.parse(msgObject.content);
+		console.log(`friend-active ${msg.user.displayName}`);
+		await updateFriendActive(msg);
+	} else if (msgObject.type !== undefined) {
 		console.debug(`WebSocket message type is ${msgObject.type}`);
 	} else {
 		console.log('WebSocket ping received! Connection is alive!');
@@ -216,8 +322,12 @@ async function handleWebSocketMessage(msgObject: WebsocketMessage) {
 
 export async function disconnectSocket() {
 	if (ws != null) {
-		await ws.disconnect();
-		console.log('Websocket Disconnected');
+		try {
+			await ws.disconnect();
+			console.log('Websocket Disconnected');
+		} finally {
+			ws = null;
+		}
 	}
 }
 
