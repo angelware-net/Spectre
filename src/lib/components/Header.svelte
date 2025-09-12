@@ -223,7 +223,7 @@
 				<DropdownMenu.Separator />
 				<DropdownMenu.Item onclick={logout}>Logout</DropdownMenu.Item>
 				<DropdownMenu.Separator />
-				<DropdownMenu.Item disabled>v2.1.0-ALPHA</DropdownMenu.Item>
+				<DropdownMenu.Item disabled>v2.1.2-ALPHA</DropdownMenu.Item>
 			</DropdownMenu.Content>
 		</DropdownMenu.Root>
 	</div>

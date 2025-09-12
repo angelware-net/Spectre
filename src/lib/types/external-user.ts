@@ -56,7 +56,7 @@ export interface ExternalUserData {
 	profilePicOverride: string;
 	pronouns: string;
 	state: string;
-	status: string;
+	status: 'join me' | 'active' | 'ask me' | 'busy';
 	statusDescription: string;
 	tags: string[];
 	travelingToInstance: string;

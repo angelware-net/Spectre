@@ -1,0 +1,32 @@
+export interface WebsocketWorld {
+	id: string;
+	name: string;
+	description: string;
+	authorId: string;
+	authorName: string;
+	releaseStatus: string;
+	featured: boolean;
+	capacity: number;
+	recommendedCapacity: number;
+	imageUrl: string;
+	thumbnailImageUrl: string;
+	version: number;
+	organization: string;
+	previewYoutubeId: string | null;
+	udonProducts: unknown[];
+	urlList: string[];
+	favorites: number;
+	visits: number;
+	popularity: number;
+	heat: number;
+	publicationDate: string;
+	labsPublicationDate: string;
+	instances: unknown[];
+	publicOccupants: number;
+	privateOccupants: number;
+	occupants: number;
+	tags: string[];
+	created_at: string;
+	updated_at: string;
+	defaultContentSettings: Record<string, unknown>;
+}
