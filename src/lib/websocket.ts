@@ -75,7 +75,6 @@ async function safeReconnect(reason: string) {
 	try {
 		await ws?.disconnect();
 	} catch {
-		// if theres an error we can just ignore it cuz thats the goal anyways right
 	}
 	ws = null;
 
