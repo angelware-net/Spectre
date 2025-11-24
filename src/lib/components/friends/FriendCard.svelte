@@ -116,7 +116,11 @@
 			{#if friend.locationData !== undefined}
 				{friend.locationData.name}
 			{:else}
-				Private
+				{#if friend.locationName.toLowerCase() === "private"}
+					Private
+				{:else}
+					Offline
+				{/if}
 			{/if}
 		</div>
 	</Card.Content>

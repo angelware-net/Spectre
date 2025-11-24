@@ -26,9 +26,10 @@
 	import * as Select from '$lib/components/ui/select/index.js';
 	import { OverlayScrollbarsComponent } from 'overlayscrollbars-svelte';
 	import { Input } from '$lib/components/ui/input';
+	import { Toggle } from '$lib/components/ui/toggle';
 
 	// Icons
-	import { Grid2X2, List, LucideRefreshCw, Star } from 'lucide-svelte';
+	import { Grid2X2, List, LucideCircle, LucideCircleOff, LucideRefreshCw, Star } from 'lucide-svelte';
 	import { get } from 'svelte/store';
 	import FriendCard from '$lib/components/friends/FriendCard.svelte';
 	import UserInfo from '$lib/components/friends/UserInfo.svelte';
@@ -47,6 +48,7 @@
 	> = $state([]);
 	let recomputeTimer: ReturnType<typeof setTimeout> | undefined;
 	let refreshToken = 0;
+	let showOffline: boolean = $state(false);
 
 	// Sorting mode change
 	let value = $state('Status');
@@ -297,6 +299,31 @@
 							<List />
 						</ToggleGroup.Item>
 					</ToggleGroup.Root>
+					<Toggle class="mr-4" variant="outline" bind:pressed={showOffline} >
+						{#if showOffline}
+							<Tooltip.Provider>
+								<Tooltip.Root>
+									<Tooltip.Trigger>
+										<LucideCircleOff class="h-[1.2rem] w-[1.2rem] transition-all" />
+									</Tooltip.Trigger>
+									<Tooltip.Content>
+										Showing offline friends
+									</Tooltip.Content>
+								</Tooltip.Root>
+							</Tooltip.Provider>
+						{:else}
+							<Tooltip.Provider>
+								<Tooltip.Root>
+									<Tooltip.Trigger>
+										<LucideCircle class="h-[1.2rem] w-[1.2rem] transition-all" />
+									</Tooltip.Trigger>
+									<Tooltip.Content>
+										Showing online friends only
+									</Tooltip.Content>
+								</Tooltip.Root>
+							</Tooltip.Provider>
+						{/if}
+					</Toggle>
 					<Button variant="outline" onclick={() => handleRefresh()} size="icon">
 						{#if loading}
 							<LucideRefreshCw class="h-[1.2rem] w-[1.2rem] animate-spin transition-all" />
@@ -312,9 +339,11 @@
 	{#if viewMode === 'cards'}
 		<div class="xs:grid-cols-1 grid sm:grid-cols-2 md:grid-cols-3">
 			{#each sortedFriends as friend}
+				{#if showOffline || !['offline', 'on website', ''].includes((friend.presenceStatus ?? '').toLowerCase())}
 				<div class="p-2">
-					<FriendCard {friend} presenceStatus={friend.presenceStatus} avatarUrl={friend.avatarUrl} />
-				</div>
+						<FriendCard {friend} presenceStatus={friend.presenceStatus} avatarUrl={friend.avatarUrl} />
+					</div>
+				{/if}
 			{/each}
 		</div>
 	{:else if viewMode === 'list'}
@@ -348,113 +377,62 @@
 						{/each}
 					{:else}
 						{#each sortedFriends as friend, i (i)}
-							<Table.Row class="">
-								<!--Status-->
-								<Tooltip.Provider>
-									<Tooltip.Root>
-										<Tooltip.Trigger class="flex h-full items-center justify-center p-4">
-											<Table.Cell class="flex-row">
-												<div class="flex flex-row items-center content-center space-x-2">
-													<span class={getStatusClass(friend.presenceStatus)}></span>
-													{#if friend.isFavorite}
-														<Star class="mr-1 h-3 w-3 text-yellow-400 fill-yellow-400" />
-													{/if}
-												</div>
-											</Table.Cell>
-										</Tooltip.Trigger>
-										<Tooltip.Content>
-											<p>{friend.presenceStatus}</p>
-										</Tooltip.Content>
-									</Tooltip.Root>
-								</Tooltip.Provider>
-
-								<!--Name-->
-								<Table.Cell>
-									<Dialog.Root>
-										<Dialog.Trigger>
-											<HoverCard.Root>
-												<HoverCard.Trigger>
-													<div class="flex flex-row items-center justify-center">
-														{friend.displayName}
+							{#if showOffline || !['offline', 'on website', ''].includes((friend.presenceStatus ?? '').toLowerCase())}
+								<Table.Row class="">
+									<!--Status-->
+									<Tooltip.Provider>
+										<Tooltip.Root>
+											<Tooltip.Trigger class="flex h-full items-center justify-center p-4">
+												<Table.Cell class="flex-row">
+													<div class="flex flex-row items-center content-center space-x-2">
+														<span class={getStatusClass(friend.presenceStatus)}></span>
+														{#if friend.isFavorite}
+															<Star class="mr-1 h-3 w-3 text-yellow-400 fill-yellow-400" />
+														{/if}
 													</div>
-												</HoverCard.Trigger>
-												<HoverCard.Content class="w-80">
-													<div class="flex space-x-4">
-														<Avatar.Root>
-															{#await getFriendImage(friend)}
-																<Avatar.Fallback
-																	>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback
-																>
-															{:then url}
-																<Avatar.Image src={url} alt="Avatar" />
-															{:catch error}
-																<Avatar.Fallback
-																	>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback
-																>
-															{/await}
-														</Avatar.Root>
-														<div class="space-y-1">
-															<h4 class="text-sm font-semibold">{friend.displayName}</h4>
-															<p class="text-sm whitespace-pre-line">
-																{friend.statusDescription}
-															</p>
-															<div class="text-muted-foreground flex items-center pt-2 text-xs">
-																{friend.presenceStatus}
-															</div>
-															<div class="text-muted-foreground flex items-center pt-2 text-xs">
-																{friend.bio}
-															</div>
-														</div>
-													</div>
-												</HoverCard.Content>
-											</HoverCard.Root>
-										</Dialog.Trigger>
-										<Dialog.Content>
-											<UserInfo userId={friend.id} />
-										</Dialog.Content>
-									</Dialog.Root>
-								</Table.Cell>
+												</Table.Cell>
+											</Tooltip.Trigger>
+											<Tooltip.Content>
+												<p>{friend.presenceStatus}</p>
+											</Tooltip.Content>
+										</Tooltip.Root>
+									</Tooltip.Provider>
 
-								<!--Location-->
-								<Table.Cell class="">
-									{#if friend?.locationName !== 'Private' && friend?.locationName !== 'On Website' && friend.locationName !== 'Offline'}
+									<!--Name-->
+									<Table.Cell>
 										<Dialog.Root>
 											<Dialog.Trigger>
 												<HoverCard.Root>
-													<HoverCard.Trigger class="">
-														{friend?.locationName} ({friend?.locationCount} / {friend?.locationData
-															?.recommendedCapacity}) [{friend?.locationCapacity}]
+													<HoverCard.Trigger>
+														<div class="flex flex-row items-center justify-center">
+															{friend.displayName}
+														</div>
 													</HoverCard.Trigger>
 													<HoverCard.Content class="w-80">
 														<div class="flex space-x-4">
 															<Avatar.Root>
-																{#if friend !== undefined && friend.locationData !== undefined}
-																	{#await loadImage(friend.locationData.imageUrl)}
-																		<Avatar.Fallback
-																			>{friend.locationData.name
-																				.charAt(0)
-																				.toUpperCase()}</Avatar.Fallback
-																		>
-																	{:then url}
-																		<Avatar.Image src={url} alt="Avatar" />
-																	{:catch error}
-																		<Avatar.Fallback
-																			>{friend.locationData.name
-																				.charAt(0)
-																				.toUpperCase()}</Avatar.Fallback
-																		>
-																	{/await}
-																{/if}
-																<Avatar.Fallback>SK</Avatar.Fallback>
+																{#await getFriendImage(friend)}
+																	<Avatar.Fallback
+																		>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback
+																	>
+																{:then url}
+																	<Avatar.Image src={url} alt="Avatar" />
+																{:catch error}
+																	<Avatar.Fallback
+																		>{friend.displayName.charAt(0).toUpperCase()}</Avatar.Fallback
+																	>
+																{/await}
 															</Avatar.Root>
 															<div class="space-y-1">
-																<h4 class="text-sm font-semibold">{friend?.locationName}</h4>
-																<p class="text-xs whitespace-pre-line">
-																	{friend?.locationData?.description}
+																<h4 class="text-sm font-semibold">{friend.displayName}</h4>
+																<p class="text-sm whitespace-pre-line">
+																	{friend.statusDescription}
 																</p>
 																<div class="text-muted-foreground flex items-center pt-2 text-xs">
-																	{friend?.locationCount} / {friend?.locationData
-																		?.recommendedCapacity} ({friend?.locationCapacity})
+																	{friend.presenceStatus}
+																</div>
+																<div class="text-muted-foreground flex items-center pt-2 text-xs">
+																	{friend.bio}
 																</div>
 															</div>
 														</div>
@@ -462,31 +440,88 @@
 												</HoverCard.Root>
 											</Dialog.Trigger>
 											<Dialog.Content>
-												<Instance userId={friend.id} />
+												<UserInfo userId={friend.id} />
 											</Dialog.Content>
 										</Dialog.Root>
-									{:else}
-										{friend.locationName}
-									{/if}
-								</Table.Cell>
+									</Table.Cell>
 
-								<!--JoinButton-->
-								<Table.Cell class="hidden text-right sm:table-cell">
-									{#if friend.locationName !== 'Private' && friend.locationName !== 'On Website' && friend.locationName !== 'Offline'}
-										<Dialog.Root>
-											<Dialog.Trigger>
-												<Button>Details</Button>
-											</Dialog.Trigger>
-											<Dialog.Content>
-												<Instance userId={friend.id} />
-											</Dialog.Content>
-										</Dialog.Root>
-									{:else}
-										<Button disabled variant="outline" class="text-muted-foreground">Details</Button
-										>
-									{/if}
-								</Table.Cell>
-							</Table.Row>
+									<!--Location-->
+									<Table.Cell class="">
+										{#if friend?.locationName !== 'Private' && friend?.locationName !== 'On Website' && friend.locationName !== 'Offline'}
+											<Dialog.Root>
+												<Dialog.Trigger>
+													<HoverCard.Root>
+														<HoverCard.Trigger class="">
+															{friend?.locationName} ({friend?.locationCount} / {friend?.locationData
+																?.recommendedCapacity}) [{friend?.locationCapacity}]
+														</HoverCard.Trigger>
+														<HoverCard.Content class="w-80">
+															<div class="flex space-x-4">
+																<Avatar.Root>
+																	{#if friend !== undefined && friend.locationData !== undefined}
+																		{#await loadImage(friend.locationData.imageUrl)}
+																			<Avatar.Fallback
+																				>{friend.locationData.name
+																					.charAt(0)
+																					.toUpperCase()}</Avatar.Fallback
+																			>
+																		{:then url}
+																			<Avatar.Image src={url} alt="Avatar" />
+																		{:catch error}
+																			<Avatar.Fallback
+																				>{friend.locationData.name
+																					.charAt(0)
+																					.toUpperCase()}</Avatar.Fallback
+																			>
+																		{/await}
+																	{/if}
+																	<Avatar.Fallback>SK</Avatar.Fallback>
+																</Avatar.Root>
+																<div class="space-y-1">
+																	<h4 class="text-sm font-semibold">{friend?.locationName}</h4>
+																	<p class="text-xs whitespace-pre-line">
+																		{friend?.locationData?.description}
+																	</p>
+																	<div class="text-muted-foreground flex items-center pt-2 text-xs">
+																		{friend?.locationCount} / {friend?.locationData
+																			?.recommendedCapacity} ({friend?.locationCapacity})
+																	</div>
+																</div>
+															</div>
+														</HoverCard.Content>
+													</HoverCard.Root>
+												</Dialog.Trigger>
+												<Dialog.Content>
+													<Instance userId={friend.id} />
+												</Dialog.Content>
+											</Dialog.Root>
+										{:else}
+											{#if !['offline', 'on website', ''].includes((friend.presenceStatus ?? '').toLowerCase())}
+												{friend.locationName}
+											{:else}
+												Offline
+											{/if}
+										{/if}
+									</Table.Cell>
+
+									<!--JoinButton-->
+									<Table.Cell class="hidden text-right sm:table-cell">
+										{#if friend.locationName !== 'Private' && friend.locationName !== 'On Website' && friend.locationName !== 'Offline'}
+											<Dialog.Root>
+												<Dialog.Trigger>
+													<Button>Details</Button>
+												</Dialog.Trigger>
+												<Dialog.Content>
+													<Instance userId={friend.id} />
+												</Dialog.Content>
+											</Dialog.Root>
+										{:else}
+											<Button disabled variant="outline" class="text-muted-foreground">Details</Button
+											>
+										{/if}
+									</Table.Cell>
+								</Table.Row>
+							{/if}
 						{/each}
 					{/if}
 				</Table.Body>

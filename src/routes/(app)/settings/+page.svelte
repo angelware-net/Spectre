@@ -119,7 +119,7 @@
 							</Table.Cell>
 							<Table.Cell>
 								<div>
-									<Select.Root type="single" name="themeSelector" bind:value disabled>
+									<Select.Root type="single" name="themeSelector" bind:value>
 										<Select.Trigger class="w-[200px]">
 											{triggerContent}
 										</Select.Trigger>
